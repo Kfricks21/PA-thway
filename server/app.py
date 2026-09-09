@@ -1,12 +1,86 @@
 from pathlib import Path
 import os
+import re
+import tempfile
 
 from flask import Flask, jsonify, request, send_from_directory
+from pptx import Presentation
+from pypdf import PdfReader
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CLIENT_DIR = BASE_DIR / "client" / "dist"
 
 app = Flask(__name__)
+
+
+def extract_text_from_upload(uploaded_file):
+    if uploaded_file is None or not uploaded_file.filename:
+        return ""
+
+    suffix = Path(uploaded_file.filename).suffix.lower()
+    fd, temp_path = tempfile.mkstemp(suffix=suffix)
+    os.close(fd)
+
+    try:
+        uploaded_file.save(temp_path)
+
+        if suffix == ".pptx":
+            presentation = Presentation(temp_path)
+            blocks = []
+            for slide in presentation.slides:
+                for shape in slide.shapes:
+                    if hasattr(shape, "text") and shape.text:
+                        blocks.append(shape.text.strip())
+            text = "\n".join(block for block in blocks if block)
+            return text
+
+        if suffix == ".pdf":
+            reader = PdfReader(temp_path)
+            pages = []
+            for page in reader.pages:
+                content = page.extract_text() or ""
+                pages.append(content)
+            return "\n".join(page for page in pages if page)
+
+        if suffix in {".txt", ".md"}:
+            with open(temp_path, "r", encoding="utf-8", errors="ignore") as handle:
+                return handle.read()
+
+        return ""
+    finally:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+
+
+def build_questions_from_content(content, filename, question_count):
+    cleaned_content = re.sub(r"\s+", " ", content).strip()
+    sentences = [part.strip() for part in re.split(r"(?<=[.!?])\s+", cleaned_content) if part.strip()]
+
+    if not sentences:
+        sentences = [f"Uploaded presentation: {filename}"]
+
+    questions = []
+    for idx in range(question_count):
+        source = sentences[min(idx, len(sentences) - 1)]
+        snippet = source[:160]
+        answer = snippet
+
+        questions.append(
+            {
+                "id": idx + 1,
+                "type": "multiple-choice",
+                "prompt": f"Question {idx + 1}: What is the main idea of this section from {filename}?",
+                "options": [
+                    answer,
+                    "A topic that is unrelated to the uploaded material",
+                    "A blank answer",
+                    "A copied image label",
+                ],
+                "answer": answer,
+            }
+        )
+
+    return questions
 
 
 @app.get("/api/health")
@@ -29,22 +103,8 @@ def generate_quiz():
     if question_count <= 0:
         question_count = 5
 
-    questions = []
-    for idx in range(1, question_count + 1):
-        questions.append(
-            {
-                "id": idx,
-                "type": "multiple-choice",
-                "prompt": f"Sample question {idx}: What is the main idea of {filename}?",
-                "options": [
-                    "A concept from the presentation",
-                    "An unrelated topic",
-                    "A blank answer",
-                    "A copied image label",
-                ],
-                "answer": "A concept from the presentation",
-            }
-        )
+    extracted_content = extract_text_from_upload(uploaded_file)
+    questions = build_questions_from_content(extracted_content, filename, question_count)
 
     return jsonify(
         {

@@ -5,5 +5,5 @@ services:
     plan: free
     buildCommand: |
       cd client && npm install && npm run build
-      cd ../server && python -m pip install -r requirements.txt
+      cd .. && python -m pip install -r server/requirements.txt
     startCommand: gunicorn --chdir server app:app
