@@ -1,0 +1,1 @@
+   pip install Flask python-pptx opencv-python tensorflow flask-wtf

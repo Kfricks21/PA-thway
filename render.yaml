@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: ppt-quiz-generator
+    env: python
+    plan: free
+    buildCommand: |
+      cd client && npm install && npm run build
+      cd ../server && python -m pip install -r requirements.txt
+    startCommand: gunicorn --chdir server app:app
