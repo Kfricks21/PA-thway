@@ -1,0 +1,30 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Node
+node_modules/
+client/node_modules/
+client/dist/
+client/.vite/
+
+# Environment
+.env
+.env.*
+
+# OS/Editor
+.DS_Store
+.idea/
+.vscode/
+
+# Runtime / generated content
+server/uploads/
+server/storage/extracted/
+server/storage/uploads/
+
+# Logs
+*.log
