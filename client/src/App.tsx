@@ -1,5 +1,20 @@
 import { useEffect, useState } from 'react'
+import * as pdfjsLib from 'pdfjs-dist'
+import * as XLSX from 'xlsx'
 import { checkHealth, generateQuiz } from './services/api'
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()
+
+type ScheduleItem = {
+  id: number
+  day: string
+  time: string
+  title: string
+  type: string
+  isExam?: boolean
+  score?: string
+  comment?: string
+}
 
 const sampleQuestions = [
   {
@@ -22,7 +37,7 @@ const sampleQuestions = [
   },
 ]
 
-const initialSchedule = [
+const initialSchedule: ScheduleItem[] = [
   { id: 1, day: 'Monday', time: '9:00 AM', title: 'Orientation + upload demo', type: 'Live' },
   { id: 2, day: 'Tuesday', time: '1:00 PM', title: 'Lab 1: slide review', type: 'Hands-on' },
   { id: 3, day: 'Wednesday', time: '11:00 AM', title: 'Cohort challenge round', type: 'Contest' },
@@ -52,6 +67,161 @@ const initialNotes = [
   { id: 2, title: 'Student tips', text: 'Keep notes short so learners can browse quickly on mobile.' },
 ]
 
+const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+const parseScheduleText = (text: string): ScheduleItem[] => {
+  const lines = text
+    .replace(/\r/g, '\n')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  const items: ScheduleItem[] = []
+
+  lines.forEach((line, index) => {
+    const lowerLine = line.toLowerCase()
+    const matchedDay = dayNames.find((day) => lowerLine.includes(day.toLowerCase()))
+
+    if (!matchedDay) {
+      return
+    }
+
+    const lineWithoutDay = line.replace(new RegExp(matchedDay, 'ig'), '').trim()
+    const timeMatch = lineWithoutDay.match(/(\d{1,2}:\d{2}\s?(?:AM|PM))/i)
+    const time = timeMatch ? timeMatch[1] : 'TBD'
+    const title = lineWithoutDay.replace(time, '').replace(/^[\-•*\s]+/, '').trim() || `${matchedDay} session`
+    const type = /exam|test|quiz|assessment/i.test(title)
+      ? 'Exam'
+      : inferScheduleType(title)
+    const isExam = /exam|test|quiz|assessment/i.test(title)
+
+    items.push({
+      id: Date.now() + index,
+      day: matchedDay,
+      time,
+      title,
+      type,
+      isExam,
+    })
+  })
+
+  return items
+}
+
+const inferScheduleType = (title: string) => {
+  const lower = title.toLowerCase()
+
+  if (lower.includes('lab')) return 'Lab'
+  if (lower.includes('assignment')) return 'Assignment'
+  if (lower.includes('discussion')) return 'Discussion'
+  if (lower.includes('challenge')) return 'Challenge'
+  if (lower.includes('review')) return 'Review'
+
+  return 'Session'
+}
+
+const extractWorkbookSchedule = (workbook: XLSX.WorkBook): ScheduleItem[] => {
+  const firstSheetName = workbook.SheetNames[0]
+  const sheet = workbook.Sheets[firstSheetName]
+
+  if (!sheet) {
+    return []
+  }
+
+  const rows = XLSX.utils.sheet_to_json<Record<string, string>>(sheet, { defval: '', raw: false })
+
+  return rows
+    .map((row, index) => {
+      const dayValue =
+        row.Day ||
+        row.day ||
+        row.Date ||
+        row.date ||
+        row['Class Day'] ||
+        row['Session Day'] ||
+        Object.values(row)[0] ||
+        ''
+
+      const timeValue =
+        row.Time ||
+        row.time ||
+        row['Class Time'] ||
+        row['Session Time'] ||
+        Object.values(row)[1] ||
+        'TBD'
+
+      const titleValue =
+        row.Title ||
+        row.title ||
+        row.Event ||
+        row.event ||
+        row['Activity'] ||
+        row['Assignment'] ||
+        row['Course'] ||
+        Object.values(row)[2] ||
+        'Schedule item'
+
+      const typeValue =
+        row.Type ||
+        row.type ||
+        row.Category ||
+        row.category ||
+        inferScheduleType(String(titleValue))
+
+      const title = String(titleValue).trim()
+      const day = String(dayValue).trim()
+
+      if (!title || !day) {
+        return null
+      }
+
+      const isExam = /exam|test|quiz|assessment/i.test(title) || /exam|test|quiz|assessment/i.test(typeValue)
+
+      return {
+        id: Date.now() + index,
+        day,
+        time: String(timeValue).trim() || 'TBD',
+        title,
+        type: isExam ? 'Exam' : String(typeValue).trim() || inferScheduleType(title),
+        isExam,
+      }
+    })
+    .filter((item): item is ScheduleItem => item !== null)
+}
+
+const parseScheduleFile = async (file: File): Promise<ScheduleItem[]> => {
+  const fileName = file.name.toLowerCase()
+
+  if (fileName.endsWith('.csv') || fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+    const workbook = XLSX.read(await file.arrayBuffer(), { type: 'array' })
+    const parsedSchedule = extractWorkbookSchedule(workbook)
+
+    if (parsedSchedule.length > 0) {
+      return parsedSchedule
+    }
+  }
+
+  if (fileName.endsWith('.pdf')) {
+    const pdfData = new Uint8Array(await file.arrayBuffer())
+    const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise
+    let extractedText = ''
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      const page = await pdf.getPage(pageNumber)
+      const pageText = await page.getTextContent()
+      extractedText += pageText.items.map((item: any) => item.str || '').join(' ') + '\n'
+    }
+
+    const parsedSchedule = parseScheduleText(extractedText)
+
+    if (parsedSchedule.length > 0) {
+      return parsedSchedule
+    }
+  }
+
+  return []
+}
+
 function App() {
   const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
@@ -66,6 +236,8 @@ function App() {
   const [newNoteTitle, setNewNoteTitle] = useState('')
   const [newNoteText, setNewNoteText] = useState('')
   const [newChallengePrompt, setNewChallengePrompt] = useState('')
+  const [scheduleFileName, setScheduleFileName] = useState('')
+  const [scheduleInput, setScheduleInput] = useState('')
 
   useEffect(() => {
     checkHealth()
@@ -110,6 +282,78 @@ function App() {
         type: 'Flexible',
       },
     ])
+  }
+
+  const handleDeleteScheduleItem = (id: number) => {
+    setSchedule((current) => current.filter((item) => item.id !== id))
+  }
+
+  const handleScheduleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadedFile = event.target.files?.[0]
+
+    if (!uploadedFile) {
+      return
+    }
+
+    try {
+      const parsedSchedule = await parseScheduleFile(uploadedFile)
+
+      if (parsedSchedule.length === 0) {
+        setStatus('Schedule file uploaded, but no schedule items were detected. Please use a CSV, Excel, or PDF file with clear day/time details.')
+        return
+      }
+
+      setSchedule(parsedSchedule)
+      setScheduleFileName(uploadedFile.name)
+      setStatus(`Schedule imported from ${uploadedFile.name}.`)
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'Unable to read the schedule file.')
+    }
+  }
+
+  const handleScheduleTextSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    if (!scheduleInput.trim()) {
+      return
+    }
+
+    const parsedSchedule = parseScheduleText(scheduleInput)
+
+    if (parsedSchedule.length === 0) {
+      setStatus('No schedule items were detected. Try adding lines with a day and time.')
+      return
+    }
+
+    setSchedule(parsedSchedule)
+    setScheduleInput('')
+    setStatus('Schedule updated from pasted text.')
+  }
+
+  const handleExamFieldChange = (itemId: number, field: 'score' | 'comment', value: string) => {
+    setSchedule((current) =>
+      current.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              [field]: value,
+              isExam: true,
+              type: 'Exam',
+            }
+          : item,
+      ),
+    )
+  }
+
+  const handleSaveExamUpdate = (event: React.FormEvent<HTMLFormElement>, itemId: number) => {
+    event.preventDefault()
+    const item = schedule.find((entry) => entry.id === itemId)
+
+    if (!item) {
+      return
+    }
+
+    setStatus(`Exam notes saved for ${item.title}.`)
   }
 
   const handleToggleLab = (id: number) => {
@@ -286,15 +530,35 @@ function App() {
           </div>
 
           <div className="hub-grid">
-            <div className="hub-card">
+            <div className="hub-card schedule-card">
               <div className="hub-header">
                 <h3>Editable schedule</h3>
                 <button type="button" className="mini-button" onClick={handleAddScheduleItem}>Add session</button>
               </div>
 
+              <div className="schedule-upload-row">
+                <label className="file-input compact-file-input">
+                  <input
+                    type="file"
+                    accept=".csv,.xlsx,.xls,.pdf"
+                    onChange={handleScheduleUpload}
+                  />
+                  <span>{scheduleFileName || 'Upload schedule (.csv, .xlsx, .pdf)'}</span>
+                </label>
+              </div>
+
+              <form className="inline-form" onSubmit={handleScheduleTextSubmit}>
+                <textarea
+                  value={scheduleInput}
+                  placeholder="Paste a schedule here, one line per item with day and time (for example: Monday 9:00 AM Anatomy Lab)"
+                  onChange={(event) => setScheduleInput(event.target.value)}
+                />
+                <button type="submit" className="mini-button">Load schedule text</button>
+              </form>
+
               <div className="schedule-list">
                 {schedule.map((item) => (
-                  <div className="schedule-item" key={item.id}>
+                  <div className={`schedule-item ${item.isExam ? 'exam-item' : ''}`} key={item.id}>
                     <div>
                       <strong>{item.day}</strong>
                       <span>{item.time}</span>
@@ -302,7 +566,39 @@ function App() {
                     <div>
                       <p>{item.title}</p>
                       <small>{item.type}</small>
+                      {item.isExam && (
+                        <div className="exam-details">
+                          <p>
+                            <strong>Score:</strong> {item.score || 'Not added yet'}
+                          </p>
+                          <p>
+                            <strong>What I missed:</strong> {item.comment || 'No notes yet'}
+                          </p>
+                        </div>
+                      )}
+                      <div className="schedule-actions">
+                        <button type="button" className="mini-button secondary-mini-button" onClick={() => handleDeleteScheduleItem(item.id)}>
+                          Delete
+                        </button>
+                      </div>
                     </div>
+
+                    {item.isExam && (
+                      <form className="exam-form" onSubmit={(event) => handleSaveExamUpdate(event, item.id)}>
+                        <input
+                          type="text"
+                          value={item.score || ''}
+                          placeholder="Add exam score"
+                          onChange={(event) => handleExamFieldChange(item.id, 'score', event.target.value)}
+                        />
+                        <textarea
+                          value={item.comment || ''}
+                          placeholder="What did you miss or misunderstand?"
+                          onChange={(event) => handleExamFieldChange(item.id, 'comment', event.target.value)}
+                        />
+                        <button type="submit" className="mini-button">Save exam notes</button>
+                      </form>
+                    )}
                   </div>
                 ))}
               </div>

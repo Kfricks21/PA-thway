@@ -398,6 +398,73 @@ h1 {
   align-items: center;
 }
 
+.schedule-item.exam-item {
+  border-color: rgba(251, 191, 36, 0.7);
+  background: rgba(69, 39, 11, 0.42);
+}
+
+.exam-item strong,
+.exam-item small {
+  color: #fef3c7;
+}
+
+.exam-details {
+  margin-top: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.exam-details p {
+  margin-bottom: 0;
+  color: #fef3c7;
+}
+
+.schedule-actions {
+  margin-top: 10px;
+}
+
+.schedule-card {
+  grid-column: span 2;
+}
+
+.schedule-upload-row {
+  margin-bottom: 14px;
+}
+
+.compact-file-input {
+  min-height: 58px;
+}
+
+.inline-form textarea,
+.exam-form textarea,
+.exam-form input {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  background: rgba(15, 23, 42, 0.8);
+  color: #f8fafc;
+  padding: 12px 14px;
+}
+
+.inline-form textarea,
+.exam-form textarea {
+  min-height: 78px;
+  resize: vertical;
+}
+
+.exam-form {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+  grid-column: 1 / -1;
+}
+
+.secondary-mini-button {
+  background: rgba(148, 163, 184, 0.22);
+  border: 1px solid rgba(148, 163, 184, 0.42);
+  box-shadow: none;
+}
+
 .schedule-item strong,
 .challenge-item strong,
 .comment-item strong,
@@ -658,7 +725,8 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 
-  .note-card {
+  .note-card,
+  .schedule-card {
     grid-column: auto;
   }
 
