@@ -1,0 +1,34 @@
+"""Serves the PA-thway student app.
+
+The app is one self-contained HTML file (server/pathway/index.html) — no build
+step, no bundler. Mounting it on its own route leaves the existing React client
+at `/` untouched.
+
+    /app        the student app
+    /api/hub/*  the shared Student Hub (see hub.py)
+"""
+
+from pathlib import Path
+
+from flask import Blueprint, send_from_directory
+
+APP_DIR = Path(__file__).resolve().parent / "pathway"
+
+pathway = Blueprint("pathway", __name__)
+
+
+@pathway.get("/app")
+@pathway.get("/app/")
+def student_app():
+    return send_from_directory(str(APP_DIR), "index.html")
+
+
+@pathway.get("/app/<path:filename>")
+def student_asset(filename):
+    """Only needed if the app is ever split back into separate files."""
+    return send_from_directory(str(APP_DIR), filename)
+
+
+def register_pathway(app):
+    app.register_blueprint(pathway)
+    return app
