@@ -1,0 +1,2472 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<script src="./config.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<script src="./image-slot.js"></script>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#0e7c8c"/><text x="60" y="72" font-family="Inter,system-ui,sans-serif" font-size="34" font-weight="600" fill="#eaf6f7" text-anchor="middle">PA</text></svg></template>
+<style>
+body{margin:0;background:#e9edf1;font-family:"Inter",system-ui,sans-serif;color:#16202e}
+a{color:#0b6675;text-underline-offset:3px}
+a:hover{color:#0b6675}
+*{box-sizing:border-box}
+::selection{background:rgba(14,124,140,.22)}
+:focus-visible{outline:2px solid #0e7c8c;outline-offset:2px}
+@keyframes popIn{from{opacity:0;transform:scale(.82) translateY(6px)}to{opacity:1;transform:none}}
+@keyframes riseFade{0%{opacity:0;transform:translateY(4px)}30%{opacity:1}100%{opacity:0;transform:translateY(-26px)}}
+@keyframes drawIn{from{stroke-dashoffset:900}to{stroke-dashoffset:0}}
+@keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(14,124,140,.35)}70%{box-shadow:0 0 0 12px rgba(14,124,140,0)}100%{box-shadow:0 0 0 0 rgba(14,124,140,0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#e9edf1;display:flex;flex-direction:column;align-items:center;gap:18px;padding:36px 20px 56px">
+
+<div style="width:100%;max-width:520px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+<span style="font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#0b6675">PA-thway</span>
+<span style="font-size:12px;color:#5b6875">Built by students, for students</span>
+</div>
+
+<x-import component-from-global-scope="{{ frameName }}" from="./ios-frame.jsx ./android-frame.jsx" dark="{{ false }}" hint-size="402px,874px">
+<div style="height:100%;display:flex;flex-direction:column;background:#f6f9fb;font-family:'Inter',system-ui,sans-serif;color:#16202e">
+
+<div style="flex-shrink:0;padding:60px 18px 10px;display:flex;align-items:center;gap:10px;background:#f6f9fb">
+<div style="flex:1;min-width:0">
+<div style="font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#6b7885">{{ chromeKicker }}</div>
+<div style="font-size:19px;font-weight:600;letter-spacing:-.02em;color:#16202e;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ chromeTitle }}</div>
+</div>
+<sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ goBack }}" style="height:34px;padding:0 12px;border-radius:8px;border:1px solid #dde3ea;background:transparent;color:#16202e;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;flex-shrink:0" style-hover="background:#eef2f6">Close</button>
+</sc-if>
+<sc-if value="{{ showAvatar }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ openProfile }}" style="width:34px;height:34px;border-radius:8px;background:#e3f2f4;border:1px solid #b6dbe0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#0b6675;flex-shrink:0;cursor:pointer;font-family:inherit" style-hover="background:#dbeef1">{{ initials }}</button>
+</sc-if>
+</div>
+
+<div style="flex:1;overflow:auto;padding:6px 18px 24px">
+
+<sc-if value="{{ setupOn }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="display:flex;gap:5px;margin-bottom:16px">
+<sc-for list="{{ setupDots }}" as="d" hint-placeholder-count="3">
+<div style="flex:1;height:3px;border-radius:2px;background:{{ d.color }}"></div>
+</sc-for>
+</div>
+
+<sc-if value="{{ setup1 }}" hint-placeholder-val="{{ true }}">
+<div>
+<div style="font-size:15px;font-weight:600;letter-spacing:-.015em">Who's studying?</div>
+<div style="margin-top:4px;font-size:11.5px;line-height:1.5;color:#5b6875">This stays on your phone. Nothing here is reported anywhere.</div>
+<div style="margin-top:16px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Name</div>
+<input value="{{ pName }}" onChange="{{ setName }}" placeholder="Reyes, M." style="margin-top:6px;width:100%;height:46px;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:0 13px;font-family:inherit;font-size:15px;color:#16202e" style-focus="border-color:#0e7c8c">
+<div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Class or cohort</div>
+<input value="{{ pKlass }}" onChange="{{ setKlass }}" placeholder="26-3" style="margin-top:6px;width:100%;height:46px;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:0 13px;font-family:inherit;font-size:15px;color:#16202e" style-focus="border-color:#0e7c8c">
+<div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Term</div>
+<input value="{{ pTerm }}" onChange="{{ setTerm }}" placeholder="Fall 2026" style="margin-top:6px;width:100%;height:46px;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:0 13px;font-family:inherit;font-size:15px;color:#16202e" style-focus="border-color:#0e7c8c">
+<button onClick="{{ setupNext }}" disabled="{{ setupNextDisabled }}" style="margin-top:20px;width:100%;height:48px;border-radius:11px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;opacity:{{ setupNextOpacity }}" style-hover="background:#dbeef1">Continue</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ setup2 }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font-size:15px;font-weight:600;letter-spacing:-.015em">Where are you in the program?</div>
+<div style="margin-top:4px;font-size:11.5px;line-height:1.5;color:#5b6875">This sets which blocks load. You can add blocks later as they open.</div>
+<sc-for list="{{ years }}" as="y" hint-placeholder-count="4">
+<button onClick="{{ y.onPick }}" style="margin-top:9px;width:100%;text-align:left;border-radius:12px;padding:14px;cursor:pointer;font-family:inherit;color:#16202e;border:1px solid {{ y.border }};background:{{ y.bg }}" style-hover="filter:brightness(.98)">
+<div style="font-size:14px;font-weight:600">{{ y.name }}</div>
+<div style="font-size:11px;color:#5b6875;margin-top:2px">{{ y.count }}</div>
+</button>
+</sc-for>
+<div style="margin-top:16px;display:flex;gap:8px">
+<button onClick="{{ setupBack }}" style="height:48px;padding:0 16px;border-radius:11px;border:1px solid #dde3ea;background:transparent;color:#5b6875;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#f2f6f8">Back</button>
+<button onClick="{{ setupNext }}" style="flex:1;height:48px;border-radius:11px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#dbeef1">Continue</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ setup3 }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font-size:15px;font-weight:600;letter-spacing:-.015em">Why did you start?</div>
+<div style="margin-top:4px;font-size:11.5px;line-height:1.5;color:#5b6875">Write it once. The app puts it back in front of you on exam mornings and after a bad set.</div>
+<textarea value="{{ whyDraft }}" onChange="{{ setWhyDraft }}" rows="6" placeholder="Because…" style="margin-top:12px;width:100%;border:1px solid #dde3ea;border-radius:12px;background:#ffffff;padding:13px;font-family:inherit;font-size:14px;line-height:1.5;color:#16202e;resize:none" style-focus="border-color:#0e7c8c"></textarea>
+<div style="margin-top:10px;font-size:11.5px;line-height:1.5;color:#5b6875;border-left:2px solid #cfe2e5;padding-left:10px">What went wrong once that you never want to be helpless for again?</div>
+<div style="margin-top:16px;display:flex;gap:8px">
+<button onClick="{{ setupBack }}" style="height:48px;padding:0 16px;border-radius:11px;border:1px solid #dde3ea;background:transparent;color:#5b6875;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#f2f6f8">Back</button>
+<button onClick="{{ finishSetup }}" style="flex:1;height:48px;border-radius:11px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#dbeef1">Start studying</button>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font-size:11.5px;line-height:1.55;color:#5b6875">Change any of this as you move through the program. Switching your year swaps which blocks load on Home.</div>
+<div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Name</div>
+<input value="{{ pName }}" onChange="{{ setName }}" style="margin-top:6px;width:100%;height:46px;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:0 13px;font-family:inherit;font-size:15px;color:#16202e" style-focus="border-color:#0e7c8c">
+<div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Class or cohort</div>
+<input value="{{ pKlass }}" onChange="{{ setKlass }}" style="margin-top:6px;width:100%;height:46px;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:0 13px;font-family:inherit;font-size:15px;color:#16202e" style-focus="border-color:#0e7c8c">
+<div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Term</div>
+<input value="{{ pTerm }}" onChange="{{ setTerm }}" style="margin-top:6px;width:100%;height:46px;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:0 13px;font-family:inherit;font-size:15px;color:#16202e" style-focus="border-color:#0e7c8c">
+<div style="margin-top:16px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Year in program</div>
+<div style="margin-top:7px;display:grid;grid-template-columns:1fr 1fr;gap:7px">
+<sc-for list="{{ years }}" as="y" hint-placeholder-count="4">
+<button onClick="{{ y.onPick }}" style="text-align:left;border-radius:11px;padding:11px;cursor:pointer;font-family:inherit;color:#16202e;border:1px solid {{ y.border }};background:{{ y.bg }}" style-hover="filter:brightness(.98)">
+<div style="font-size:13px;font-weight:600">{{ y.name }}</div>
+<div style="font-size:10px;color:#5b6875;margin-top:2px">{{ y.count }}</div>
+</button>
+</sc-for>
+</div>
+<button onClick="{{ closeProfile }}" style="margin-top:18px;width:100%;height:46px;border-radius:11px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#dbeef1">Done</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isLog }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="border-left:3px solid {{ logColor }};padding-left:11px">
+<div style="font-size:15px;font-weight:600;letter-spacing:-.015em">{{ logName }}</div>
+<div style="font-size:11px;color:#6b7885;margin-top:2px">{{ logWhen }}</div>
+</div>
+<div style="margin-top:16px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Score</div>
+<div style="margin-top:6px;display:flex;align-items:center;gap:9px">
+<input value="{{ logScore }}" onChange="{{ setLogScore }}" inputmode="numeric" placeholder="88" style="width:96px;height:52px;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:0 14px;font-family:inherit;font-size:22px;font-weight:600;color:#16202e" style-focus="border-color:#0e7c8c">
+<span style="font-size:18px;font-weight:600;color:#98a4b0">%</span>
+</div>
+<div style="margin-top:16px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#3d7a4d">What went well</div>
+<textarea value="{{ logWent }}" onChange="{{ setLogWent }}" rows="3" placeholder="What you could rebuild from scratch" style="margin-top:6px;width:100%;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:12px;font-family:inherit;font-size:13.5px;line-height:1.5;color:#16202e;resize:none" style-focus="border-color:#3d7a4d"></textarea>
+<div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#b3603a">What to fix</div>
+<textarea value="{{ logFix }}" onChange="{{ setLogFix }}" rows="3" placeholder="The topic that cost you points" style="margin-top:6px;width:100%;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:12px;font-family:inherit;font-size:13.5px;line-height:1.5;color:#16202e;resize:none" style-focus="border-color:#b3603a"></textarea>
+<div style="margin-top:9px;font-size:10.5px;line-height:1.5;color:#6b7885">Write it the same day, while you still remember which question it was.</div>
+<button onClick="{{ saveLog }}" style="margin-top:16px;width:100%;height:48px;border-radius:11px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#dbeef1">Save debrief</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<div>
+<div style="border:1px solid #dde3ea;border-radius:14px;padding:16px;background:linear-gradient(165deg,#ffffff,#f2f6f8)">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#5b6875">Boards readiness</span>
+<span style="font-size:22px;font-weight:600;color:#0b6675;font-variant-numeric:tabular-nums">{{ readiness }}%</span>
+</div>
+<div style="display:flex;gap:4px;margin-top:12px">
+<sc-for list="{{ readinessBars }}" as="b" hint-placeholder-count="5">
+<div style="flex:1;height:36px;border-radius:5px;background:#e4eaf0;position:relative;overflow:hidden">
+<div style="position:absolute;left:0;right:0;bottom:0;background:{{ b.color }};height:{{ b.h }}"></div>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;gap:4px;margin-top:6px">
+<sc-for list="{{ readinessBars }}" as="b" hint-placeholder-count="5">
+<div style="flex:1;text-align:center;font-size:8px;font-weight:600;letter-spacing:.06em;color:#6b7885">{{ b.abbr }}</div>
+</sc-for>
+</div>
+<div style="margin-top:12px;font-size:11px;line-height:1.5;color:#5b6875">Weakest block: <span style="color:#0b6675">{{ weakest }}</span>. Three labs queued below.</div>
+</div>
+
+<sc-if value="{{ hasExam }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ openSched }}" style="margin-top:10px;width:100%;text-align:left;border:1px solid {{ nextExamColor }};border-radius:12px;padding:13px;cursor:pointer;font-family:inherit;color:#16202e;display:flex;gap:11px;align-items:center;background:{{ nextExamTint }}" style-hover="filter:brightness(.98)">
+<i class="ph ph-calendar-dots" style="font-size:20px;color:{{ nextExamColor }}"></i>
+<div style="flex:1;min-width:0">
+<div style="font-size:13px;font-weight:600">{{ nextExam }} · {{ nextExamAway }}</div>
+<div style="font-size:11px;color:#5b6875;margin-top:2px">{{ nextExamWhen }}</div>
+</div>
+<i class="ph ph-caret-right" style="font-size:15px;color:#98a4b0"></i>
+</button>
+</sc-if>
+<sc-if value="{{ noExam }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ openSched }}" style="margin-top:10px;width:100%;text-align:left;border:1px dashed #a9b5c0;border-radius:12px;padding:13px;cursor:pointer;font-family:inherit;color:#16202e;display:flex;gap:11px;align-items:center;background:transparent" style-hover="background:#f2f6f8">
+<i class="ph ph-calendar-plus" style="font-size:20px;color:#0b6675"></i>
+<div style="flex:1;min-width:0">
+<div style="font-size:13px;font-weight:600">Add your schedule</div>
+<div style="font-size:11px;color:#5b6875;margin-top:2px">Import your class calendar or type in this week</div>
+</div>
+<i class="ph ph-caret-right" style="font-size:15px;color:#98a4b0"></i>
+</button>
+</sc-if>
+
+<sc-if value="{{ yearOne }}" hint-placeholder-val="{{ true }}">
+<div>
+<div style="margin-top:18px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Resume</div>
+<button onClick="{{ openPeptide }}" style="margin-top:8px;width:100%;text-align:left;border:1px solid #b6dbe0;border-radius:12px;padding:14px;background:#ffffff;cursor:pointer;font-family:inherit;color:#16202e;display:flex;gap:12px;align-items:center" style-hover="background:#ffffff">
+<div style="width:40px;height:40px;border-radius:9px;background:#e3f2f4;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ph ph-link-simple" style="font-size:20px;color:#0b6675"></i></div>
+<div style="flex:1;min-width:0">
+<div style="font-size:14px;font-weight:600;letter-spacing:-.01em">Peptide Bond Formation</div>
+<div style="font-size:11px;color:#5b6875;margin-top:2px">Biochemistry · Lecture 4 · 2 of 5 steps</div>
+</div>
+<i class="ph ph-caret-right" style="font-size:16px;color:#6b7885"></i>
+</button>
+
+<div style="margin-top:20px;display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Figures you've seen</span>
+<span style="font-size:10px;color:#98a4b0">pulled from your decks</span>
+</div>
+<div style="margin-top:8px;display:flex;gap:8px;overflow-x:auto;padding-bottom:4px">
+<button onClick="{{ openPeptide }}" style="flex:0 0 auto;width:138px;padding:0;border:0;background:transparent;cursor:pointer;font-family:inherit;text-align:left">
+<div style="width:138px;height:90px;border-radius:10px;overflow:hidden;border:1px solid #dde3ea;background:#f2f6f8"><image-slot id="fig-peptide" shape="rounded" radius="10" placeholder="Slide 12 · peptide bond"></image-slot></div>
+<div style="margin-top:5px;font-size:10.5px;font-weight:600;color:#6f63b8">Biochem · L4</div>
+<div style="font-size:10px;color:#6b7885">Amide linkage</div>
+</button>
+<button onClick="{{ openHeart }}" style="flex:0 0 auto;width:138px;padding:0;border:0;background:transparent;cursor:pointer;font-family:inherit;text-align:left">
+<div style="width:138px;height:90px;border-radius:10px;overflow:hidden;border:1px solid #dde3ea;background:#f2f6f8"><image-slot id="fig-ap" shape="rounded" radius="10" placeholder="Slide 22 · AP phases"></image-slot></div>
+<div style="margin-top:5px;font-size:10.5px;font-weight:600;color:#3a6fa8">A&amp;P II · L9</div>
+<div style="font-size:10px;color:#6b7885">Ventricular AP</div>
+</button>
+<button onClick="{{ openUpload }}" style="flex:0 0 auto;width:138px;padding:0;border:0;background:transparent;cursor:pointer;font-family:inherit;text-align:left">
+<div style="width:138px;height:90px;border-radius:10px;overflow:hidden;border:1px solid #dde3ea;background:#f2f6f8"><image-slot id="fig-carb" shape="rounded" radius="10" placeholder="Slide 9 · Haworth ring"></image-slot></div>
+<div style="margin-top:5px;font-size:10.5px;font-weight:600;color:#7d6a25">Biochem · L6</div>
+<div style="font-size:10px;color:#6b7885">Carbohydrates</div>
+</button>
+</div>
+
+</div>
+</sc-if>
+
+<sc-if value="{{ notYearOne }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:18px;border:1px dashed #b6c2cd;border-radius:12px;padding:16px;background:#f8fafb">
+<div style="font-size:12.5px;font-weight:600">No labs built for {{ yearLabel }} yet</div>
+<div style="margin-top:4px;font-size:11px;line-height:1.5;color:#5b6875">The playable models shipped with Year 1. Upload a lecture from any block below and the app builds the matching model for it.</div>
+</div>
+</sc-if>
+
+<div style="margin-top:20px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Course blocks</div>
+<div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<sc-for list="{{ courses }}" as="c" hint-placeholder-count="6">
+<button onClick="{{ c.onOpen }}" style="text-align:left;border:1px solid #dde3ea;border-radius:12px;padding:12px;background:#ffffff;cursor:pointer;font-family:inherit;color:#16202e;min-height:104px;display:flex;flex-direction:column;justify-content:space-between" style-hover="background:#f2f6f8;border-color:#a9b5c0">
+<div style="width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:{{ c.tint }}"><i class="{{ c.icon }}" style="font-size:18px;color:{{ c.color }}"></i></div>
+<div>
+<div style="font-size:12.5px;font-weight:600;line-height:1.25;letter-spacing:-.01em">{{ c.name }}</div>
+<div style="font-size:10px;color:#6b7885;margin-top:3px">{{ c.subline }}</div>
+<div style="height:4px;border-radius:2px;background:#e4eaf0;margin-top:7px;overflow:hidden"><div style="height:4px;background:{{ c.color }};width:{{ c.accW }}"></div></div>
+</div>
+</button>
+</sc-for>
+<button onClick="{{ openCatalog }}" style="text-align:left;border:1px dashed #b6c2cd;border-radius:12px;padding:12px;background:transparent;cursor:pointer;font-family:inherit;color:#16202e;min-height:104px;display:flex;flex-direction:column;justify-content:space-between" style-hover="border-color:#0e7c8c;background:#f0f8f9">
+<div style="width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#e6f3f5"><i class="ph ph-plus" style="font-size:18px;color:#0b6675"></i></div>
+<div>
+<div style="font-size:12.5px;font-weight:600;line-height:1.25;letter-spacing:-.01em">Add a block</div>
+<div style="font-size:10px;color:#6b7885;margin-top:3px">Pharm, path, clinical med</div>
+</div>
+</button>
+</div>
+
+<button onClick="{{ openUpload }}" style="margin-top:12px;width:100%;text-align:left;border:1px dashed #a9b5c0;border-radius:12px;padding:14px;background:transparent;cursor:pointer;font-family:inherit;color:#16202e;display:flex;gap:12px;align-items:center" style-hover="border-color:#0b6675;background:#f0f8f9">
+<i class="ph ph-upload-simple" style="font-size:20px;color:#0b6675"></i>
+<div style="flex:1">
+<div style="font-size:13px;font-weight:600">Turn today's lecture into a lab</div>
+<div style="font-size:11px;color:#5b6875;margin-top:2px">Drop the slide deck — get playable models</div>
+</div>
+</button>
+
+<div style="margin-top:22px;border-radius:14px;padding:16px;background:linear-gradient(165deg,#f4fafb,#eef4f6);border:1px solid #cfe2e5">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#0b6675">Why you started</span>
+<button onClick="{{ openWhy }}" style="background:transparent;border:0;padding:0;cursor:pointer;font-family:inherit;font-size:10.5px;font-weight:600;color:#0b6675" style-hover="opacity:.7">Edit</button>
+</div>
+<div style="margin-top:8px;font-size:14px;line-height:1.5;color:#16202e;text-wrap:pretty">{{ why }}</div>
+<div style="height:1px;background:#cfe2e5;margin:14px 0"></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3c4a58;text-wrap:pretty">{{ affirm }}</div>
+<button onClick="{{ nextAffirm }}" style="margin-top:10px;height:32px;padding:0 12px;border-radius:8px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px" style-hover="background:#dbeef1"><i class="ph ph-arrows-clockwise" style="font-size:13px"></i>Another</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isLabs }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font-size:11px;line-height:1.55;color:#5b6875;margin-bottom:14px">Every lab is a model you operate, not a card you flip. Get it wrong and the physiology shows you why.</div>
+<sc-if value="{{ notYearOne }}" hint-placeholder-val="{{ false }}">
+<div style="margin-bottom:12px;border:1px dashed #b6c2cd;border-radius:11px;padding:12px;background:#f8fafb;font-size:11px;line-height:1.5;color:#5b6875">These shipped with Year 1. Upload a {{ yearLabel }} lecture and the app builds models for your blocks.</div>
+</sc-if>
+<sc-for list="{{ labList }}" as="l" hint-placeholder-count="4">
+<button onClick="{{ l.onOpen }}" style="width:100%;text-align:left;border:1px solid #dde3ea;border-radius:12px;padding:14px;background:#ffffff;cursor:pointer;font-family:inherit;color:#16202e;display:flex;gap:12px;align-items:flex-start;margin-bottom:8px" style-hover="background:#f2f6f8;border-color:#a9b5c0">
+<div style="width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:{{ l.tint }}"><i class="{{ l.icon }}" style="font-size:18px;color:{{ l.color }}"></i></div>
+<div style="flex:1;min-width:0">
+<div style="font-size:13.5px;font-weight:600;letter-spacing:-.01em">{{ l.name }}</div>
+<div style="font-size:11px;color:#5b6875;margin-top:2px;line-height:1.4">{{ l.desc }}</div>
+<div style="margin-top:7px;display:flex;gap:5px;flex-wrap:wrap">
+<span style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 6px;border-radius:4px;background:{{ l.tint }};color:{{ l.color }}">{{ l.course }}</span>
+<span style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 6px;border-radius:4px;border:1px solid #dde3ea;color:#5b6875">{{ l.mode }}</span>
+</div>
+</div>
+</button>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isPeptide }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+<div style="flex:1;height:3px;border-radius:2px;background:#e4eaf0;overflow:hidden"><div style="height:3px;background:#0e7c8c;width:{{ pepProgress }}"></div></div>
+<span style="font-size:10px;font-weight:600;color:#5b6875;font-variant-numeric:tabular-nums">{{ pepAcc }}% acc</span>
+</div>
+
+<div style="font-size:13px;line-height:1.5;color:#16202e;font-weight:500">{{ pepPrompt }}</div>
+<div style="font-size:11px;line-height:1.5;color:#5b6875;margin-top:4px">{{ pepSub }}</div>
+
+<div style="margin-top:12px;display:flex;gap:10px;align-items:center;border:1px solid #dde3ea;border-radius:12px;background:#ffffff;padding:8px;box-shadow:0 1px 2px rgba(22,32,46,.05)">
+<div style="width:104px;height:68px;flex-shrink:0;border-radius:8px;overflow:hidden;background:#f2f6f8"><image-slot id="fig-pep-lab" shape="rounded" radius="8" placeholder="Slide 12"></image-slot></div>
+<div style="flex:1;min-width:0">
+<div style="font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#6f63b8">Lecture 4 · slide 12</div>
+<div style="font-size:11px;color:#5b6875;line-height:1.4;margin-top:3px">The figure your instructor showed. The model below is the same reaction, live.</div>
+</div>
+</div>
+
+<sc-if value="{{ pepStage1 }}" hint-placeholder-val="{{ true }}">
+<div>
+<div style="margin-top:16px;display:flex;gap:8px;align-items:stretch">
+<div onDragOver="{{ allowDrop }}" onDrop="{{ dropDonor }}" onClick="{{ tapDonor }}" style="flex:1;min-height:96px;border-radius:12px;border:1px dashed {{ donorBorder }};background:{{ donorBg }};padding:10px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-align:center">
+<div style="font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#6b7885">Glycine · C-terminus</div>
+<div style="font-size:17px;font-weight:600;color:#16202e;font-family:ui-monospace,Menlo,monospace">{{ donorText }}</div>
+<div style="font-size:10px;color:#5b6875">{{ donorHint }}</div>
+</div>
+<div style="width:26px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#a9b5c0">+</div>
+<div onDragOver="{{ allowDrop }}" onDrop="{{ dropAcceptor }}" onClick="{{ tapAcceptor }}" style="flex:1;min-height:96px;border-radius:12px;border:1px dashed {{ accBorder }};background:{{ accBg }};padding:10px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-align:center">
+<div style="font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#6b7885">Alanine · N-terminus</div>
+<div style="font-size:17px;font-weight:600;color:#16202e;font-family:ui-monospace,Menlo,monospace">{{ accText }}</div>
+<div style="font-size:10px;color:#5b6875">{{ accHint }}</div>
+</div>
+</div>
+
+<div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Functional groups — drag or tap</div>
+<div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<sc-for list="{{ chips }}" as="ch" hint-placeholder-count="4">
+<div draggable="{{ ch.draggable }}" onDragStart="{{ ch.onDragStart }}" onClick="{{ ch.onTap }}" style="border-radius:10px;padding:10px;background:#ffffff;cursor:grab;user-select:none;border:1px solid {{ ch.border }};opacity:{{ ch.opacity }}" style-hover="background:#f2f6f8">
+<div style="font-size:15px;font-weight:600;font-family:ui-monospace,Menlo,monospace;color:#16202e">{{ ch.label }}</div>
+<div style="font-size:10px;color:#5b6875;margin-top:2px">{{ ch.sub }}</div>
+</div>
+</sc-for>
+</div>
+
+<button onClick="{{ condense }}" disabled="{{ condenseDisabled }}" style="margin-top:14px;width:100%;height:44px;border-radius:10px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;opacity:{{ condenseOpacity }}" style-hover="background:#dbeef1">Run condensation</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ pepStage2 }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="margin-top:16px;border-radius:12px;border:1px solid #b6dbe0;background:linear-gradient(150deg,#f4fafb,#ffffff);padding:16px;position:relative;overflow:hidden;animation:popIn .35s ease both">
+<div style="position:absolute;top:10px;right:14px;font-size:12px;font-family:ui-monospace,Menlo,monospace;color:#0b6675;animation:riseFade 1.6s ease-in-out infinite">H₂O ↑</div>
+<div style="font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#6b7885">Dipeptide · Gly-Ala</div>
+<div style="margin-top:10px;font-size:15px;font-family:ui-monospace,Menlo,monospace;line-height:1.7;color:#16202e">H₃N⁺—CH₂—C(=O)<span style="color:#0b6675;border-bottom:2px solid #0e7c8c;padding-bottom:2px">—NH—</span>CH(CH₃)—COO⁻</div>
+<div style="margin-top:12px;font-size:11px;line-height:1.5;color:#5b6875">The amide C—N is planar and rigid — resonance gives it roughly 40% double-bond character, so rotation happens at the α-carbons instead.</div>
+</div>
+
+<div style="margin-top:16px;font-size:12.5px;font-weight:500">What leaves during the reaction?</div>
+<div style="margin-top:8px;display:flex;flex-direction:column;gap:7px">
+<sc-for list="{{ leavingOptions }}" as="o" hint-placeholder-count="4">
+<button onClick="{{ o.onPick }}" style="width:100%;text-align:left;border-radius:10px;padding:11px 12px;background:#ffffff;cursor:pointer;font-family:inherit;font-size:13px;color:#16202e;border:1px solid {{ o.border }};display:flex;align-items:center;gap:9px" style-hover="background:#f2f6f8">
+<span style="font-family:ui-monospace,Menlo,monospace;font-weight:600">{{ o.label }}</span>
+<span style="font-size:11px;color:#5b6875">{{ o.name }}</span>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ pepStage3 }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:18px;text-align:center;animation:slideUp .35s ease both">
+<div style="width:64px;height:64px;border-radius:50%;border:1px solid #b6dbe0;background:#e3f2f4;display:flex;align-items:center;justify-content:center;margin:0 auto"><i class="ph-fill ph-check" style="font-size:28px;color:#0b6675"></i></div>
+<div style="margin-top:14px;font-size:17px;font-weight:600">Lab complete</div>
+<div style="margin-top:4px;font-size:12px;color:#5b6875;line-height:1.5">{{ pepAcc }}% accuracy · {{ pepAttempts }} attempts<br>Next up: the same reaction run backwards — hydrolysis by trypsin.</div>
+<button onClick="{{ resetPeptide }}" style="margin-top:16px;height:42px;padding:0 20px;border-radius:10px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#dbeef1">Run it again</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ pepFeedbackOn }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:14px;border-radius:10px;padding:11px 12px;border:1px solid {{ pepFbBorder }};background:{{ pepFbBg }};animation:slideUp .25s ease both">
+<div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:{{ pepFbColor }}">{{ pepFbTitle }}</div>
+<div style="margin-top:4px;font-size:11.5px;line-height:1.5;color:#16202e">{{ pepFbBody }}</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isHeart }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font-size:11px;line-height:1.5;color:#5b6875">Fire the right current at the right phase. The trace only draws if the ion is right.</div>
+
+<div style="margin-top:12px;display:flex;gap:10px;align-items:center;border:1px solid #dde3ea;border-radius:12px;background:#ffffff;padding:8px;box-shadow:0 1px 2px rgba(22,32,46,.05)">
+<div style="width:104px;height:68px;flex-shrink:0;border-radius:8px;overflow:hidden;background:#f2f6f8"><image-slot id="fig-ap-lab" shape="rounded" radius="8" placeholder="Slide 22"></image-slot></div>
+<div style="flex:1;min-width:0">
+<div style="font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#3a6fa8">Lecture 9 · slide 22</div>
+<div style="font-size:11px;color:#5b6875;line-height:1.4;margin-top:3px">Compare your trace to the one from class as you build it.</div>
+</div>
+</div>
+
+<div style="margin-top:12px;border-radius:12px;border:1px solid #dde3ea;background:#ffffff;padding:12px 10px 8px">
+<svg viewBox="0 0 320 172" style="width:100%;height:auto;display:block">
+<line x1="0" y1="{{ zeroY }}" x2="320" y2="{{ zeroY }}" stroke="#ccd6de" stroke-width="1" stroke-dasharray="3 4"></line>
+<line x1="0" y1="{{ threshY }}" x2="320" y2="{{ threshY }}" stroke="#a9b5c0" stroke-width="1" stroke-dasharray="2 5"></line>
+<text x="4" y="{{ zeroLabelY }}" fill="#6b7885" font-size="8" font-family="Inter,sans-serif">0 mV</text>
+<text x="4" y="{{ threshLabelY }}" fill="#6b7885" font-size="8" font-family="Inter,sans-serif">−65 threshold</text>
+<polyline points="{{ curvePoints }}" fill="none" stroke="#0e7c8c" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></polyline>
+<circle cx="{{ headX }}" cy="{{ headY }}" r="4" fill="#0b6675"></circle>
+</svg>
+<div style="display:flex;justify-content:space-between;padding:0 2px;margin-top:2px">
+<sc-for list="{{ phaseTicks }}" as="p" hint-placeholder-count="5">
+<span style="font-size:8.5px;font-weight:600;letter-spacing:.05em;color:{{ p.color }}">{{ p.label }}</span>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{ heartArmed }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:14px">
+<div style="display:flex;justify-content:space-between;align-items:baseline">
+<span style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#6b7885">Stimulus</span>
+<span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ stimColor }}">{{ stim }} mV</span>
+</div>
+<input type="range" min="-90" max="-50" step="1" value="{{ stim }}" onChange="{{ setStim }}" onInput="{{ setStim }}" style="width:100%;margin-top:8px;accent-color:#0b6675;height:26px">
+<button onClick="{{ fireStim }}" style="margin-top:4px;width:100%;height:44px;border-radius:10px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#dbeef1">Deliver stimulus</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ heartFiring }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:14px">
+<div style="font-size:12.5px;font-weight:500;color:#16202e">{{ heartPrompt }}</div>
+<div style="margin-top:9px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<sc-for list="{{ ions }}" as="i" hint-placeholder-count="4">
+<button onClick="{{ i.onFire }}" style="border-radius:11px;padding:12px 10px;cursor:pointer;font-family:inherit;color:#16202e;text-align:left;border:1px solid {{ i.border }};background:{{ i.tint }}" style-hover="filter:brightness(.97)">
+<div style="font-size:16px;font-weight:600;font-family:ui-monospace,Menlo,monospace;color:{{ i.color }}">{{ i.symbol }}</div>
+<div style="font-size:10px;color:#5b6875;margin-top:2px;line-height:1.35">{{ i.sub }}</div>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ heartDone }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:16px;text-align:center;animation:slideUp .35s ease both">
+<div style="font-size:16px;font-weight:600">Full cycle complete</div>
+<div style="margin-top:4px;font-size:12px;color:#5b6875;line-height:1.5">{{ heartAcc }}% accuracy. Phase 4 is held by the Na⁺/K⁺ ATPase and I<sub>K1</sub> — the cell is now ready to fire again.</div>
+<button onClick="{{ resetHeart }}" style="margin-top:14px;height:42px;padding:0 20px;border-radius:10px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#dbeef1">Reset cell</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ heartFbOn }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:14px;border-radius:10px;padding:11px 12px;border:1px solid {{ heartFbBorder }};background:{{ heartFbBg }};animation:slideUp .25s ease both">
+<div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:{{ heartFbColor }}">{{ heartFbTitle }}</div>
+<div style="margin-top:4px;font-size:11.5px;line-height:1.5;color:#16202e">{{ heartFbBody }}</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isUpload }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font-size:11px;line-height:1.55;color:#5b6875">Add a lecture from any block. The app pulls the text out of the file, writes questions from what it finds, and proposes the interactive models to build next.</div>
+
+<div onDragOver="{{ onDragOver }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDrop }}" style="margin-top:14px;position:relative;border:1px dashed {{ dropBorder }};border-radius:14px;padding:26px 16px;text-align:center;background:{{ dropBg }};overflow:hidden">
+<i class="ph ph-file-arrow-up" style="font-size:30px;color:#0b6675"></i>
+<div style="margin-top:8px;font-size:13px;font-weight:600">Choose a file, or drop it here</div>
+<div style="margin-top:3px;font-size:11px;color:#6b7885">.pdf · .pptx · .docx · .txt — read on this device</div>
+<input type="file" ref="{{ fileRef }}" accept=".pdf,.pptx,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" onChange="{{ onPick }}" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;font-size:0;cursor:pointer">
+</div>
+<button onClick="{{ openPicker }}" style="margin-top:9px;width:100%;height:44px;border-radius:10px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#dbeef1">Browse files</button>
+
+<button onClick="{{ togglePaste }}" style="margin-top:10px;width:100%;background:transparent;border:0;padding:0;font-family:inherit;font-size:11.5px;font-weight:600;color:#0b6675;text-align:center;cursor:pointer;text-decoration:underline">{{ pasteToggleLabel }}</button>
+<sc-if value="{{ pasteOpen }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:10px;border:1px solid #dde3ea;border-radius:12px;background:#ffffff;padding:12px">
+<div style="font-size:11px;line-height:1.5;color:#5b6875">Copy the slide text or your notes in. Same pipeline as a file — the app writes questions from whatever you paste.</div>
+<textarea value="{{ pasteText }}" onChange="{{ setPasteText }}" rows="7" placeholder="Paste lecture text here…" style="margin-top:9px;width:100%;border:1px solid #dde3ea;border-radius:10px;background:#f8fafb;padding:10px;font-family:inherit;font-size:12px;line-height:1.5;color:#16202e;resize:vertical;box-sizing:border-box"></textarea>
+<div style="margin-top:6px;font-size:10.5px;color:{{ pasteCountColor }}">{{ pasteCount }}</div>
+<button onClick="{{ buildFromPaste }}" disabled="{{ pasteDisabled }}" style="margin-top:8px;width:100%;height:44px;border-radius:10px;border:1px solid #0e7c8c;background:#0e7c8c;color:#ffffff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;opacity:{{ pasteOpacity }}">Build questions from this text</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ upHasFile }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="margin-top:16px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">{{ upSectionLabel }}</div>
+<div style="margin-top:8px;border:1px solid #dde3ea;border-radius:12px;background:#ffffff;padding:13px;box-shadow:0 1px 2px rgba(22,32,46,.05)">
+<div style="display:flex;gap:10px;align-items:center">
+<i class="{{ upIcon }}" style="font-size:20px;color:#0b6675"></i>
+<div style="flex:1;min-width:0">
+<div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ upName }}</div>
+<div style="font-size:10.5px;color:{{ upStatusColor }};margin-top:1px">{{ uploadStatus }}</div>
+</div>
+</div>
+<sc-if value="{{ uploadBuilding }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:10px;height:3px;border-radius:2px;background:#e4eaf0;overflow:hidden"><div style="height:3px;background:#0e7c8c;width:{{ uploadPct }};transition:width .5s ease"></div></div>
+</sc-if>
+<sc-if value="{{ upFailed }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:10px;font-size:11px;line-height:1.5;color:#b3603a">{{ upError }}</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ upDone }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="margin-top:16px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Questions written from this file</div>
+<sc-for list="{{ upQPreview }}" as="q" hint-placeholder-count="3">
+<div style="margin-top:8px;border:1px solid #dde3ea;border-radius:12px;background:#ffffff;padding:13px;box-shadow:0 1px 2px rgba(22,32,46,.05);animation:slideUp .3s ease both">
+<div style="font-size:12.5px;font-weight:500;line-height:1.45;letter-spacing:-.01em;text-wrap:pretty">{{ q.q }}</div>
+<div style="margin-top:5px;font-size:10.5px;color:#6b7885">{{ q.meta }}</div>
+</div>
+</sc-for>
+<button onClick="{{ studyUpload }}" style="margin-top:12px;width:100%;height:44px;border-radius:10px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#dbeef1">{{ studyLabel }}</button>
+<button onClick="{{ shareUpload }}" style="margin-top:8px;width:100%;height:44px;border-radius:10px;border:1px solid #dde3ea;background:transparent;color:#5b6875;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px" style-hover="background:#f2f6f8"><i class="ph ph-users-three" style="font-size:16px"></i>{{ shareUploadLabel }}</button>
+
+<div style="margin-top:18px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Models proposed from this file</div>
+<sc-for list="{{ generated }}" as="g" hint-placeholder-count="3">
+<div style="margin-top:8px;border:1px solid #dde3ea;border-radius:12px;background:#ffffff;padding:13px;box-shadow:0 1px 2px rgba(22,32,46,.05);animation:slideUp .3s ease both">
+<div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline">
+<div style="font-size:13px;font-weight:600;letter-spacing:-.01em">{{ g.name }}</div>
+<span style="font-size:9px;font-weight:600;padding:3px 6px;border-radius:4px;background:#e3f2f4;color:#0b6675;white-space:nowrap">{{ g.slides }}</span>
+</div>
+<div style="font-size:11px;color:#5b6875;margin-top:4px;line-height:1.45">{{ g.desc }}</div>
+</div>
+</sc-for>
+<div style="margin-top:10px;font-size:10.5px;line-height:1.5;color:#6b7885">{{ upEngineNote }}</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isQuiz }}" hint-placeholder-val="{{ false }}">
+<div>
+<sc-if value="{{ quizRunning }}" hint-placeholder-val="{{ true }}">
+<div>
+<div style="display:flex;gap:4px">
+<sc-for list="{{ quizDots }}" as="d" hint-placeholder-count="4">
+<div style="flex:1;height:3px;border-radius:2px;background:{{ d.color }}"></div>
+</sc-for>
+</div>
+<div style="margin-top:14px;display:flex;gap:6px;align-items:center">
+<span style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:3px 6px;border-radius:4px;background:{{ qCourseTint }};color:{{ qCourseColor }}">{{ qCourse }}</span>
+<span style="font-size:10px;color:#6b7885">Due for review today</span>
+</div>
+<div style="margin-top:12px;font-size:16px;font-weight:500;line-height:1.4;letter-spacing:-.01em;text-wrap:pretty">{{ qText }}</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:7px">
+<sc-for list="{{ qOptions }}" as="o" hint-placeholder-count="4">
+<button onClick="{{ o.onPick }}" style="width:100%;text-align:left;border-radius:10px;padding:13px 12px;background:#ffffff;cursor:pointer;font-family:inherit;font-size:13px;line-height:1.4;color:#16202e;border:1px solid {{ o.border }}" style-hover="background:#f2f6f8">{{ o.text }}</button>
+</sc-for>
+</div>
+<sc-if value="{{ qAnswered }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="margin-top:14px;border-radius:10px;padding:11px 12px;border:1px solid {{ qFbBorder }};background:{{ qFbBg }};animation:slideUp .25s ease both">
+<div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:{{ qFbColor }}">{{ qFbTitle }}</div>
+<div style="margin-top:4px;font-size:11.5px;line-height:1.5;color:#16202e">{{ qRationale }}</div>
+<sc-if value="{{ qMissed }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:8px;padding-top:8px;border-top:1px solid #e4eaf0;font-size:11px;line-height:1.5;color:#5b6875;font-style:italic">{{ missLine }}</div>
+</sc-if>
+</div>
+<button onClick="{{ nextQuestion }}" style="margin-top:12px;width:100%;height:44px;border-radius:10px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#dbeef1">{{ nextLabel }}</button>
+</div>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ quizDone }}" hint-placeholder-val="{{ false }}">
+<div style="text-align:center;padding-top:30px;animation:slideUp .35s ease both">
+<div style="font-size:44px;font-weight:600;letter-spacing:-.03em;color:#0b6675;font-variant-numeric:tabular-nums">{{ quizScorePct }}%</div>
+<div style="margin-top:4px;font-size:12px;color:#5b6875">{{ quizScoreLine }}</div>
+<div style="margin-top:20px;border:1px solid #dde3ea;border-radius:12px;background:#ffffff;padding:14px;text-align:left">
+<div style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#6b7885">Scheduled again</div>
+<div style="margin-top:6px;font-size:12px;line-height:1.5;color:#16202e">Missed items return in 2 days. Correct items push to 9 days.</div>
+</div>
+<button onClick="{{ resetQuiz }}" style="margin-top:16px;height:42px;padding:0 20px;border-radius:10px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#dbeef1">Run another set</button>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSquad }}" hint-placeholder-val="{{ false }}">
+<div style="margin:-6px -18px -24px;padding:16px 18px 26px;min-height:100%;background:#161826;color:#e9e9ed;font-family:Inter,system-ui,sans-serif">
+<div style="display:flex;gap:6px;margin-bottom:14px">
+<button onClick="{{ showDuels }}" style="flex:1;height:34px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;color:{{ duelFg }};border:1px solid {{ duelBorder }};background:{{ duelBg }}">Duels</button>
+<button onClick="{{ showNotes }}" style="flex:1;height:34px;border-radius:9px;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;color:{{ notesFg }};border:1px solid {{ notesBorder }};background:{{ notesBg }}">Notes</button>
+<button onClick="{{ showPeople }}" style="flex:1;height:34px;border-radius:9px;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;color:{{ peopleFg }};border:1px solid {{ peopleBorder }};background:{{ peopleBg }}">People</button>
+<button onClick="{{ showStanding }}" style="flex:1;height:34px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;color:{{ standFg }};border:1px solid {{ standBorder }};background:{{ standBg }}">Standing</button>
+</div>
+
+<sc-if value="{{ squadNotes }}" hint-placeholder-val="{{ false }}">
+<div>
+<sc-if value="{{ noCohort }}" hint-placeholder-val="{{ true }}">
+<div>
+<div style="border:1px solid #5d5294;border-radius:12px;background:linear-gradient(165deg,#262835,#1d1f2c);padding:15px">
+<div style="font-size:14px;font-weight:600;letter-spacing:-.015em">Join your class cohort</div>
+<div style="margin-top:5px;font-size:11.5px;line-height:1.55;color:#a8a9b4;text-wrap:pretty">Everyone types the same code. Notes posted under it are visible to anyone who has it, along with the comment threads.</div>
+<input value="{{ joinCode }}" onChange="{{ setJoinCode }}" placeholder="26-3-K4PQ" style="margin-top:12px;width:100%;height:48px;border:1px solid rgba(233,233,237,.16);border-radius:11px;background:#232532;padding:0 13px;font-family:ui-monospace,Menlo,monospace;font-size:17px;font-weight:600;letter-spacing:.08em;color:#e9e9ed;box-sizing:border-box">
+<button onClick="{{ doJoin }}" style="margin-top:9px;width:100%;height:46px;border-radius:11px;border:1px solid #9184d9;background:#5d5294;color:#ffffff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;opacity:{{ joinOpacity }}">Join this cohort</button>
+<button onClick="{{ makeCode }}" style="margin-top:8px;width:100%;height:42px;border-radius:11px;border:1px solid rgba(233,233,237,.16);background:transparent;color:#b5abfc;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#1d1f2c">Generate a code for my class</button>
+</div>
+<div style="margin-top:10px;font-size:10.5px;line-height:1.55;color:#a8a9b4;text-wrap:pretty">Anyone who types this code is in — there are no passwords. Keep it to your class.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ inCohort }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="display:flex;gap:9px;align-items:center;border:1px solid #5d5294;border-radius:11px;background:#2b2741;padding:11px 12px">
+<i class="ph ph-users-three" style="font-size:19px;color:#b5abfc"></i>
+<div style="flex:1;min-width:0">
+<div style="font-size:13px;font-weight:600;font-family:ui-monospace,Menlo,monospace;letter-spacing:.06em">{{ cohortCode }}</div>
+<div style="font-size:10px;color:#a8a9b4;margin-top:1px">{{ cohortMeta }}</div>
+</div>
+<button onClick="{{ copyCode }}" style="flex-shrink:0;height:28px;padding:0 10px;border-radius:8px;border:1px solid #9184d9;background:transparent;color:#b5abfc;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer" style-hover="background:#2b2741">{{ copyLabel }}</button>
+<button onClick="{{ toggleNotifs }}" style="position:relative;flex-shrink:0;width:30px;height:30px;border-radius:9px;border:1px solid rgba(233,233,237,.16);background:#232532;color:#a8a9b4;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#1d1f2c">
+<i class="ph ph-bell" style="font-size:15px"></i>
+<sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ false }}">
+<span style="position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 3px;border-radius:8px;background:#b0564e;color:#ffffff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;box-sizing:border-box">{{ unreadLabel }}</span>
+</sc-if>
+</button>
+</div>
+
+<div style="margin-top:7px;display:flex;align-items:center;gap:6px;font-size:10px;color:{{ hubLiveColor }}">
+<span style="width:6px;height:6px;border-radius:50%;background:{{ hubLiveDot }};flex-shrink:0"></span>{{ hubLiveLabel }}
+</div>
+<sc-if value="{{ hubBroken }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:7px;border:1px solid #e2c6c2;border-radius:10px;background:#fbeceb;padding:9px 11px;font-size:10.5px;line-height:1.5;color:#8f3f38;text-wrap:pretty">{{ hubErrorText }}</div>
+</sc-if>
+
+<sc-if value="{{ notifOpen }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:9px;border:1px solid rgba(233,233,237,.16);border-radius:12px;background:#232532;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.45)">
+<div style="padding:9px 12px;border-bottom:1px solid rgba(233,233,237,.10);font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#a8a9b4">Activity</div>
+<sc-if value="{{ notifsEmpty }}" hint-placeholder-val="{{ true }}">
+<div style="padding:14px 12px;font-size:11px;line-height:1.5;color:#a8a9b4">Nothing yet. When someone comments on your notes or likes them, it shows here.</div>
+</sc-if>
+<sc-for list="{{ notifs }}" as="n" hint-placeholder-count="3">
+<button onClick="{{ n.onOpen }}" style="width:100%;text-align:left;border:0;border-top:1px solid rgba(233,233,237,.10);padding:10px 12px;cursor:pointer;font-family:inherit;display:flex;gap:9px;align-items:center;background:{{ n.bg }}" style-hover="filter:brightness(.985)">
+<i class="{{ n.icon }}" style="font-size:14px;flex-shrink:0;color:{{ n.color }}"></i>
+<div style="flex:1;min-width:0;font-size:11px;line-height:1.45;color:#e9e9ed;text-wrap:pretty">{{ n.text }}</div>
+<span style="flex-shrink:0;font-size:9.5px;color:#8b8c98">{{ n.when }}</span>
+</button>
+</sc-for>
+</div>
+</sc-if>
+
+<button onClick="{{ openPost }}" style="margin-top:10px;width:100%;height:46px;border-radius:11px;border:1px solid #9184d9;background:#5d5294;color:#ffffff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px"><i class="ph ph-note-pencil" style="font-size:17px"></i>Share a set of notes</button>
+
+<sc-if value="{{ notesEmpty }}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:12px;border:1px dashed rgba(233,233,237,.22);border-radius:12px;padding:20px;text-align:center;font-size:11.5px;line-height:1.55;color:#a8a9b4;text-wrap:pretty">No notes under this code yet. Post the first set — everyone who joins with {{ cohortCode }} sees it and can comment.</div>
+</sc-if>
+
+<sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
+<button onClick="{{ n.onOpen }}" style="margin-top:9px;width:100%;text-align:left;border:1px solid rgba(233,233,237,.16);border-radius:12px;background:#232532;padding:13px;cursor:pointer;font-family:inherit;color:#e9e9ed;box-shadow:0 1px 0 rgba(233,233,237,.04)" style-hover="background:#1d1f2c">
+<div style="display:flex;gap:9px;align-items:center">
+<div style="width:28px;height:28px;border-radius:8px;flex-shrink:0;background:{{ n.tint }};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:{{ n.color }}">{{ n.initials }}</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:11.5px;font-weight:600">{{ n.author }}</div>
+<div style="font-size:10px;color:#a8a9b4;margin-top:1px">{{ n.when }}</div>
+</div>
+<span style="flex-shrink:0;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 6px;border-radius:4px;background:{{ n.tint }};color:{{ n.color }}">{{ n.course }}</span>
+</div>
+<div style="margin-top:9px;font-size:13.5px;font-weight:600;letter-spacing:-.01em;text-wrap:pretty">{{ n.title }}</div>
+<div style="margin-top:4px;font-size:11.5px;line-height:1.5;color:#a8a9b4;text-wrap:pretty">{{ n.excerpt }}</div>
+<div style="margin-top:9px;display:flex;gap:8px;align-items:center;font-size:10.5px;color:#a8a9b4">
+<span onClick="{{ n.onLike }}" style="display:flex;align-items:center;gap:4px;height:26px;padding:0 9px;border-radius:13px;cursor:pointer;border:1px solid {{ n.likeBorder }};background:{{ n.likeBg }};color:{{ n.likeColor }};font-weight:600;transition:transform .12s ease" style-hover="transform:scale(1.06)"><i class="{{ n.likeIcon }}" style="font-size:13px"></i>{{ n.likeLabel }}</span>
+<span style="display:flex;align-items:center;gap:4px"><i class="ph ph-chat-circle" style="font-size:13px"></i>{{ n.commentLabel }}</span>
+<sc-if value="{{ n.hasFile }}" hint-placeholder-val="{{ false }}">
+<span style="display:flex;align-items:center;gap:4px;min-width:0"><i class="ph ph-paperclip" style="font-size:13px"></i>{{ n.file }}</span>
+</sc-if>
+</div>
+</button>
+</sc-for>
+
+<button onClick="{{ leaveCohort }}" style="margin-top:16px;width:100%;height:40px;border-radius:11px;border:1px solid rgba(233,233,237,.16);background:transparent;color:#a8a9b4;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#1d1f2c">Leave this cohort</button>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ squadPeople }}" hint-placeholder-val="{{ false }}">
+<div>
+<sc-if value="{{ peopleNoCohort }}" hint-placeholder-val="{{ true }}">
+<div style="border:1px dashed rgba(233,233,237,.22);border-radius:12px;padding:18px;font-size:11.5px;line-height:1.55;color:#a8a9b4;text-wrap:pretty">Join a cohort first — the Notes tab has the code box. Everyone who joins with the same code appears here.</div>
+</sc-if>
+<sc-if value="{{ peopleEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="border:1px dashed rgba(233,233,237,.22);border-radius:12px;padding:18px;font-size:11.5px;line-height:1.55;color:#a8a9b4;text-wrap:pretty">Only you so far. Send {{ cohortCode }} to your class — everyone who joins appears here with their standing, and you can challenge any of them.</div>
+</sc-if>
+<sc-if value="{{ peopleHasList }}" hint-placeholder-val="{{ false }}">
+<div>
+<sc-for list="{{ people }}" as="p" hint-placeholder-count="5">
+<div style="margin-top:8px;display:flex;gap:10px;align-items:center;border-radius:12px;padding:11px 12px;border:1px solid {{ p.border }};background:{{ p.bg }}">
+<span style="width:20px;flex-shrink:0;font-size:11px;font-weight:700;color:#8b8c98;font-variant-numeric:tabular-nums">{{ p.rank }}</span>
+<span style="font-size:20px;flex-shrink:0;line-height:1">{{ p.emoji }}</span>
+<div style="flex:1;min-width:0">
+<div style="font-size:12.5px;font-weight:600;text-wrap:pretty">{{ p.name }}</div>
+<div style="margin-top:2px;font-size:10px;color:#a8a9b4">{{ p.line }}</div>
+</div>
+<div style="flex-shrink:0;text-align:right">
+<div style="font-size:14px;font-weight:600;color:#b5abfc;font-variant-numeric:tabular-nums">{{ p.points }}</div>
+<div style="font-size:9px;color:#8b8c98">points</div>
+</div>
+<sc-if value="{{ p.canChallenge }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ p.onChallenge }}" style="flex-shrink:0;width:32px;height:32px;border-radius:9px;border:1px solid rgba(233,233,237,.16);background:#232532;color:#b5abfc;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#2b2741"><i class="ph ph-swords" style="font-size:15px"></i></button>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ squadDuels }}" hint-placeholder-val="{{ true }}">
+<div>
+<div style="border:1px solid rgba(233,233,237,.16);border-radius:12px;background:linear-gradient(165deg,#262835,#1d1f2c);padding:14px;display:flex;align-items:baseline;gap:10px">
+<span style="font-size:28px;font-weight:600;color:#b5abfc;font-variant-numeric:tabular-nums">{{ points }}</span>
+<span style="font-size:11px;color:#a8a9b4;flex:1;line-height:1.45">points banked. Miss a challenge and the sender takes the stake.</span>
+</div>
+
+<div style="margin-top:16px;display:flex;align-items:center;gap:7px">
+<span style="width:7px;height:7px;border-radius:50%;background:#b3603a;animation:pulseRing 2s infinite"></span>
+<span style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#a8a9b4">Incoming</span>
+</div>
+<div style="margin-top:8px;border:1px solid #5d5294;border-radius:12px;background:#232532;padding:13px;box-shadow:0 1px 0 rgba(233,233,237,.04)">
+<div style="display:flex;gap:10px;align-items:center">
+<div style="width:32px;height:32px;border-radius:9px;background:#423a6a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#b5abfc">{{ inboxInitials }}</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:12.5px;font-weight:600">{{ inboxFrom }} challenged you</div>
+<div style="font-size:10.5px;color:#a8a9b4;margin-top:1px">{{ inboxBlock }} · {{ inboxStake }} pts at stake</div>
+</div>
+</div>
+<div style="margin-top:11px;font-size:13.5px;font-weight:500;line-height:1.4;text-wrap:pretty">{{ inboxQ }}</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
+<sc-for list="{{ inboxOptions }}" as="o" hint-placeholder-count="4">
+<button onClick="{{ o.onPick }}" style="width:100%;text-align:left;border-radius:9px;padding:11px 12px;background:#232532;cursor:pointer;font-family:inherit;font-size:12.5px;line-height:1.4;color:#e9e9ed;border:1px solid {{ o.border }}" style-hover="background:#1d1f2c">{{ o.text }}</button>
+</sc-for>
+</div>
+<sc-if value="{{ inboxAnswered }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:11px;border-radius:9px;padding:10px 11px;border:1px solid {{ inboxResBorder }};background:{{ inboxResBg }};animation:slideUp .25s ease both">
+<div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:{{ inboxResColor }}">{{ inboxResultTitle }}</div>
+<div style="margin-top:4px;font-size:11.5px;line-height:1.5;color:#e9e9ed">{{ inboxResultBody }}</div>
+</div>
+</sc-if>
+</div>
+
+<div style="margin-top:18px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#a8a9b4">Sent</div>
+<sc-for list="{{ sent }}" as="x" hint-placeholder-count="2">
+<div style="margin-top:8px;border:1px solid rgba(233,233,237,.16);border-radius:12px;background:#232532;padding:12px;display:flex;gap:10px;align-items:center">
+<div style="width:30px;height:30px;border-radius:8px;background:#1d1f2c;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#a8a9b4">{{ x.initials }}</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:12.5px;font-weight:600">{{ x.to }}</div>
+<div style="font-size:10.5px;margin-top:1px;color:{{ x.color }}">{{ x.status }}</div>
+</div>
+<span style="font-size:11px;font-weight:600;color:#a8a9b4;font-variant-numeric:tabular-nums">{{ x.stake }}</span>
+</div>
+</sc-for>
+
+<button onClick="{{ openDuel }}" style="margin-top:14px;width:100%;height:46px;border-radius:10px;border:1px solid #9184d9;background:transparent;color:#b5abfc;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px" style-hover="background:#2b2741"><i class="ph ph-sword" style="font-size:17px"></i>Challenge a classmate</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ squadStanding }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="border:1px solid rgba(233,233,237,.16);border-radius:12px;background:linear-gradient(165deg,#262835,#1d1f2c);padding:14px;display:flex;gap:14px;align-items:center">
+<div style="font-size:30px;font-weight:600;color:#b5abfc;font-variant-numeric:tabular-nums">4<span style="font-size:14px;color:#a8a9b4">th</span></div>
+<div style="flex:1;font-size:11px;line-height:1.5;color:#a8a9b4">{{ standingLine }}</div>
+</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{ leaders }}" as="p" hint-placeholder-count="7">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:9px;background:{{ p.bg }}">
+<span style="width:18px;font-size:11px;font-weight:600;color:#a8a9b4;font-variant-numeric:tabular-nums">{{ p.rank }}</span>
+<div style="width:30px;height:30px;border-radius:7px;background:#423a6a;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#b5abfc">{{ p.initials }}</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:{{ p.fg }}">{{ p.name }}</div>
+<div style="font-size:10px;color:#a8a9b4">{{ p.sub }}</div>
+</div>
+<span style="font-size:13px;font-weight:600;color:{{ p.fg }};font-variant-numeric:tabular-nums">{{ p.pts }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isDuel }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#a8a9b4">{{ dStepLabel }}</div>
+
+<sc-if value="{{ dStep1 }}" hint-placeholder-val="{{ true }}">
+<div>
+<div style="margin-top:6px;font-size:13px;font-weight:500">Who are you going after?</div>
+<div style="font-size:11px;color:#a8a9b4;margin-top:3px;line-height:1.45">Only classmates who carry at least one of your blocks can be challenged.</div>
+<sc-for list="{{ friends }}" as="f" hint-placeholder-count="5">
+<button onClick="{{ f.onPick }}" style="margin-top:8px;width:100%;text-align:left;border:1px solid rgba(233,233,237,.16);border-radius:12px;background:#232532;padding:12px;cursor:pointer;font-family:inherit;color:#e9e9ed;display:flex;gap:10px;align-items:center" style-hover="background:#1d1f2c;border-color:#b5abfc">
+<div style="width:32px;height:32px;border-radius:9px;background:#423a6a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#b5abfc">{{ f.initials }}</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:12.5px;font-weight:600">{{ f.name }}</div>
+<div style="font-size:10.5px;color:#a8a9b4;margin-top:1px">{{ f.branch }} · {{ f.sharedLine }}</div>
+</div>
+<i class="ph ph-caret-right" style="font-size:15px;color:#8b8c98"></i>
+</button>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ dStep2 }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="margin-top:6px;font-size:13px;font-weight:500">Which block, against {{ dFriendName }}?</div>
+<sc-for list="{{ sharedBlocks }}" as="b" hint-placeholder-count="3">
+<button onClick="{{ b.onPick }}" style="margin-top:8px;width:100%;text-align:left;border-radius:12px;padding:13px;cursor:pointer;font-family:inherit;color:#e9e9ed;border:1px solid {{ b.color }};background:{{ b.tint }}" style-hover="filter:brightness(.98)">
+<div style="font-size:13px;font-weight:600;color:{{ b.color }}">{{ b.name }}</div>
+<div style="font-size:10.5px;color:#a8a9b4;margin-top:2px">{{ b.count }} you can send</div>
+</button>
+</sc-for>
+<button onClick="{{ dBack }}" style="margin-top:12px;height:36px;padding:0 14px;border-radius:9px;border:1px solid rgba(233,233,237,.16);background:transparent;color:#a8a9b4;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#1d1f2c">Back</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ dStep3 }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="margin-top:6px;font-size:13px;font-weight:500">Pick the question</div>
+<div style="font-size:11px;color:#a8a9b4;margin-top:3px">{{ dBlockName }} · to {{ dFriendName }}</div>
+<sc-for list="{{ dQuestions }}" as="q" hint-placeholder-count="3">
+<button onClick="{{ q.onPick }}" style="margin-top:8px;width:100%;text-align:left;border-radius:11px;padding:12px;cursor:pointer;font-family:inherit;font-size:12.5px;line-height:1.4;color:#e9e9ed;border:1px solid {{ q.border }};background:{{ q.bg }}" style-hover="filter:brightness(.98)">{{ q.text }}</button>
+</sc-for>
+<div style="margin-top:16px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#a8a9b4">Stake</div>
+<div style="margin-top:7px;display:flex;gap:7px">
+<sc-for list="{{ stakes }}" as="st" hint-placeholder-count="3">
+<button onClick="{{ st.onPick }}" style="flex:1;height:38px;border-radius:9px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;color:#e9e9ed;border:1px solid {{ st.border }};background:{{ st.bg }}">{{ st.label }}</button>
+</sc-for>
+</div>
+<div style="margin-top:7px;font-size:10.5px;color:#a8a9b4;line-height:1.45">Miss it and they lose the stake to you. Get it right and they take 10 back off you.</div>
+<div style="margin-top:14px;display:flex;gap:8px">
+<button onClick="{{ dBack }}" style="height:46px;padding:0 16px;border-radius:10px;border:1px solid rgba(233,233,237,.16);background:transparent;color:#a8a9b4;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#1d1f2c">Back</button>
+<button onClick="{{ dSend }}" style="flex:1;height:46px;border-radius:10px;border:1px solid #9184d9;background:transparent;color:#b5abfc;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;opacity:{{ dSendOpacity }}" style-hover="background:#2b2741">{{ dSendLabel }}</button>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isWhy }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font-size:12px;line-height:1.6;color:#a8a9b4;text-wrap:pretty">Write it in your own words. It shows on your home screen, and the app puts it back in front of you on exam mornings and after a bad set.</div>
+<textarea value="{{ whyDraft }}" onChange="{{ setWhyDraft }}" rows="6" style="margin-top:12px;width:100%;border:1px solid rgba(233,233,237,.16);border-radius:12px;background:#232532;padding:13px;font-family:inherit;font-size:14px;line-height:1.5;color:#e9e9ed;resize:none" style-focus="border-color:#b5abfc"></textarea>
+<div style="margin-top:10px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#a8a9b4">Prompts, if you're stuck</div>
+<div style="margin-top:7px;display:flex;flex-direction:column;gap:6px">
+<div style="font-size:11.5px;line-height:1.5;color:#a8a9b4;border-left:2px solid #cfe2e5;padding-left:10px">Who were you taking care of before you applied?</div>
+<div style="font-size:11.5px;line-height:1.5;color:#a8a9b4;border-left:2px solid #cfe2e5;padding-left:10px">What went wrong once that you never want to be helpless for again?</div>
+<div style="font-size:11.5px;line-height:1.5;color:#a8a9b4;border-left:2px solid #cfe2e5;padding-left:10px">Who is watching you do this?</div>
+</div>
+<button onClick="{{ saveWhy }}" style="margin-top:16px;width:100%;height:46px;border-radius:10px;border:1px solid #9184d9;background:transparent;color:#b5abfc;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#2b2741">Save it</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isPost }}" hint-placeholder-val="{{ false }}">
+<div style="margin:-6px -18px -24px;padding:16px 18px 26px;min-height:100%;background:#161826;color:#e9e9ed;font-family:Inter,system-ui,sans-serif">
+<div style="font-size:11.5px;line-height:1.55;color:#a8a9b4;text-wrap:pretty">Anyone holding your cohort code can read this and comment on it. Write it the way you would explain it to someone who missed the lecture.</div>
+
+<div style="margin-top:16px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#a8a9b4">Title</div>
+<input value="{{ pTitle }}" onChange="{{ setPTitle }}" placeholder="Acid-base compensation, cleaned up" style="margin-top:6px;width:100%;height:46px;border:1px solid rgba(233,233,237,.16);border-radius:11px;background:#232532;padding:0 13px;font-family:inherit;font-size:14px;color:#e9e9ed;box-sizing:border-box">
+
+<div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#a8a9b4">Block</div>
+<div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap">
+<sc-for list="{{ pCourses }}" as="c" hint-placeholder-count="4">
+<button onClick="{{ c.onPick }}" style="height:34px;padding:0 11px;border-radius:9px;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.name }}</button>
+</sc-for>
+</div>
+
+<div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#a8a9b4">The notes</div>
+<textarea value="{{ pBody }}" onChange="{{ setPBody }}" rows="10" placeholder="What the lecture actually said, in your words…" style="margin-top:6px;width:100%;border:1px solid rgba(233,233,237,.16);border-radius:12px;background:#232532;padding:12px;font-family:inherit;font-size:13px;line-height:1.55;color:#e9e9ed;resize:vertical;box-sizing:border-box"></textarea>
+
+<sc-if value="{{ canAttach }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ toggleAttach }}" style="margin-top:12px;width:100%;text-align:left;border:1px solid rgba(233,233,237,.16);border-radius:12px;background:#232532;padding:12px;cursor:pointer;font-family:inherit;color:#e9e9ed;display:flex;gap:11px;align-items:center" style-hover="background:#1d1f2c">
+<i class="ph ph-paperclip" style="font-size:18px;color:#b5abfc"></i>
+<div style="flex:1;min-width:0;font-size:11.5px;line-height:1.45">{{ attachLabel }}</div>
+<span style="width:38px;height:22px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;padding:2px;justify-content:{{ attachKnob }};background:{{ attachTrack }};transition:background .2s ease">
+<span style="width:18px;height:18px;border-radius:50%;background:#232532;box-shadow:0 1px 2px rgba(0,0,0,.5)"></span>
+</span>
+</button>
+</sc-if>
+
+<button onClick="{{ savePost }}" style="margin-top:18px;width:100%;height:48px;border-radius:11px;border:1px solid #9184d9;background:#5d5294;color:#ffffff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;opacity:{{ postOpacity }}">{{ postHeading }}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isNote }}" hint-placeholder-val="{{ false }}">
+<div style="margin:-6px -18px -24px;padding:16px 18px 26px;min-height:100%;background:#161826;color:#e9e9ed;font-family:Inter,system-ui,sans-serif">
+<div style="display:flex;gap:9px;align-items:center">
+<div style="width:32px;height:32px;border-radius:9px;flex-shrink:0;background:{{ noteTint }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:{{ noteColor }}">{{ noteInitials }}</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:12.5px;font-weight:600">{{ noteAuthor }}</div>
+<div style="font-size:10.5px;color:#a8a9b4;margin-top:1px">{{ noteCourse }}</div>
+</div>
+</div>
+
+<div style="margin-top:12px;border:1px solid rgba(233,233,237,.16);border-radius:12px;background:#232532;padding:14px;box-shadow:0 1px 0 rgba(233,233,237,.04)">
+<div style="font-size:13px;line-height:1.6;color:#e9e9ed;white-space:pre-wrap;text-wrap:pretty">{{ noteBody }}</div>
+<sc-if value="{{ noteHasFile }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:11px;padding-top:11px;border-top:1px solid rgba(233,233,237,.12);display:flex;gap:7px;align-items:center;font-size:10.5px;color:#a8a9b4"><i class="ph ph-paperclip" style="font-size:14px"></i>{{ noteFile }}</div>
+</sc-if>
+</div>
+
+<sc-if value="{{ noteHasQs }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ studyNote }}" style="margin-top:9px;width:100%;height:44px;border-radius:10px;border:1px solid #9184d9;background:transparent;color:#b5abfc;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer" style-hover="background:#2b2741">{{ noteQLabel }}</button>
+</sc-if>
+<button onClick="{{ challengeFromNote }}" style="margin-top:8px;width:100%;height:44px;border-radius:10px;border:1px solid rgba(233,233,237,.16);background:transparent;color:#a8a9b4;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer" style-hover="background:#1d1f2c">Send a challenge on this block</button>
+
+<div style="margin-top:20px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#a8a9b4">Comments</div>
+<sc-if value="{{ noCommentsYet }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:8px;font-size:11.5px;line-height:1.5;color:#a8a9b4">Nothing yet. Correct it, add what was missed, or ask the question you got stuck on.</div>
+</sc-if>
+<sc-for list="{{ noteComments }}" as="c" hint-placeholder-count="2">
+<div style="margin-top:9px;border:1px solid rgba(233,233,237,.12);border-radius:11px;background:#1d1f2c;padding:11px 12px">
+<div style="display:flex;gap:8px;align-items:center">
+<div style="width:24px;height:24px;border-radius:7px;flex-shrink:0;background:#423a6a;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:600;color:#b5abfc">{{ c.initials }}</div>
+<span style="font-size:11.5px;font-weight:600">{{ c.author }}</span>
+<span style="font-size:10px;color:#8b8c98">{{ c.when }}</span>
+</div>
+<div style="margin-top:7px;font-size:12px;line-height:1.55;color:#e9e9ed;white-space:pre-wrap;text-wrap:pretty">{{ c.text }}</div>
+</div>
+</sc-for>
+
+<textarea value="{{ cdraft }}" onChange="{{ setCdraft }}" rows="3" placeholder="Add a comment…" style="margin-top:12px;width:100%;border:1px solid rgba(233,233,237,.16);border-radius:12px;background:#232532;padding:11px;font-family:inherit;font-size:12.5px;line-height:1.5;color:#e9e9ed;resize:vertical;box-sizing:border-box"></textarea>
+<button onClick="{{ postComment }}" style="margin-top:8px;width:100%;height:44px;border-radius:11px;border:1px solid #9184d9;background:#5d5294;color:#ffffff;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;opacity:{{ commentOpacity }}">Post comment</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSedit }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font-size:11.5px;line-height:1.55;color:#5b6875">Edit what the import got wrong, or add a block it missed. This is your copy — nothing is sent anywhere.</div>
+
+<div style="margin-top:16px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">What is it</div>
+<input value="{{ sedName }}" onChange="{{ setSedName }}" placeholder="A&amp;P I — Cardiac cycle" style="margin-top:6px;width:100%;height:46px;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:0 13px;font-family:inherit;font-size:14px;color:#16202e;box-sizing:border-box">
+
+<div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Kind</div>
+<div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap">
+<sc-for list="{{ sedKinds }}" as="k" hint-placeholder-count="5">
+<button onClick="{{ k.onPick }}" style="flex:1;min-width:62px;height:38px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border:1px solid {{ k.border }};background:{{ k.bg }};color:{{ k.fg }}">{{ k.label }}</button>
+</sc-for>
+</div>
+
+<div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Date</div>
+<input type="date" value="{{ sedDate }}" onChange="{{ setSedDate }}" style="margin-top:6px;display:block;width:auto;max-width:100%;min-width:0;height:46px;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:0 13px;font-family:inherit;font-size:14px;color:#16202e">
+<div style="margin-top:4px;font-size:10.5px;color:#6b7885">{{ sedDayLabel }}</div>
+
+<div style="margin-top:14px;display:flex;gap:8px">
+<div style="flex:1">
+<div style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Start</div>
+<input value="{{ sedStart }}" onChange="{{ setSedStart }}" inputmode="numeric" placeholder="0800" style="margin-top:6px;width:100%;height:46px;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:0 13px;font-family:inherit;font-size:14px;color:#16202e;box-sizing:border-box">
+</div>
+<div style="flex:1">
+<div style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">End</div>
+<input value="{{ sedEnd }}" onChange="{{ setSedEnd }}" inputmode="numeric" placeholder="0950" style="margin-top:6px;width:100%;height:46px;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:0 13px;font-family:inherit;font-size:14px;color:#16202e;box-sizing:border-box">
+</div>
+</div>
+
+<div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Room</div>
+<input value="{{ sedRoom }}" onChange="{{ setSedRoom }}" placeholder="Rm 3201" style="margin-top:6px;width:100%;height:46px;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:0 13px;font-family:inherit;font-size:14px;color:#16202e;box-sizing:border-box">
+
+<button onClick="{{ saveSed }}" style="margin-top:20px;width:100%;height:48px;border-radius:11px;border:1px solid #0e7c8c;background:#0e7c8c;color:#ffffff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;opacity:{{ sedSaveOpacity }}">{{ sedSaveLabel }}</button>
+<button onClick="{{ cancelSed }}" style="margin-top:9px;width:100%;height:44px;border-radius:11px;border:1px solid #dde3ea;background:transparent;color:#5b6875;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer" style-hover="background:#f2f6f8">Cancel</button>
+<sc-if value="{{ sedExisting }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ deleteSed }}" style="margin-top:9px;width:100%;height:44px;border-radius:11px;border:1px solid #e2c6c2;background:transparent;color:#b0564e;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer" style-hover="background:#fbeceb">Remove from schedule</button>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSched }}" hint-placeholder-val="{{ false }}">
+<div>
+<div onDragOver="{{ onDragOver }}" onDrop="{{ onSchedDrop }}" style="position:relative;display:flex;gap:9px;align-items:center;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:10px 11px;overflow:hidden">
+<i class="{{ schedIcon }}" style="font-size:19px;color:{{ schedIconColor }}"></i>
+<div style="flex:1;min-width:0">
+<div style="font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ schedFile }}</div>
+<div style="font-size:10px;color:#6b7885;margin-top:1px">{{ schedMeta }}</div>
+</div>
+<span style="font-size:10.5px;font-weight:600;color:#0b6675;flex-shrink:0">Import</span>
+<input type="file" ref="{{ schedRef }}" accept=".xlsx,.xls,.csv,.tsv,.ics,.txt" onChange="{{ onSchedPick }}" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;font-size:0;cursor:pointer">
+</div>
+<sc-if value="{{ schedLoading }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:7px;font-size:10.5px;color:#0b6675">Reading your schedule…</div>
+</sc-if>
+<sc-if value="{{ schedFailed }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:7px;font-size:10.5px;line-height:1.5;color:#b3603a">{{ schedError }}</div>
+</sc-if>
+
+<sc-if value="{{ hasExam }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:12px;border:1px solid {{ nextExamColor }};border-radius:12px;padding:14px;background:{{ nextExamTint }}">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:{{ nextExamColor }}">Next exam</span>
+<span style="font-size:11px;font-weight:600;color:{{ nextExamColor }}">{{ nextExamAway }}</span>
+</div>
+<div style="margin-top:6px;font-size:17px;font-weight:600;letter-spacing:-.015em">{{ nextExam }}</div>
+<div style="margin-top:2px;font-size:11.5px;color:#5b6875">{{ nextExamWhen }}</div>
+<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(179,96,58,.25);font-size:11.5px;line-height:1.5;color:#3c4a58;text-wrap:pretty">{{ affirm }}</div>
+</div>
+</sc-if>
+
+<div style="margin-top:14px;display:flex;gap:6px;align-items:center">
+<button onClick="{{ prevWeek }}" style="width:32px;height:32px;flex-shrink:0;border-radius:9px;border:1px solid #dde3ea;background:#ffffff;color:#5b6875;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#f2f6f8"><i class="ph ph-caret-left" style="font-size:14px"></i></button>
+<button onClick="{{ thisWeek }}" style="flex:1;height:32px;border-radius:9px;border:1px solid #dde3ea;background:#ffffff;font-family:inherit;font-size:11px;font-weight:600;color:#16202e;cursor:pointer" style-hover="background:#f2f6f8">{{ weekLabel }}</button>
+<button onClick="{{ nextWeek }}" style="width:32px;height:32px;flex-shrink:0;border-radius:9px;border:1px solid #dde3ea;background:#ffffff;color:#5b6875;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#f2f6f8"><i class="ph ph-caret-right" style="font-size:14px"></i></button>
+</div>
+
+<div style="margin-top:8px;display:flex;gap:5px">
+<sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="5">
+<button onClick="{{ d.onPick }}" style="flex:1;padding:8px 0 7px;border-radius:10px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid {{ d.border }};background:{{ d.bg }};color:{{ d.fg }}">
+<span style="font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.75">{{ d.d }}</span>
+<span style="font-size:15px;font-weight:600;font-variant-numeric:tabular-nums">{{ d.n }}</span>
+<span style="display:flex;gap:3px;height:5px;align-items:center">
+<sc-if value="{{ d.hasExam }}" hint-placeholder-val="{{ false }}"><span style="width:5px;height:5px;border-radius:50%;background:{{ d.examDot }}"></span></sc-if>
+<sc-if value="{{ d.hasLab }}" hint-placeholder-val="{{ false }}"><span style="width:5px;height:5px;border-radius:50%;background:{{ d.labDot }}"></span></sc-if>
+</span>
+</button>
+</sc-for>
+</div>
+
+<sc-if value="{{ gearOn }}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:12px;display:flex;gap:10px;align-items:center;border-radius:11px;padding:11px 12px;border:1px solid {{ gearColor }};background:{{ gearTint }}">
+<i class="{{ gearIcon }}" style="font-size:19px;color:{{ gearColor }}"></i>
+<div style="flex:1;min-width:0">
+<div style="font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:{{ gearColor }}">Wear</div>
+<div style="font-size:11.5px;line-height:1.4;color:#16202e;margin-top:2px">{{ gearText }}</div>
+</div>
+</div>
+</sc-if>
+
+<div style="margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+<div style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">{{ dayHeading }}</div>
+<button onClick="{{ addToDay }}" style="height:28px;padding:0 10px;border-radius:8px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px" style-hover="background:#dbeef1"><i class="ph ph-plus" style="font-size:12px"></i>Add</button>
+</div>
+<sc-if value="{{ dayEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:8px;border:1px dashed #c8d2db;border-radius:11px;padding:18px;text-align:center;font-size:12px;line-height:1.5;color:#6b7885">{{ dayNote }}</div>
+</sc-if>
+<sc-for list="{{ dayItems }}" as="i" hint-placeholder-count="5">
+<button onClick="{{ i.onEdit }}" style="margin-top:7px;width:100%;padding:0;border:0;background:transparent;cursor:pointer;font-family:inherit;text-align:left;display:flex;gap:10px;align-items:stretch">
+<div style="width:42px;flex-shrink:0;font-size:11px;font-weight:600;color:#98a4b0;font-variant-numeric:tabular-nums;padding-top:11px">{{ i.t }}</div>
+<div style="width:3px;border-radius:2px;flex-shrink:0;background:{{ i.color }}"></div>
+<div style="flex:1;min-width:0;border-radius:10px;padding:10px 12px;background:{{ i.tint }}">
+<div style="display:flex;align-items:center;gap:7px">
+<span style="font-size:12.5px;font-weight:600;color:{{ i.muted }};text-wrap:pretty">{{ i.name }}</span>
+<sc-if value="{{ i.showBadge }}" hint-placeholder-val="{{ false }}">
+<span style="font-size:8.5px;font-weight:700;letter-spacing:.1em;padding:2px 5px;border-radius:3px;color:#ffffff;background:{{ i.color }}">{{ i.badge }}</span>
+</sc-if>
+</div>
+<sc-if value="{{ i.hasSub }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:2px;font-size:10.5px;color:#6b7885">{{ i.sub }}</div>
+</sc-if>
+</div>
+</button>
+</sc-for>
+
+<div style="margin-top:20px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Reminders</div>
+<sc-for list="{{ rules }}" as="r" hint-placeholder-count="4">
+<button onClick="{{ r.onToggle }}" style="margin-top:8px;width:100%;text-align:left;border:1px solid #dde3ea;border-radius:12px;background:#ffffff;padding:12px;cursor:pointer;font-family:inherit;color:#16202e;display:flex;gap:11px;align-items:center" style-hover="background:#f2f6f8">
+<i class="{{ r.icon }}" style="font-size:19px;color:{{ r.iconColor }}"></i>
+<div style="flex:1;min-width:0">
+<div style="font-size:12.5px;font-weight:600">{{ r.label }}</div>
+<div style="font-size:10.5px;color:#6b7885;margin-top:2px;line-height:1.4">{{ r.detail }}</div>
+</div>
+<span style="width:38px;height:22px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;padding:2px;justify-content:{{ r.knob }};background:{{ r.track }};transition:background .2s ease">
+<span style="width:18px;height:18px;border-radius:50%;background:#ffffff;box-shadow:0 1px 2px rgba(22,32,46,.25)"></span>
+</span>
+</button>
+</sc-for>
+
+<div style="margin-top:20px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Exams ahead</div>
+<sc-if value="{{ noExam }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:8px;border:1px dashed #c8d2db;border-radius:11px;padding:16px;font-size:11.5px;line-height:1.5;color:#6b7885;text-wrap:pretty">Anything on your schedule with “exam”, “quiz” or “practical” in the name shows up here with a countdown. Import your calendar, or add one with the Add button above.</div>
+</sc-if>
+<sc-for list="{{ exams }}" as="e" hint-placeholder-count="6">
+<div style="margin-top:7px;display:flex;gap:10px;align-items:center;border:1px solid #dde3ea;border-radius:11px;background:#ffffff;padding:11px 12px">
+<span style="width:4px;height:26px;border-radius:2px;flex-shrink:0;background:{{ e.color }}"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:12.5px;font-weight:600">{{ e.name }}</div>
+<div style="font-size:10.5px;color:#6b7885;margin-top:1px">{{ e.when }} · {{ e.away }}</div>
+</div>
+<button onClick="{{ e.onLog }}" style="flex-shrink:0;height:28px;padding:0 11px;border-radius:8px;background:transparent;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;border:1px solid {{ e.color }};color:{{ e.color }}" style-hover="background:#f2f6f8">{{ e.scoreLabel }}</button>
+</div>
+</sc-for>
+
+<sc-if value="{{ hasLogs }}" hint-placeholder-val="{{ true }}">
+<div>
+<div style="margin-top:22px;display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Debriefs</span>
+<span style="font-size:10px;color:#98a4b0">what you said the day of</span>
+</div>
+<sc-for list="{{ logs }}" as="l" hint-placeholder-count="1">
+<button onClick="{{ l.onOpen }}" style="margin-top:8px;width:100%;text-align:left;border:1px solid #dde3ea;border-radius:12px;background:#ffffff;padding:13px;cursor:pointer;font-family:inherit;color:#16202e" style-hover="background:#f2f6f8">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:44px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:{{ l.tint }};font-size:15px;font-weight:600;color:{{ l.color }};font-variant-numeric:tabular-nums">{{ l.score }}</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:12.5px;font-weight:600">{{ l.name }}</div>
+<div style="font-size:10.5px;color:#6b7885;margin-top:1px">{{ l.when }}</div>
+</div>
+</div>
+<div style="margin-top:10px;display:flex;gap:7px;align-items:flex-start">
+<span style="font-size:9px;font-weight:700;letter-spacing:.08em;padding:2px 5px;border-radius:3px;background:#eaf2ec;color:#3d7a4d;flex-shrink:0;margin-top:1px">WELL</span>
+<span style="font-size:11px;line-height:1.45;color:#3c4a58">{{ l.went }}</span>
+</div>
+<div style="margin-top:6px;display:flex;gap:7px;align-items:flex-start">
+<span style="font-size:9px;font-weight:700;letter-spacing:.08em;padding:2px 5px;border-radius:3px;background:#f7ebe8;color:#b3603a;flex-shrink:0;margin-top:1px">FIX</span>
+<span style="font-size:11px;line-height:1.45;color:#3c4a58">{{ l.fix }}</span>
+</div>
+</button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isCatalog }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font-size:11px;line-height:1.55;color:#5b6875">Blocks unlock as the program moves. Add one and its labs, figures and review items join your rotation — nothing is deleted when you switch it back off.</div>
+<sc-for list="{{ catalog }}" as="c" hint-placeholder-count="5">
+<div style="margin-top:9px;border:1px solid #dde3ea;border-radius:12px;background:#ffffff;padding:12px;display:flex;gap:11px;align-items:flex-start;box-shadow:0 1px 2px rgba(22,32,46,.05)">
+<div style="width:34px;height:34px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:{{ c.tint }}"><i class="{{ c.icon }}" style="font-size:18px;color:{{ c.color }}"></i></div>
+<div style="flex:1;min-width:0">
+<div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap">
+<span style="font-size:13px;font-weight:600;letter-spacing:-.01em">{{ c.name }}</span>
+<span style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:4px;background:{{ c.tint }};color:{{ c.color }}">{{ c.term }}</span>
+</div>
+<div style="font-size:11px;color:#5b6875;margin-top:3px;line-height:1.45">{{ c.note }}</div>
+<div style="font-size:10px;color:#98a4b0;margin-top:3px">{{ c.labs }} labs ready</div>
+</div>
+<button onClick="{{ c.onAdd }}" style="flex-shrink:0;height:30px;padding:0 12px;border-radius:8px;background:transparent;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;border:1px solid {{ c.addBorder }};color:{{ c.addColor }}" style-hover="background:#f2f6f8">{{ c.addLabel }}</button>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+</div>
+
+<sc-if value="{{ showTabs }}" hint-placeholder-val="{{ true }}">
+<div style="flex-shrink:0;border-top:1px solid #dde3ea;background:#ffffff;display:flex;padding:8px 6px 30px">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+<button onClick="{{ t.onGo }}" style="flex:1;background:transparent;border:0;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:{{ t.color }};position:relative">
+<sc-if value="{{ t.dot }}" hint-placeholder-val="{{ false }}">
+<span style="position:absolute;top:4px;right:24%;width:7px;height:7px;border-radius:50%;background:#b3603a"></span>
+</sc-if>
+<i class="{{ t.icon }}" style="font-size:20px"></i>
+<span style="font-size:9.5px;font-weight:600;letter-spacing:.02em">{{ t.label }}</span>
+</button>
+</sc-for>
+</div>
+</sc-if>
+
+</div>
+</x-import>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:540,&quot;height&quot;:1040},&quot;platform&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;iOS&quot;,&quot;Android&quot;],&quot;default&quot;:&quot;iOS&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const ACCENT = '#0e7c8c', ACCENT_L = '#0b6675', BAD = '#b0564e';
+const OK_BG = '#e6f3f5', BAD_BG = '#fbeceb';
+const LINE = '#dde3ea';
+
+const CHIPS = [
+  { id: 'cooh', label: '—COOH', sub: 'Glycine carboxyl', role: 'donor' },
+  { id: 'nh2', label: '—NH₂', sub: 'Alanine α-amino', role: 'acceptor' },
+  { id: 'ch3', label: '—CH₃', sub: 'Alanine side chain', role: 'none',
+    why: 'Side chains never form the backbone. The peptide bond is between the carboxyl carbon of one residue and the α-amino nitrogen of the next.' },
+  { id: 'oh', label: '—OH', sub: 'Serine hydroxyl', role: 'none',
+    why: 'An —OH attacking a carboxyl gives an ester, not an amide. Peptide bonds are amide linkages.' },
+];
+
+const HEART_STEPS = [
+  { ion: 'Na', phase: 'Phase 0', pts: [[52, 20]], note: 'Fast voltage-gated Na⁺ channels open — the upstroke, roughly 200 V/s in working myocardium.' },
+  { ion: 'K', phase: 'Phase 1', pts: [[68, 5]], note: 'Transient outward K⁺ current (I_to) plus Na⁺ inactivation — the early notch.' },
+  { ion: 'Ca', phase: 'Phase 2', pts: [[86, 0], [156, -2]], note: 'L-type Ca²⁺ influx balances K⁺ efflux — the plateau, and the reason cardiac muscle cannot tetanize.' },
+  { ion: 'K', phase: 'Phase 3', pts: [[214, -88]], note: 'Delayed rectifier K⁺ (I_Kr, I_Ks) dominates once Ca²⁺ channels close — repolarization.' },
+];
+
+const IONS = [
+  { id: 'Na', symbol: 'Na⁺', sub: 'Fast inward', color: '#3a6fa8' },
+  { id: 'Ca', symbol: 'Ca²⁺', sub: 'L-type slow inward', color: '#b3603a' },
+  { id: 'K', symbol: 'K⁺', sub: 'Outward rectifier', color: '#6f63b8' },
+  { id: 'Cl', symbol: 'Cl⁻', sub: 'Chloride', color: '#3d7a4d' },
+];
+
+const WRONG_ION = {
+  Na: 'Na⁺ channels are inactivated and stay that way until the membrane repolarizes — that is the absolute refractory period.',
+  Ca: 'Ca²⁺ influx depolarizes; it cannot start or end the spike, it holds the plateau.',
+  K: 'K⁺ efflux moves the cell toward E_K, around −90 mV. It repolarizes, it never depolarizes.',
+  Cl: 'Cl⁻ plays no major role in the ventricular action potential.',
+};
+
+const QUESTIONS = [
+  { course: 'A&P I', q: 'Which event directly triggers cross-bridge cycling in skeletal muscle?',
+    options: ['Ca²⁺ binding troponin C', 'ACh release at the end plate', 'Na⁺ entry through the sarcolemma', 'ATP binding the myosin head'],
+    answer: 0,
+    why: 'Ca²⁺ binds troponin C, tropomyosin shifts off the actin binding sites, and the myosin head can attach. Everything upstream only gets Ca²⁺ into the cytosol.' },
+  { course: 'Biochemistry', q: 'Peptide bond formation between two amino acids is best described as which reaction type?',
+    options: ['Hydrolysis', 'Condensation', 'Reduction', 'Isomerization'], answer: 1,
+    why: 'A molecule of water is released as the amide bond forms — condensation, also called dehydration synthesis.' },
+  { course: 'Microbiology', q: 'Vancomycin fails against gram-negative rods primarily because:',
+    options: ['They lack peptidoglycan', 'The outer membrane excludes the large molecule', 'They express β-lactamase', 'They have no D-Ala-D-Ala terminus'], answer: 1,
+    why: 'Vancomycin is too large to cross the gram-negative outer membrane porins; the target itself is still present.' },
+  { course: 'A&P II', q: 'Which structure normally provides the only electrical connection between atria and ventricles?',
+    options: ['Bundle of Kent', 'AV node', 'SA node', 'Bachmann bundle'], answer: 1,
+    why: 'The fibrous skeleton insulates the chambers; the AV node is the sole normal pathway, and its delay allows atrial filling.' },
+];
+
+// Head-to-head question duels between classmates who share a block.
+const BLOCK_QS = {
+  'Biochemistry': [
+    { q: 'Which linkage joins the two sugars in lactose?', options: ['α(1→4)', 'β(1→4)', 'α(1→6)', 'β(1→2)'], answer: 1,
+      why: 'Lactose is galactose β(1→4) glucose. Humans need lactase for the β linkage; amylase only handles α.' },
+    { q: 'Steroids are built on which core structure?', options: ['Four fused rings', 'A glycerol backbone', 'A pyrimidine ring', 'A porphyrin ring'], answer: 0,
+      why: 'The cyclopentanoperhydrophenanthrene core — three six-membered rings fused to one five-membered ring.' },
+    { q: 'The peptide bond resists rotation because it:', options: ['Carries a formal charge', 'Has partial double-bond character', 'Is a disulfide', 'Is stabilized by Ca²⁺'], answer: 1,
+      why: 'Resonance delocalizes the carbonyl electrons onto the nitrogen — roughly 40% double-bond character, so the unit stays planar.' },
+  ],
+  'A&P II': [
+    { q: 'The plateau of the ventricular action potential is carried by:', options: ['Fast Na⁺ influx', 'L-type Ca²⁺ influx', 'Delayed rectifier K⁺', 'Cl⁻ efflux'], answer: 1,
+      why: 'Ca²⁺ entering through L-type channels offsets K⁺ efflux — the plateau, and why cardiac muscle cannot tetanize.' },
+    { q: 'Which vessel carries deoxygenated blood at the highest pressure?', options: ['Pulmonary vein', 'Superior vena cava', 'Pulmonary artery', 'Coronary sinus'], answer: 2,
+      why: 'The pulmonary artery is the only artery carrying deoxygenated blood, at roughly 25/8 mmHg.' },
+  ],
+  'A&P I': [
+    { q: 'Cross-bridge detachment requires:', options: ['Ca²⁺ release', 'ATP binding myosin', 'ADP release', 'Troponin phosphorylation'], answer: 1,
+      why: 'ATP binding — not hydrolysis — releases the myosin head. No ATP means no detachment, which is rigor mortis.' },
+    { q: 'Which epithelium lines the alveoli?', options: ['Simple squamous', 'Stratified squamous', 'Simple columnar', 'Transitional'], answer: 0,
+      why: 'Simple squamous — one flat cell layer, the shortest possible diffusion distance for gas exchange.' },
+  ],
+  'Microbiology': [
+    { q: 'Which stain step decolorizes gram-negative cells?', options: ['Crystal violet', 'Iodine', 'Acetone-alcohol', 'Safranin'], answer: 2,
+      why: 'Acetone-alcohol dissolves the thin peptidoglycan/outer membrane, washing the crystal violet out; safranin then counterstains them pink.' },
+    { q: 'Obligate anaerobes die in oxygen mainly because they lack:', options: ['Catalase and superoxide dismutase', 'Cytochrome c', 'A cell wall', 'Flagella'], answer: 0,
+      why: 'Without SOD and catalase they cannot clear superoxide or peroxide, and the radicals shred them.' },
+  ],
+};
+
+const FRIENDS = [
+  { id: 'jt', initials: 'JT', name: 'Torres, J.', branch: 'Army', blocks: ['Biochemistry', 'A&P II', 'Microbiology'] },
+  { id: 'ao', initials: 'AO', name: 'Okafor, A.', branch: 'Air Force', blocks: ['Biochemistry', 'A&P I'] },
+  { id: 'dl', initials: 'DL', name: 'Lam, D.', branch: 'Navy', blocks: ['A&P II', 'Microbiology'] },
+  { id: 'sb', initials: 'SB', name: 'Brandt, S.', branch: 'Coast Guard', blocks: ['Biochemistry', 'A&P I', 'A&P II'] },
+  { id: 'kh', initials: 'KH', name: 'Hollis, K.', branch: 'Air Force', blocks: ['Microbiology', 'A&P I'] },
+];
+
+const K = { exam: '#b3603a', lab: '#3a6fa8', lunch: '#98a4b0', admin: '#6b7885' };
+
+// ---- dates: the schedule runs on the real calendar ----
+const D_PAD = n => (n < 10 ? '0' : '') + n;
+const D_ISO = d => d.getFullYear() + '-' + D_PAD(d.getMonth() + 1) + '-' + D_PAD(d.getDate());
+const D_PARSE = s => { const m = String(s || '').match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : new Date(NaN); };
+const D_ADD = (d, n) => { const x = new Date(d.getTime()); x.setDate(x.getDate() + n); return x; };
+const D_MONDAY = d => D_ADD(d, -((d.getDay() + 6) % 7));
+const DOW3 = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const D_TODAY = () => { const t = new Date(); t.setHours(0, 0, 0, 0); return t; };
+const D_LONG = iso => { const d = D_PARSE(iso); return isNaN(d) ? '' : DOW3[d.getDay()] + ' ' + d.getDate() + ' ' + MON3[d.getMonth()]; };
+const D_AWAY = iso => {
+  const n = Math.round((D_PARSE(iso) - D_TODAY()) / 86400000);
+  if (isNaN(n)) return '';
+  if (n === 0) return 'today';
+  if (n === 1) return 'tomorrow';
+  if (n < 0) return Math.abs(n) === 1 ? 'yesterday' : Math.abs(n) + ' days ago';
+  return 'in ' + n + ' days';
+};
+const T_LABEL = t => (t && t.length === 4 ? t : (t || '—'));
+const SKINDS = ['lecture', 'lab', 'exam', 'admin', 'lunch'];
+const SKIND_LABEL = { lecture: 'Class', lab: 'Lab', exam: 'Exam', admin: 'Admin', lunch: 'Break' };
+
+// Nocturne, scoped to the Hub. Its stylesheet can't be linked — the `body` rule
+// there paints the dark ground, which would swallow the clinical app around it.
+// So the tokens the Hub needs are lifted as literals.
+const NOC = {
+  bg: '#161826', surface: '#232532', sunken: '#1d1f2c',
+  text: '#e9e9ed', muted: '#a8a9b4', faint: '#8b8c98',
+  line: 'rgba(233,233,237,.16)', hair: 'rgba(233,233,237,.10)',
+  accent: '#9184d9', accentText: '#b5abfc', accentDeep: '#5d5294', tint: '#2b2741',
+};
+
+const EMPTY_HUB = { notes: [], members: [], board: [], challenges: [], notifs: [], isOwner: false, me: '' };
+
+const ago = ts => {
+  const m = Math.round((Date.now() - ts) / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + ' min ago';
+  if (m < 1440) return Math.round(m / 60) + ' h ago';
+  return D_LONG(D_ISO(new Date(ts)));
+};
+
+const RULES = [
+  { id: 'r1', label: 'Exam day', detail: 'Alert 1900 the night before and 0600 that morning', icon: 'ph ph-exam' },
+  { id: 'r2', label: 'Lab day → PT gear', detail: 'Any LAB or Clinical Skills block pings you at 0530 — PTs all day', icon: 'ph ph-t-shirt' },
+  { id: 'r3', label: 'Uniform change', detail: 'Flags days where the block changes what you wear', icon: 'ph ph-coat-hanger' },
+  { id: 'r4', label: 'Sunday plan', detail: 'Sends the week ahead with exam countdowns', icon: 'ph ph-calendar-check' },
+];
+
+const AFFIRM = [
+  'You were selected out of a very large pile. That was not an accident.',
+  'Nobody finds this block easy. The people who finish are the ones who kept sitting back down with it.',
+  'A question you miss this week is a question you will not miss on the boards.',
+  'You have already done harder things than this exam.',
+  'The material is not too much. It is too much at once — take the next block only.',
+  'Being behind on one exam is not being behind in the program.',
+  'You do not have to feel confident to be competent. Show up and do the reps.',
+  'Somebody is going to get your best on their worst day. That is what tonight is for.',
+];
+
+const MISS_LINES = [
+  'That one is supposed to be hard. Note it and move.',
+  'Missing it here is cheap. Missing it on the floor is not.',
+  'Good — now you know where the gap is.',
+  'Everyone in your class misses this one. Keep going.',
+];
+
+const LEADERS = [
+  { rank: 1, initials: 'JT', name: 'Torres, J.', branch: 'Army · 26-3', acc: 94 },
+  { rank: 2, initials: 'AO', name: 'Okafor, A.', branch: 'Air Force · 26-3', acc: 92 },
+  { rank: 3, initials: 'DL', name: 'Lam, D.', branch: 'Navy · 26-3', acc: 91 },
+  { rank: 4, initials: 'RM', name: 'You', branch: 'Army · 26-3', acc: 88, me: true },
+  { rank: 5, initials: 'SB', name: 'Brandt, S.', branch: 'Coast Guard · 26-3', acc: 86 },
+  { rank: 6, initials: 'KH', name: 'Hollis, K.', branch: 'Air Force · 26-3', acc: 84 },
+  { rank: 7, initials: 'MV', name: 'Vega, M.', branch: 'Navy · 26-3', acc: 81 },
+];
+
+const CC = {
+  'A&P I': '#3d7a4d', 'A&P II': '#3a6fa8', 'Biochem': '#6f63b8', 'Biochemistry': '#6f63b8',
+  'Micro': '#7d6a25', 'Microbiology': '#7d6a25', 'Pharmacology': '#b3603a', 'Any': '#0e7c8c',
+};
+const OWN = { id: 'own', name: 'From your lectures', icon: 'ph ph-upload-simple', labs: 3, acc: 65, color: '#0e7c8c' };
+
+const YEARS = {
+  'Year 1': [
+    { id: 'ap1', name: 'Anatomy & Physiology I', icon: 'ph ph-person-simple', labs: 14, acc: 82, color: '#3d7a4d', abbr: 'A&P1' },
+    { id: 'ap2', name: 'Anatomy & Physiology II', icon: 'ph ph-heartbeat', labs: 11, acc: 74, color: '#3a6fa8', abbr: 'A&P2' },
+    { id: 'bio', name: 'Biochemistry', icon: 'ph ph-hexagon', labs: 16, acc: 88, color: '#6f63b8', abbr: 'BIOC' },
+    { id: 'mic', name: 'Microbiology', icon: 'ph ph-virus', labs: 9, acc: 79, color: '#7d6a25', abbr: 'MICR' },
+  ],
+  'Year 2': [
+    { id: 'clab', name: 'Clinical Lab', icon: 'ph ph-test-tube', labs: 12, acc: 80, color: '#3d7a4d', abbr: 'CLAB' },
+    { id: 'path', name: 'Pathophysiology', icon: 'ph ph-waveform', labs: 15, acc: 73, color: '#a8517a', abbr: 'PATH' },
+    { id: 'ekg', name: 'EKG Interpretation', icon: 'ph ph-heartbeat', labs: 8, acc: 77, color: '#3a6fa8', abbr: 'EKG' },
+    { id: 'rad', name: 'Radiology', icon: 'ph ph-scan', labs: 9, acc: 71, color: '#6f63b8', abbr: 'RAD' },
+    { id: 'gastro', name: 'Gastroenterology', icon: 'ph ph-drop', labs: 7, acc: 84, color: '#7d6a25', abbr: 'GI' },
+    { id: 'psych', name: 'Psychiatry', icon: 'ph ph-brain', labs: 6, acc: 86, color: '#b3603a', abbr: 'PSY' },
+  ],
+  'Year 3': [
+    { id: 'cardio', name: 'Cardiology', icon: 'ph ph-heartbeat', labs: 13, acc: 76, color: '#b3603a', abbr: 'CARD' },
+    { id: 'ph2', name: 'Pharmacology II', icon: 'ph ph-pill', labs: 14, acc: 70, color: '#6f63b8', abbr: 'PHRM' },
+    { id: 'neuro', name: 'Neurology', icon: 'ph ph-brain', labs: 10, acc: 74, color: '#3a6fa8', abbr: 'NEUR' },
+    { id: 'ortho', name: 'Orthopedics', icon: 'ph ph-bone', labs: 11, acc: 82, color: '#3d7a4d', abbr: 'ORTH' },
+    { id: 'pulm', name: 'Pulmonology', icon: 'ph ph-lungs', labs: 8, acc: 79, color: '#7d6a25', abbr: 'PULM' },
+    { id: 'endo', name: 'Endocrinology', icon: 'ph ph-gauge', labs: 7, acc: 81, color: '#a8517a', abbr: 'ENDO' },
+  ],
+  'Year 4': [
+    { id: 'emed', name: 'Emergency Medicine', icon: 'ph ph-first-aid-kit', labs: 12, acc: 78, color: '#b3603a', abbr: 'EMED' },
+    { id: 'surg', name: 'Surgery', icon: 'ph ph-scissors', labs: 10, acc: 75, color: '#3d7a4d', abbr: 'SURG' },
+    { id: 'id', name: 'Infectious Disease', icon: 'ph ph-virus', labs: 9, acc: 83, color: '#7d6a25', abbr: 'INFD' },
+    { id: 'heme', name: 'Heme-Onc', icon: 'ph ph-drop-half', labs: 8, acc: 72, color: '#a8517a', abbr: 'HEME' },
+    { id: 'gu', name: 'Genitourinary', icon: 'ph ph-kanban', labs: 6, acc: 80, color: '#3a6fa8', abbr: 'GU' },
+    { id: 'derm', name: 'Dermatology', icon: 'ph ph-hand', labs: 7, acc: 85, color: '#6f63b8', abbr: 'DERM' },
+  ],
+};
+const YEAR_NAMES = ['Year 1', 'Year 2', 'Year 3', 'Year 4'];
+
+// Upper-division blocks — added by the student as the semester opens them.
+const UPPER = [
+  { id: 'pha', name: 'Pharmacology', icon: 'ph ph-pill', labs: 12, acc: 0, color: '#b3603a', term: 'Semester 2', note: 'Autonomics, antimicrobials, cardiac agents.' },
+  { id: 'pat', name: 'Pathophysiology', icon: 'ph ph-waveform', labs: 15, acc: 0, color: '#a8517a', term: 'Semester 2', note: 'Mechanism-first disease models.' },
+  { id: 'clm', name: 'Clinical Medicine I', icon: 'ph ph-stethoscope', labs: 18, acc: 0, color: '#3d7a4d', term: 'Semester 3', note: 'System-by-system workups and differentials.' },
+  { id: 'ekg', name: 'EKG Interpretation', icon: 'ph ph-heartbeat', labs: 8, acc: 0, color: '#3a6fa8', term: 'Semester 3', note: 'Rate, rhythm, axis, blocks — drawn live.' },
+  { id: 'pro', name: 'Clinical Procedures', icon: 'ph ph-scissors', labs: 10, acc: 0, color: '#7d6a25', term: 'Semester 4', note: 'Suturing, casting, airway, ultrasound.' },
+];
+
+class Component extends DCLogic {
+  state = {
+    tab: 'home', screen: null,
+    pepStage: 1, donor: null, acceptor: null, selected: null,
+    pepRight: 0, pepWrong: 0, pepFb: null, leavingPick: null,
+    hPhase: -1, stim: -90, hFb: null, hWrong: 0, hRight: 0,
+    qIndex: 0, qPick: null, qScore: 0, quizDone: false,
+    uploadPct: 0,
+    up: { name: '', ext: '', size: 0, status: 'idle', error: '', pages: 0, unit: '', chars: 0, topics: [], questions: [], engine: '' },
+    dragOver: false, customQs: [], pasteOpen: false, pasteText: '',
+    extra: [],
+    squadView: 'duels', points: 1240,
+    cohort: { code: '', ownerKey: '' }, shared: EMPTY_HUB,
+    hubStatus: 'idle', hubError: '', hubLive: false, reported: null,
+    notifOpen: false, copied: false, dTarget: null, dNote: null,
+    joinCode: '', noteId: null, cdraft: '',
+    pdraft: { title: '', course: '', body: '', attach: false },
+    inbox: { from: 'Okafor, A.', initials: 'AO', block: 'Biochemistry', stake: 25, qi: 0, pick: null },
+    sent: [
+      { to: 'Torres, J.', initials: 'JT', block: 'A&P II', stake: 25, status: 'Opened — no answer yet', tone: 'wait' },
+      { to: 'Lam, D.', initials: 'DL', block: 'Microbiology', stake: 40, status: 'Missed it — you took 40 pts', tone: 'win' },
+    ],
+    dStep: 1, dFriend: null, dBlock: null, dQi: null, dStake: 25,
+    day: D_ISO(D_TODAY()), weekMon: D_ISO(D_MONDAY(D_TODAY())),
+    cal: { file: '', sheet: '', items: [], status: 'idle', error: '' },
+    sed: null,
+    rules: { r1: true, r2: true, r3: false, r4: true },
+    affirmI: 0, missI: 0,
+    why: '',
+    whyDraft: '',
+    logs: [],
+    logTarget: null, logScore: '', logWent: '', logFix: '',
+    signedUp: false, setupStep: 1,
+    profile: { name: '', klass: '', term: 'Fall 2026', year: 'Year 1' },
+  };
+
+  setP(k, v) { this.setState(x => ({ profile: { ...x.profile, [k]: v } })); }
+
+  // ---- persistence: this is the student's own record, not a demo ----
+  static KEY = 'pathway.student.v1';
+  componentDidMount() {
+    try {
+      const raw = window.localStorage.getItem(Component.KEY);
+      if (raw) {
+        const d = JSON.parse(raw);
+        const keep = {};
+        ['profile', 'signedUp', 'why', 'points', 'logs', 'extra', 'up', 'customQs', 'sent', 'cal', 'rules', 'cohort'].forEach(k => {
+          if (d[k] !== undefined) keep[k] = d[k];
+        });
+        if (Object.keys(keep).length) this.setState(keep);
+        if (keep.cohort && keep.cohort.code) this.openHub(keep.cohort.code, keep.profile || this.state.profile);
+      }
+    } catch (e) { /* first run, or storage blocked */ }
+  }
+  componentWillUnmount() {
+    if (this._unwatch) this._unwatch();
+    if (this._saveT) clearTimeout(this._saveT);
+  }
+  componentDidUpdate() {
+    if (this._saveT) clearTimeout(this._saveT);
+    this._saveT = setTimeout(() => {
+      const s = this.state;
+      try {
+        window.localStorage.setItem(Component.KEY, JSON.stringify({
+          profile: s.profile, signedUp: s.signedUp, why: s.why, points: s.points,
+          logs: s.logs, extra: s.extra, up: s.up, customQs: s.customQs,
+          sent: s.sent, cal: s.cal, rules: s.rules, cohort: s.cohort,
+        }));
+      } catch (e) { /* quota or private mode */ }
+    }, 400);
+  }
+
+  // ---- the Student Hub: one shared board per cohort code ----
+  // All reads and writes go through hub-api.js, which is either talking to
+  // Supabase (real, shared across phones) or to this device (no keys configured).
+  // The UI cannot tell the difference, so the flow is identical either way.
+  async hub() {
+    if (!this._hubP) {
+      this._hubP = import('./hub-api.js').then(m => m.createHub());
+    }
+    return this._hubP;
+  }
+
+  async openHub(code, profile) {
+    const hub = await this.hub();
+    this.setState({ hubStatus: 'joining', hubError: '' });
+    try {
+      const { ownerKey } = await hub.join(code, profile || this.state.profile);
+      if (this._unwatch) this._unwatch();
+      this._unwatch = hub.watch(code,
+        snap => this.setState({ shared: snap, hubStatus: 'ready', hubError: '' }),
+        e => this.setState({ hubStatus: 'error', hubError: String((e && e.message) || e), hubLive: hub.live }));
+      this.setState({ cohort: { code, ownerKey }, hubLive: hub.live });
+    } catch (e) {
+      // A join can only fail for a real reason now — the data layer already
+      // demoted to on-device mode for anything that means "no server there".
+      this.setState({ hubStatus: 'error', hubError: String((e && e.message) || e), hubLive: hub.live });
+    }
+  }
+
+  // Called after any write so the author sees their own action land at once,
+  // rather than on the next poll.
+  async bump() {
+    const code = this.state.cohort.code;
+    if (!code) return;
+    try {
+      const hub = await this.hub();
+      this.setState({ shared: await hub.refresh(code) });
+    } catch (e) { /* the next poll will pick it up */ }
+  }
+
+  joinCohort() {
+    const code = (this.state.joinCode || '').trim().toUpperCase().replace(/\s+/g, '-');
+    if (code.length < 4) return;
+    this.setState({ joinCode: '', squadView: 'notes' });
+    this.openHub(code);
+  }
+  makeCode() {
+    const kl = (this.state.profile.klass || 'PA').trim().toUpperCase().replace(/[^A-Z0-9]+/g, '') || 'PA';
+    const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+    this.setState({ joinCode: kl + '-' + rand });
+  }
+  leaveCohort() {
+    if (this._unwatch) { this._unwatch(); this._unwatch = null; }
+    this.setState({ cohort: { code: '', ownerKey: '' }, shared: EMPTY_HUB, hubStatus: 'idle', hubError: '', squadView: 'notes' });
+  }
+
+  author() {
+    const n = (this.state.profile.name || '').trim() || 'Anonymous';
+    return { name: n, emoji: this.state.profile.emoji || '' };
+  }
+
+  async postNote() {
+    const d = this.state.pdraft;
+    if (!d.title.trim() || !d.body.trim()) return;
+    const code = this.state.cohort.code;
+    if (!code) return;
+    const a = this.author();
+    const up = this.state.up || {};
+    const hub = await this.hub();
+    this.setState({ screen: null, tab: 'squad', squadView: 'notes',
+      pdraft: { title: '', course: '', body: '', attach: false } });
+    try {
+      await hub.postNote(code, {
+        author: a.name, title: d.title.trim(), course: d.course || 'General', body: d.body.trim(),
+        file: d.attach && up.name ? up.name : '',
+        questions: d.attach && up.questions ? up.questions : [],
+      });
+      this.bump();
+    } catch (e) { this.setState({ hubError: String((e && e.message) || e) }); }
+  }
+
+  async editNote() {
+    const d = this.state.pdraft;
+    const id = this.state.noteId;
+    if (!id || !d.title.trim() || !d.body.trim()) return;
+    const hub = await this.hub();
+    this.setState({ screen: 'note' });
+    try {
+      await hub.editNote(id, { title: d.title.trim(), course: d.course, body: d.body.trim() });
+      this.bump();
+    } catch (e) { this.setState({ hubError: String((e && e.message) || e) }); }
+  }
+
+  async removeNote(id, hide) {
+    const hub = await this.hub();
+    this.setState({ screen: null, noteId: null });
+    try {
+      await (hide ? hub.hideNote(id) : hub.deleteNote(id));
+      this.bump();
+    } catch (e) { this.setState({ hubError: String((e && e.message) || e) }); }
+  }
+
+  async addComment() {
+    const text = (this.state.cdraft || '').trim();
+    const id = this.state.noteId;
+    const code = this.state.cohort.code;
+    if (!text || !id || !code) return;
+    const a = this.author();
+    const note = (this.state.shared.notes || []).find(n => n.id === id);
+    const hub = await this.hub();
+    this.setState({ cdraft: '' });
+    try {
+      await hub.postComment(code, id, { author: a.name, text });
+      if (note) {
+        await hub.notify(code, note.authorKey, { kind: 'comment', actor: a.name, actorEmoji: a.emoji,
+          noteId: id, body: 'commented on “' + note.title + '”' });
+      }
+      this.bump();
+    } catch (e) { this.setState({ hubError: String((e && e.message) || e) }); }
+  }
+
+  async removeComment(id) {
+    const hub = await this.hub();
+    try { await hub.deleteComment(id); this.bump(); }
+    catch (e) { this.setState({ hubError: String((e && e.message) || e) }); }
+  }
+
+  async toggleLike(targetId, kind, ownerKey, label) {
+    const code = this.state.cohort.code;
+    if (!code) return;
+    const hub = await this.hub();
+    const note = (this.state.shared.notes || []).find(n => n.id === targetId);
+    const liked = note ? note.likedByMe
+      : (this.state.shared.notes || []).some(n => (n.comments || []).some(c => c.id === targetId && c.likedByMe));
+    // Optimistic: the heart responds on the tap, not on the round trip.
+    this.setState(x => ({ shared: { ...x.shared, notes: (x.shared.notes || []).map(n => {
+      if (n.id === targetId) return { ...n, likedByMe: !liked, likes: n.likes + (liked ? -1 : 1) };
+      return { ...n, comments: (n.comments || []).map(c => c.id !== targetId ? c
+        : { ...c, likedByMe: !liked, likes: c.likes + (liked ? -1 : 1) }) };
+    }) } }));
+    try {
+      await (liked ? hub.unlike(targetId) : hub.like(code, targetId, kind));
+      if (!liked && ownerKey) {
+        const a = this.author();
+        await hub.notify(code, ownerKey, { kind: 'like', actor: a.name, actorEmoji: a.emoji,
+          noteId: kind === 'note' ? targetId : null, body: 'liked ' + (label || 'your post') });
+      }
+      this.bump();
+    } catch (e) { this.bump(); }
+  }
+
+  async reportPost(id, kind) {
+    const code = this.state.cohort.code;
+    if (!code) return;
+    const hub = await this.hub();
+    try { await hub.report(code, id, kind, ''); this.setState({ reported: id }); }
+    catch (e) { this.setState({ hubError: String((e && e.message) || e) }); }
+  }
+
+  async recordScore(score, total, label) {
+    const code = this.state.cohort.code;
+    if (!code) return;
+    try {
+      const hub = await this.hub();
+      await hub.recordScore(code, { name: this.author().name, label: label || 'Quiz', score, total });
+      this.bump();
+    } catch (e) { /* the score still counts locally */ }
+  }
+
+  async readNotifs() {
+    const code = this.state.cohort.code;
+    if (!code) return;
+    try { const hub = await this.hub(); await hub.markRead(code); this.bump(); }
+    catch (e) { /* they will clear on the next open */ }
+  }
+
+  // ---- schedule: import, then edit by hand ----
+  async importSched(fileList) {
+    const file = fileList && fileList[0];
+    if (!file) return;
+    this.setState(x => ({ cal: { ...x.cal, file: file.name, status: 'reading', error: '' } }));
+    try {
+      const mod = await this.lib();
+      const out = await mod.extractSchedule(file);
+      const stamp = Date.now();
+      const items = out.items.map((it, i) => ({ id: 'c' + stamp + '_' + i, ...it }));
+      this.setState(x => {
+        const keys = {};
+        x.cal.items.forEach(i => { keys[i.date + '|' + i.t + '|' + i.name] = 1; });
+        const fresh = items.filter(i => !keys[i.date + '|' + i.t + '|' + i.name]);
+        const all = x.cal.items.concat(fresh).sort((a, b) => (a.date + a.t).localeCompare(b.date + b.t));
+        const first = all.find(i => i.date >= D_ISO(D_TODAY())) || all[0];
+        return {
+          cal: { file: file.name, sheet: out.sheet || '', items: all, status: 'done', error: '' },
+          day: first ? first.date : x.day,
+          weekMon: first ? D_ISO(D_MONDAY(D_PARSE(first.date))) : x.weekMon,
+        };
+      });
+    } catch (e) {
+      this.setState(x => ({ cal: { ...x.cal, status: 'error', error: String((e && e.message) || e) } }));
+    }
+  }
+
+  editItem(item) {
+    this.setState({ screen: 'sedit', sed: { ...item } });
+  }
+  newItem(date) {
+    this.setState({ screen: 'sedit', sed: { id: '', date, t: '', end: '', name: '', room: '', kind: 'lecture' } });
+  }
+  setSed(k, v) { this.setState(x => ({ sed: { ...x.sed, [k]: v } })); }
+  saveItem() {
+    const d = this.state.sed;
+    if (!d || !d.name.trim() || !/^\d{4}-\d{2}-\d{2}$/.test(d.date)) return;
+    const item = { ...d, name: d.name.trim(), id: d.id || 'c' + Date.now() };
+    this.setState(x => {
+      const rest = x.cal.items.filter(i => i.id !== item.id);
+      const all = rest.concat([item]).sort((a, b) => (a.date + a.t).localeCompare(b.date + b.t));
+      return { cal: { ...x.cal, items: all, status: x.cal.status === 'idle' ? 'done' : x.cal.status },
+        screen: null, sed: null, day: item.date, weekMon: D_ISO(D_MONDAY(D_PARSE(item.date))) };
+    });
+  }
+  deleteItem() {
+    const d = this.state.sed;
+    if (!d) return;
+    this.setState(x => ({ cal: { ...x.cal, items: x.cal.items.filter(i => i.id !== d.id) }, screen: null, sed: null }));
+  }
+
+  // ---- real lecture ingestion ----
+  lib() {
+    if (!this._lib) this._lib = import('./lecture-import.js');
+    return this._lib;
+  }
+  async ingest(fileList) {
+    const file = fileList && fileList[0];
+    if (!file) return;
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    const icons = { pdf: 'ph ph-file-pdf', pptx: 'ph ph-file-ppt', docx: 'ph ph-file-doc' };
+    this.setState({
+      dragOver: false, uploadPct: 8,
+      up: { name: file.name, ext, icon: icons[ext] || 'ph ph-file-text', size: file.size,
+        status: 'reading', error: '', pages: 0, unit: '', chars: 0, topics: [], questions: [], engine: '' },
+    });
+    try {
+      const mod = await this.lib();
+      const doc = await mod.extractText(file);
+      if (!doc.text || doc.text.replace(/\s/g, '').length < 400) {
+        throw new Error('Almost no selectable text in that file — it is probably a scan or an image-only export. Save the deck as a PDF from PowerPoint, or paste the text in below.');
+      }
+      this.setState(x => ({ uploadPct: 45, up: { ...x.up, status: 'writing', pages: doc.pages, unit: doc.unit, chars: doc.text.length } }));
+      await this.build(doc.text, file.name);
+    } catch (e) {
+      this.setState(x => ({ uploadPct: 0, up: { ...x.up, status: 'error', error: String((e && e.message) || e) } }));
+    }
+  }
+
+  async build(text, name) {
+    const mod = await this.lib();
+    const out = await mod.makeQuestions(text, { name });
+    this.setState(x => ({
+      uploadPct: 100,
+      up: { ...x.up, status: 'done', topics: out.topics || [], questions: out.questions, engine: out.engine, course: out.course || 'From your lectures' },
+    }));
+  }
+
+  async ingestPaste() {
+    const text = (this.state.pasteText || '').trim();
+    if (text.replace(/\s/g, '').length < 300) return;
+    const name = (text.split(/\n/)[0] || 'Pasted lecture').trim().slice(0, 48);
+    this.setState({
+      uploadPct: 30,
+      up: { name, ext: 'txt', icon: 'ph ph-clipboard-text', size: text.length,
+        status: 'writing', error: '', pages: text.split(/\n\s*\n/).length, unit: 'sections',
+        chars: text.length, topics: [], questions: [], engine: '' },
+    });
+    try {
+      await this.build(text, name);
+    } catch (e) {
+      this.setState(x => ({ uploadPct: 0, up: { ...x.up, status: 'error', error: String((e && e.message) || e) } }));
+    }
+  }
+
+  fb(kind, title, body) { this.setState({ pepFb: { kind, title, body } }); }
+
+  // ---- peptide ----
+  place(slot, chipId) {
+    const chip = CHIPS.find(c => c.id === chipId);
+    if (!chip) return;
+    if (chip.role !== slot) {
+      const why = chip.why || (slot === 'donor'
+        ? 'The amino group is the nucleophile here, not the electrophile. The C-terminus donates the carbonyl carbon.'
+        : 'The carboxyl is the electrophile. The nitrogen of the next residue is what attacks it.');
+      this.setState(s => ({ pepWrong: s.pepWrong + 1, selected: null }));
+      this.fb('bad', 'Not this group', why);
+      return;
+    }
+    const patch = { selected: null, pepFb: null };
+    patch[slot] = chipId;
+    this.setState(s => ({ ...patch, pepRight: s.pepRight + 1 }));
+  }
+
+  renderVals() {
+    const s = this.state;
+    const screen = s.screen;
+    const live = !screen && s.signedUp;
+    const isHome = live && s.tab === 'home';
+    const isLabs = live && s.tab === 'labs';
+    const isQuiz = live && s.tab === 'quiz';
+    const isSquad = live && s.tab === 'squad';
+    const isSched = live && s.tab === 'sched';
+
+    const KINDC = { exam: '#b3603a', lab: '#3a6fa8', lunch: '#98a4b0', admin: '#6b7885', lecture: '#3d7a4d' };
+    const cal = s.cal || { file: '', sheet: '', items: [], status: 'idle', error: '' };
+    const calItems = cal.items || [];
+    const todayIso = D_ISO(D_TODAY());
+    const mon = D_PARSE(s.weekMon);
+    const weekIsos = [0, 1, 2, 3, 4, 5, 6].map(i => D_ISO(D_ADD(mon, i)));
+    const onDay = iso => calItems.filter(i => i.date === iso).sort((a, b) => String(a.t).localeCompare(String(b.t)));
+    const dayItemsRaw = onDay(s.day);
+    const itemColor = it => {
+      if (it.kind === 'exam' || it.kind === 'lunch' || it.kind === 'admin' || it.kind === 'lab') return KINDC[it.kind];
+      const hit = Object.keys(CC).find(k => k.length > 3 && it.name.toLowerCase().indexOf(k.toLowerCase()) >= 0);
+      return hit ? CC[hit] : KINDC.lecture;
+    };
+    const gearFor = items => {
+      if (!items.length) return null;
+      if (items.some(i => i.kind === 'exam')) return { text: 'Exam on the schedule today — duty uniform, phones in the bin', icon: 'ph ph-exam', color: '#b3603a' };
+      if (items.some(i => i.kind === 'lab')) return { text: 'PT gear all day — lab block on the schedule', icon: 'ph ph-t-shirt', color: '#3a6fa8' };
+      return { text: 'Standard duty uniform', icon: 'ph ph-coat-hanger', color: '#6b7885' };
+    };
+    const examItems = calItems.filter(i => i.kind === 'exam' && i.date >= todayIso)
+      .sort((a, b) => (a.date + a.t).localeCompare(b.date + b.t));
+
+    const up = s.up || { name: '', ext: '', size: 0, status: 'idle', error: '', pages: 0, unit: '', chars: 0, topics: [], questions: [], engine: '' };
+    const upStatus = up.status === 'reading' ? 'Reading the file…'
+      : up.status === 'writing' ? 'Writing questions from ' + (up.pages ? up.pages + ' ' + (up.unit || 'sections') : 'the text') + '…'
+      : up.status === 'done' ? (up.pages ? up.pages + ' ' + (up.unit || 'sections') + ' read · ' : '') + (up.questions || []).length + ' questions ready'
+      : up.status === 'error' ? 'Could not use this file'
+      : '';
+
+    const hubNotes = s.shared.notes || [];
+    const hubBoard = s.shared.board || [];
+    const unread = (s.shared.notifs || []).filter(n => !n.read);
+    const note = hubNotes.find(n => n.id === s.noteId) || null;
+    const prof = s.profile;
+    const base = YEARS[prof.year] || YEARS['Year 1'];
+    const baseIds = base.map(c => c.id);
+    const baseNames = base.map(c => c.name.toLowerCase());
+    const catalogItems = UPPER.filter(c => baseIds.indexOf(c.id) < 0 && baseNames.indexOf(c.name.toLowerCase()) < 0);
+    const added = catalogItems.filter(c => s.extra.indexOf(c.id) >= 0);
+    const allCourses = base.concat(added).concat([OWN]);
+    const ABBR = { pha: 'PHRM', pat: 'PATH', clm: 'CLIN', ekg: 'EKG', pro: 'PROC' };
+    const graded = base.concat(added);
+    const bars = graded.map(c => ({ abbr: c.abbr || ABBR[c.id] || c.id.toUpperCase(), h: (c.acc || 3) + '%', color: c.acc ? c.color : '#d6dee6' }));
+    const scored = graded.filter(c => c.acc);
+    const readiness = Math.round(scored.reduce((a, c) => a + c.acc, 0) / scored.length);
+    const weakCourse = scored.slice().sort((a, b) => a.acc - b.acc)[0];
+    const yearOne = prof.year === 'Year 1';
+    const courseColor = name => {
+      const hit = Object.keys(CC).find(k => k.length > 3 && String(name).toLowerCase().indexOf(k.toLowerCase()) >= 0);
+      return hit ? CC[hit] : KINDC.exam;
+    };
+    const yearExams = examItems.slice(0, 8).map(e => ({
+      name: e.name,
+      when: D_LONG(e.date) + (e.t ? ' · ' + e.t : '') + (e.room ? ' · ' + e.room : ''),
+      away: D_AWAY(e.date),
+      color: courseColor(e.name),
+    }));
+    const nx = yearExams[0] || { name: '', when: '', away: '', color: '#0e7c8c' };
+    const firstName = (prof.name || '').trim().split(/\s+/)[0].replace(/[,.;:]+$/, '');
+
+    const titles = {
+      peptide: ['Biochemistry · Lecture 4', 'Peptide Bond Formation'],
+      heart: ['A&P II · Cardiac cycle', 'Ventricular Action Potential'],
+      upload: ['Course tailoring', 'Build from a lecture'],
+      catalog: ['Program roadmap', 'Add a course block'],
+      why: ['Why you started', 'Your reason'],
+      profile: ['Your setup', 'Profile'],
+      log: ['Exam debrief', 'Log your result'],
+      duel: ['Head to head', 'Send a challenge'],
+      sedit: ['Your schedule', s.sed && s.sed.id ? 'Edit this block' : 'Add a block'],
+      post: ['Share with ' + (s.cohort.code || 'your cohort'), 'Post a set of notes'],
+      note: [note ? note.course + ' · ' + note.author : 'Shared notes', note ? note.title : 'Notes'],
+    };
+    const tabTitles = {
+      home: [(prof.term || 'This term'), firstName ? 'Hello, ' + firstName : 'Hello'],
+      labs: ['Interactive models', 'Labs'],
+      quiz: ['Spaced repetition', 'Review'],
+      squad: ['Class standing', 'Squad'],
+      sched: [(prof.term || 'This term') + (prof.klass.trim() ? ' · Class ' + prof.klass.trim() : ''), 'Schedule'],
+    };
+    const chrome = screen ? titles[screen] : tabTitles[s.tab];
+
+    const go = t => () => this.setState({ tab: t, screen: null });
+    const tabs = [
+      { id: 'home', icon: 'ph ph-house', label: 'Home' },
+      { id: 'sched', icon: 'ph ph-calendar-dots', label: 'Schedule' },
+      { id: 'labs', icon: 'ph ph-flask', label: 'Labs' },
+      { id: 'quiz', icon: 'ph ph-cards', label: 'Review' },
+      { id: 'squad', icon: 'ph ph-users-three', label: 'Squad' },
+    ].map(t => ({ ...t, onGo: go(t.id), color: (!screen && s.tab === t.id) ? ACCENT_L : '#6b7885',
+      dot: t.id === 'squad' && s.inbox.pick === null }));
+
+    // peptide
+    const donorSet = !!s.donor, accSet = !!s.acceptor;
+    const chips = CHIPS.map(c => {
+      const used = s.donor === c.id || s.acceptor === c.id;
+      return {
+        label: c.label, sub: c.sub, draggable: !used,
+        border: s.selected === c.id ? ACCENT : LINE,
+        opacity: used ? 0.35 : 1,
+        onDragStart: e => { this._drag = c.id; if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move'; },
+        onTap: () => { if (!used) this.setState({ selected: s.selected === c.id ? null : c.id, pepFb: null }); },
+      };
+    });
+    const dropTo = slot => e => { e.preventDefault(); if (this._drag) this.place(slot, this._drag); this._drag = null; };
+    const tapTo = slot => () => { if (s.selected) this.place(slot, s.selected); };
+
+    const leavingOptions = [
+      { id: 'h2o', label: 'H₂O', name: 'water' },
+      { id: 'co2', label: 'CO₂', name: 'carbon dioxide' },
+      { id: 'nh3', label: 'NH₃', name: 'ammonia' },
+      { id: 'atp', label: 'ATP', name: 'adenosine triphosphate' },
+    ].map(o => ({
+      ...o,
+      border: s.leavingPick === o.id ? (o.id === 'h2o' ? ACCENT : BAD) : LINE,
+      onPick: () => {
+        if (o.id === 'h2o') {
+          this.setState(x => ({ leavingPick: o.id, pepRight: x.pepRight + 1, pepStage: 3,
+            pepFb: { kind: 'ok', title: 'Correct', body: 'The —OH from the carboxyl and an —H from the amino group leave as water. Condensation, also called dehydration synthesis.' } }));
+        } else {
+          const why = { co2: 'Decarboxylation removes CO₂ — that is how amino acids become biogenic amines, not how they polymerize.',
+            nh3: 'Ammonia leaves during deamination in the urea cycle, not during peptide synthesis.',
+            atp: 'ATP is consumed to charge the tRNA, but it is not the leaving group of the bond itself.' }[o.id];
+          this.setState(x => ({ leavingPick: o.id, pepWrong: x.pepWrong + 1,
+            pepFb: { kind: 'bad', title: 'Not quite — the answer is H₂O', body: why } }));
+        }
+      },
+    }));
+
+    const pepTotal = s.pepRight + s.pepWrong;
+    const pepAcc = pepTotal ? Math.round((s.pepRight / pepTotal) * 100) : 100;
+    const fbMap = { ok: [ACCENT, OK_BG, ACCENT_L], bad: [BAD, BAD_BG, BAD] };
+    const pf = s.pepFb ? fbMap[s.pepFb.kind] : fbMap.ok;
+
+    const pepPrompts = {
+      1: ['Build the bond.', 'Drag the two groups that actually react into their slots. The other two are decoys.'],
+      2: ['The bond formed.', 'One small molecule was expelled in the process.'],
+      3: ['Gly-Ala synthesized.', 'Directionality runs N-terminus to C-terminus — always read a sequence that way.'],
+    };
+
+    // heart
+    let pts = [[0, -90], [26, -90]];
+    if (s.hPhase >= 0) pts.push([40, -66]);
+    for (let i = 0; i <= s.hPhase && i < HEART_STEPS.length; i++) pts = pts.concat(HEART_STEPS[i].pts);
+    if (s.hPhase >= HEART_STEPS.length) pts.push([300, -90]);
+    const yOf = mv => 12 + ((30 - mv) / 125) * 148;
+    const curvePoints = pts.map(p => p[0] + ',' + Math.round(yOf(p[1]) * 10) / 10).join(' ');
+    const head = pts[pts.length - 1];
+
+    const nextIon = HEART_STEPS[s.hPhase] ? HEART_STEPS[s.hPhase].ion : null;
+    const fireIon = id => () => {
+      const step = HEART_STEPS[s.hPhase];
+      if (!step) return;
+      if (id === step.ion) {
+        this.setState(x => ({ hPhase: x.hPhase + 1, hRight: x.hRight + 1,
+          hFb: { kind: 'ok', title: step.phase, body: step.note } }));
+      } else {
+        this.setState(x => ({ hWrong: x.hWrong + 1,
+          hFb: { kind: 'bad', title: 'Nothing happens', body: WRONG_ION[id] } }));
+      }
+    };
+    const hTotal = s.hRight + s.hWrong;
+    const hf = s.hFb ? fbMap[s.hFb.kind] : fbMap.ok;
+    const phaseTicks = ['Rest', 'Ph 0', 'Ph 1', 'Ph 2', 'Ph 3'].map((label, i) => ({
+      label, color: (i - 1) === s.hPhase - 1 && s.hPhase >= 0 && s.hPhase <= 3 ? ACCENT_L : '#a9b5c0',
+    }));
+
+    // quiz
+    const q = QUESTIONS[s.qIndex] || QUESTIONS[0];
+    const answered = s.qPick !== null;
+    const qOptions = q.options.map((text, i) => ({
+      text,
+      border: !answered ? LINE : (i === q.answer ? ACCENT : (i === s.qPick ? BAD : LINE)),
+      onPick: () => { if (s.qPick === null) this.setState(x => ({ qPick: i, qScore: x.qScore + (i === q.answer ? 1 : 0), missI: x.missI + (i === q.answer ? 0 : 1) })); },
+    }));
+    const lastQ = s.qIndex === QUESTIONS.length - 1;
+    const qf = answered ? (s.qPick === q.answer ? fbMap.ok : fbMap.bad) : fbMap.ok;
+
+    // ---- duels ----
+    const MYBLOCKS = ['A&P I', 'A&P II', 'Biochemistry', 'Microbiology'];
+    const inbox = s.inbox;
+    const iq = BLOCK_QS[inbox.block][inbox.qi];
+    const iAnswered = inbox.pick !== null;
+    const iWon = inbox.pick === iq.answer;
+    const inboxOptions = iq.options.map((text, i) => ({
+      text,
+      border: !iAnswered ? LINE : (i === iq.answer ? ACCENT : (i === inbox.pick ? BAD : LINE)),
+      onPick: () => {
+        if (inbox.pick !== null) return;
+        const right = i === iq.answer;
+        this.setState(x => ({ inbox: { ...x.inbox, pick: i }, points: x.points + (right ? 10 : -x.inbox.stake) }));
+      },
+    }));
+
+    const fr = FRIENDS.find(f => f.id === s.dFriend);
+    const shared = fr ? fr.blocks.filter(b => MYBLOCKS.indexOf(b) >= 0) : [];
+    const dQs = s.dBlock ? BLOCK_QS[s.dBlock] : [];
+    const setD = patch => () => this.setState(patch);
+
+    return {
+      frameName: (this.props.platform ?? 'iOS') === 'Android' ? 'AndroidDevice' : 'IOSDevice',
+      chromeKicker: s.signedUp ? chrome[0] : 'PA-thway',
+      chromeTitle: s.signedUp ? chrome[1] : 'Set up your app',
+      showBack: !!screen && s.signedUp, showAvatar: !screen && s.signedUp,
+      showTabs: !screen && s.signedUp,
+      goBack: () => this.setState({ screen: null }),
+      tabs, isHome, isLabs, isQuiz, isSquad, isSched,
+
+      termLine: (prof.term || 'This term') + (prof.klass.trim() ? ' · Class ' + prof.klass.trim() : ''),
+      schedFile: cal.file || (calItems.length ? 'Your schedule · added by hand' : 'No schedule imported yet'),
+      schedMeta: calItems.length
+        ? calItems.length + (calItems.length === 1 ? ' entry · ' : ' entries · ') + examItems.length + (examItems.length === 1 ? ' exam ahead' : ' exams ahead') + (cal.sheet ? ' · sheet “' + cal.sheet + '”' : '')
+        : 'Import an .xlsx, .csv or .ics — or add classes by hand',
+      schedHasFile: !!cal.file, schedLoading: cal.status === 'reading',
+      schedFailed: cal.status === 'error', schedError: cal.error || '',
+      schedEmpty: calItems.length === 0,
+      schedIcon: cal.status === 'error' ? 'ph ph-warning-circle' : (cal.file ? 'ph ph-microsoft-excel-logo' : 'ph ph-calendar-plus'),
+      schedIconColor: cal.status === 'error' ? '#b3603a' : (cal.file ? '#3d7a4d' : '#0b6675'),
+      schedRef: this._schedRef || (this._schedRef = React.createRef()),
+      onSchedPick: e => { this.importSched(e.target.files); e.target.value = ''; },
+      openSchedPicker: () => { const n = this._schedRef && this._schedRef.current; if (n) n.click(); },
+      onSchedDrop: e => { e.preventDefault(); this.importSched(e.dataTransfer.files); },
+      weekLabel: D_LONG(weekIsos[0]) + ' – ' + D_LONG(weekIsos[6]),
+      prevWeek: () => this.setState(x => ({ weekMon: D_ISO(D_ADD(D_PARSE(x.weekMon), -7)) })),
+      nextWeek: () => this.setState(x => ({ weekMon: D_ISO(D_ADD(D_PARSE(x.weekMon), 7)) })),
+      thisWeek: () => this.setState({ weekMon: D_ISO(D_MONDAY(D_TODAY())), day: todayIso }),
+      hasExam: yearExams.length > 0, noExam: yearExams.length === 0,
+      nextExam: nx.name, nextExamWhen: nx.when, nextExamAway: nx.away,
+      nextExamColor: nx.color, nextExamTint: nx.color + '16',
+      addToDay: () => this.newItem(s.day),
+      isSedit: screen === 'sedit',
+      sedName: s.sed ? s.sed.name : '',
+      sedDate: s.sed ? s.sed.date : '',
+      sedStart: s.sed ? s.sed.t : '',
+      sedEnd: s.sed ? s.sed.end : '',
+      sedRoom: s.sed ? s.sed.room : '',
+      sedExisting: !!(s.sed && s.sed.id),
+      sedSaveLabel: s.sed && s.sed.id ? 'Save changes' : 'Add to schedule',
+      sedSaveOpacity: s.sed && s.sed.name.trim() && /^\d{4}-\d{2}-\d{2}$/.test(s.sed.date) ? 1 : 0.45,
+      sedDayLabel: s.sed ? D_LONG(s.sed.date) : '',
+      setSedName: e => this.setSed('name', e.target.value),
+      setSedDate: e => this.setSed('date', e.target.value),
+      setSedStart: e => this.setSed('t', e.target.value.replace(/[^0-9]/g, '').slice(0, 4)),
+      setSedEnd: e => this.setSed('end', e.target.value.replace(/[^0-9]/g, '').slice(0, 4)),
+      setSedRoom: e => this.setSed('room', e.target.value),
+      sedKinds: SKINDS.map(k => ({
+        label: SKIND_LABEL[k],
+        border: s.sed && s.sed.kind === k ? KINDC[k] : '#dde3ea',
+        bg: s.sed && s.sed.kind === k ? KINDC[k] + '18' : '#ffffff',
+        fg: s.sed && s.sed.kind === k ? KINDC[k] : '#5b6875',
+        onPick: () => this.setSed('kind', k),
+      })),
+      saveSed: () => this.saveItem(),
+      deleteSed: () => this.deleteItem(),
+      cancelSed: () => this.setState({ screen: null, sed: null }),
+      yearOne, notYearOne: !yearOne, yearLabel: prof.year,
+      exams: yearExams.map(e => {
+        const rec = s.logs.find(l => l.name === e.name);
+        return { ...e, tint: e.color + '16', logged: !!rec, scoreLabel: rec ? rec.score + '%' : 'Log',
+          onLog: () => this.setState({ screen: 'log', logTarget: { name: e.name, when: e.when, color: e.color },
+            logScore: rec ? rec.score : '', logWent: rec ? rec.went : '', logFix: rec ? rec.fix : '' }) };
+      }),
+      logs: s.logs.map(l => ({ ...l, tint: l.color + '14',
+        onOpen: () => this.setState({ screen: 'log', logTarget: { name: l.name, when: l.when, color: l.color },
+          logScore: l.score, logWent: l.went, logFix: l.fix }) })),
+      hasLogs: s.logs.length > 0,
+      isLog: screen === 'log',
+      logName: s.logTarget ? s.logTarget.name : '',
+      logWhen: s.logTarget ? s.logTarget.when : '',
+      logColor: s.logTarget ? s.logTarget.color : '#0e7c8c',
+      logScore: s.logScore, logWent: s.logWent, logFix: s.logFix,
+      setLogScore: e => this.setState({ logScore: e.target.value.replace(/[^0-9]/g, '').slice(0, 3) }),
+      setLogWent: e => this.setState({ logWent: e.target.value }),
+      setLogFix: e => this.setState({ logFix: e.target.value }),
+      saveLog: () => this.setState(x => {
+        const t = x.logTarget;
+        const entry = { name: t.name, when: t.when, color: t.color, score: x.logScore || '—', went: x.logWent, fix: x.logFix };
+        const rest = x.logs.filter(l => l.name !== t.name);
+        return { logs: [entry].concat(rest), screen: null, tab: 'sched' };
+      }),
+      weekDays: weekIsos.map(iso => {
+        const items = onDay(iso);
+        const sel = iso === s.day;
+        const d = D_PARSE(iso);
+        return {
+          d: DOW3[d.getDay()], n: String(d.getDate()),
+          bg: sel ? '#0e7c8c' : (iso === todayIso ? '#e6f3f5' : '#ffffff'),
+          fg: sel ? '#ffffff' : '#16202e',
+          border: sel ? '#0e7c8c' : (iso === todayIso ? '#8fc6ce' : '#dde3ea'),
+          hasExam: items.some(x => x.kind === 'exam'),
+          hasLab: items.some(x => x.kind === 'lab'),
+          examDot: sel ? '#ffffff' : '#b3603a',
+          labDot: sel ? '#ffffff' : '#3a6fa8',
+          onPick: () => this.setState({ day: iso }),
+        };
+      }),
+      dayHeading: D_LONG(s.day) + (s.day === todayIso ? ' · today' : ''),
+      dayEmpty: dayItemsRaw.length === 0,
+      dayNote: calItems.length ? 'Nothing scheduled. Add a class or move one here.' : 'No schedule yet — import your class calendar or add classes by hand.',
+      dayItems: dayItemsRaw.map(i => {
+        const c = itemColor(i);
+        return {
+          t: T_LABEL(i.t), name: i.name, color: c, tint: c + '14',
+          muted: i.kind === 'lunch' ? '#98a4b0' : '#16202e',
+          badge: i.kind === 'exam' ? 'EXAM' : (i.kind === 'lab' ? 'LAB' : ''),
+          showBadge: i.kind === 'exam' || i.kind === 'lab',
+          sub: [i.end ? T_LABEL(i.t) + '–' + i.end : '', i.room].filter(Boolean).join(' · '),
+          hasSub: !!(i.end || i.room),
+          onEdit: () => this.editItem(i),
+        };
+      }),
+      gearOn: !!gearFor(dayItemsRaw),
+      gearText: gearFor(dayItemsRaw) ? gearFor(dayItemsRaw).text : '',
+      gearIcon: gearFor(dayItemsRaw) ? gearFor(dayItemsRaw).icon : '',
+      gearColor: gearFor(dayItemsRaw) ? gearFor(dayItemsRaw).color : '#6b7885',
+      gearTint: gearFor(dayItemsRaw) ? gearFor(dayItemsRaw).color + '14' : '#f2f6f8',
+      rules: RULES.map(r => {
+        const on = s.rules[r.id];
+        return { ...r, on, knob: on ? 'flex-end' : 'flex-start',
+          track: on ? '#0e7c8c' : '#dde3ea', iconColor: on ? '#0b6675' : '#98a4b0',
+          onToggle: () => this.setState(x => ({ rules: { ...x.rules, [r.id]: !x.rules[r.id] } })) };
+      }),
+      openSched: () => this.setState({ tab: 'sched', screen: null }),
+
+      signedUp: s.signedUp, setupOn: !s.signedUp,
+      setup1: s.setupStep === 1, setup2: s.setupStep === 2, setup3: s.setupStep === 3,
+      setupDots: [1, 2, 3].map(i => ({ color: i <= s.setupStep ? '#0e7c8c' : '#e4eaf0' })),
+      pName: prof.name, pKlass: prof.klass, pTerm: prof.term, pYear: prof.year,
+      setName: e => this.setP('name', e.target.value),
+      setKlass: e => this.setP('klass', e.target.value),
+      setTerm: e => this.setP('term', e.target.value),
+      years: YEAR_NAMES.map(y => ({
+        name: y, count: YEARS[y].length + ' blocks',
+        border: prof.year === y ? '#0e7c8c' : '#dde3ea',
+        bg: prof.year === y ? '#e6f3f5' : '#ffffff',
+        onPick: () => this.setP('year', y),
+      })),
+      setupNext: () => this.setState(x => ({ setupStep: Math.min(3, x.setupStep + 1) })),
+      setupBack: () => this.setState(x => ({ setupStep: Math.max(1, x.setupStep - 1) })),
+      setupNextDisabled: !prof.name.trim(),
+      setupNextOpacity: prof.name.trim() ? 1 : 0.4,
+      finishSetup: () => this.setState(x => ({ signedUp: true, why: x.whyDraft.trim() || x.why, screen: null })),
+      isProfile: screen === 'profile',
+      openProfile: () => this.setState({ screen: 'profile' }),
+      closeProfile: () => this.setState({ screen: null }),
+      initials: (prof.name.trim() ? prof.name.trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2) : 'PA').toUpperCase(),
+      greeting: firstName ? 'Good evening, ' + firstName : 'Good evening',
+      klassLine: prof.klass.trim() ? 'Class ' + prof.klass.trim() : 'Your class',
+      standingLine: prof.klass.trim() ? 'of 42 in Class ' + prof.klass.trim() + '. Accuracy is the ranking metric — volume is not.' : 'in your class. Accuracy is the ranking metric — volume is not.',
+
+      affirm: AFFIRM[s.affirmI % AFFIRM.length],
+      nextAffirm: () => this.setState(x => ({ affirmI: x.affirmI + 1 })),
+      why: s.why,
+      isWhy: screen === 'why',
+      openWhy: () => this.setState({ screen: 'why', whyDraft: s.why }),
+      whyDraft: s.whyDraft,
+      setWhyDraft: e => this.setState({ whyDraft: e.target.value }),
+      saveWhy: () => this.setState(x => ({ why: x.whyDraft.trim() || x.why, screen: null })),
+      missLine: MISS_LINES[s.missI % MISS_LINES.length],
+      isPeptide: screen === 'peptide', isHeart: screen === 'heart', isUpload: screen === 'upload',
+
+      readiness,
+      readinessBars: bars,
+      weakest: weakCourse ? weakCourse.name : '—',
+      courses: allCourses.map(c => ({ ...c, accW: c.acc + '%', tint: c.color + '14', ring: c.color + '33',
+        subline: c.acc ? c.labs + ' labs · ' + c.acc + '% acc' : c.labs + ' labs · not started',
+        onOpen: () => this.setState({ tab: 'labs', screen: c.id === 'ap2' ? 'heart' : (c.id === 'own' ? 'upload' : (c.id === 'bio' ? 'peptide' : null)) }) })),
+      openPeptide: () => this.setState({ screen: 'peptide' }),
+      openHeart: () => this.setState({ screen: 'heart' }),
+      openUpload: () => this.setState({ screen: 'upload' }),
+      openCatalog: () => this.setState({ screen: 'catalog' }),
+      isCatalog: screen === 'catalog',
+      catalog: catalogItems.map(c => {
+        const on = s.extra.indexOf(c.id) >= 0;
+        return { ...c, tint: c.color + '16', added: on, addLabel: on ? 'Added' : 'Add',
+          addBorder: on ? c.color : '#dde3ea', addColor: on ? c.color : '#16202e',
+          onAdd: () => this.setState(x => ({ extra: on ? x.extra.filter(i => i !== c.id) : x.extra.concat(c.id) })) };
+      }),
+      extraCount: s.extra.length,
+
+      labList: [
+        { name: 'Peptide Bond Formation', desc: 'Drag reactive groups together and expel the water.', course: 'Biochem', mode: 'Drag', icon: 'ph ph-link-simple', slot: 'lab-fig-pep', onOpen: () => this.setState({ screen: 'peptide' }) },
+        { name: 'Ventricular Action Potential', desc: 'Dial the stimulus past threshold, then fire each current in order.', course: 'A&P II', mode: 'Tap + dial', icon: 'ph ph-pulse', slot: 'lab-fig-ap', onOpen: () => this.setState({ screen: 'heart' }) },
+        { name: 'Steroid vs. Lipid ID', desc: 'Pick the four-ring system out of a lineup of fatty acids.', course: 'Biochem', mode: 'Sort', icon: 'ph ph-hexagon', slot: 'lab-fig-steroid', onOpen: () => this.setState({ screen: null }) },
+        { name: 'Gram Stain Bench', desc: 'Run the four reagents in sequence on an unknown isolate.', course: 'Micro', mode: 'Sequence', icon: 'ph ph-virus', slot: 'lab-fig-gram', onOpen: () => this.setState({ screen: null }) },
+        { name: 'Build from your lecture', desc: 'Upload a deck and generate matching labs.', course: 'Any', mode: 'Upload', icon: 'ph ph-upload-simple', slot: 'lab-fig-upload', onOpen: () => this.setState({ screen: 'upload' }) },
+      ].map(l => ({ ...l, color: CC[l.course] || ACCENT, tint: (CC[l.course] || ACCENT) + '16' })),
+
+      pepStage1: s.pepStage === 1, pepStage2: s.pepStage === 2, pepStage3: s.pepStage === 3,
+      pepPrompt: pepPrompts[s.pepStage][0], pepSub: pepPrompts[s.pepStage][1],
+      pepProgress: (s.pepStage * 33) + '%', pepAcc, pepAttempts: pepTotal,
+      chips, allowDrop: e => e.preventDefault(),
+      dropDonor: dropTo('donor'), dropAcceptor: dropTo('acceptor'),
+      tapDonor: tapTo('donor'), tapAcceptor: tapTo('acceptor'),
+      donorText: donorSet ? '—COOH' : '—?', accText: accSet ? '—NH₂' : '—?',
+      donorHint: donorSet ? 'electrophilic carbonyl' : 'drop the reactive group',
+      accHint: accSet ? 'nucleophilic nitrogen' : 'drop the reactive group',
+      donorBorder: donorSet ? ACCENT : '#a9b5c0', accBorder: accSet ? ACCENT : '#a9b5c0',
+      donorBg: donorSet ? '#e6f3f5' : '#ffffff',
+      accBg: accSet ? '#e6f3f5' : '#ffffff',
+      condenseDisabled: !(donorSet && accSet),
+      condenseOpacity: donorSet && accSet ? 1 : 0.4,
+      condense: () => { if (donorSet && accSet) this.setState({ pepStage: 2, pepFb: null }); },
+      leavingOptions, resetPeptide: () => this.setState({ pepStage: 1, donor: null, acceptor: null, selected: null, pepRight: 0, pepWrong: 0, pepFb: null, leavingPick: null }),
+      pepFeedbackOn: !!s.pepFb,
+      pepFbTitle: s.pepFb ? s.pepFb.title : '', pepFbBody: s.pepFb ? s.pepFb.body : '',
+      pepFbBorder: pf[0], pepFbBg: pf[1], pepFbColor: pf[2],
+
+      curvePoints, headX: head[0], headY: Math.round(yOf(head[1]) * 10) / 10,
+      zeroY: yOf(0), threshY: yOf(-65), zeroLabelY: yOf(0) - 4, threshLabelY: yOf(-65) - 4,
+      phaseTicks,
+      heartArmed: s.hPhase < 0, heartFiring: s.hPhase >= 0 && s.hPhase < HEART_STEPS.length,
+      heartDone: s.hPhase >= HEART_STEPS.length,
+      stim: s.stim, stimColor: s.stim >= -65 ? ACCENT_L : '#5b6875',
+      setStim: e => this.setState({ stim: Number(e.target.value) }),
+      fireStim: () => {
+        if (s.stim >= -65) this.setState({ hPhase: 0, hFb: { kind: 'ok', title: 'Threshold reached', body: 'The response is all-or-none. Now open the current that produces the upstroke.' } });
+        else this.setState({ hFb: { kind: 'bad', title: 'Subthreshold', body: 'Below roughly −65 mV the depolarization dies out locally. No all-or-none response is generated.' } });
+      },
+      heartPrompt: nextIon ? 'Which current carries ' + HEART_STEPS[s.hPhase].phase + '?' : '',
+      ions: IONS.map(i => ({ ...i, onFire: fireIon(i.id), border: i.color + '55', tint: i.color + '12' })),
+      heartAcc: hTotal ? Math.round((s.hRight / hTotal) * 100) : 100,
+      heartFbOn: !!s.hFb, heartFbTitle: s.hFb ? s.hFb.title : '', heartFbBody: s.hFb ? s.hFb.body : '',
+      heartFbBorder: hf[0], heartFbBg: hf[1], heartFbColor: hf[2],
+      resetHeart: () => this.setState({ hPhase: -1, stim: -90, hFb: null, hRight: 0, hWrong: 0 }),
+
+      fileRef: this._fileRef || (this._fileRef = React.createRef()),
+      openPicker: () => { const n = this._fileRef && this._fileRef.current; if (n) n.click(); },
+      onPick: e => { const fs = e.target.files; this.ingest(fs); e.target.value = ''; },
+      pasteOpen: !!s.pasteOpen,
+      pasteToggleLabel: s.pasteOpen ? 'Hide the paste-in box' : 'Or paste the lecture text instead',
+      togglePaste: () => this.setState(x => ({ pasteOpen: !x.pasteOpen })),
+      pasteText: s.pasteText || '',
+      setPasteText: e => this.setState({ pasteText: e.target.value }),
+      pasteCount: ((s.pasteText || '').trim().length) + ' characters — 300 minimum',
+      pasteCountColor: (s.pasteText || '').replace(/\s/g, '').length >= 300 ? '#3d7a4d' : '#6b7885',
+      pasteDisabled: (s.pasteText || '').replace(/\s/g, '').length < 300,
+      pasteOpacity: (s.pasteText || '').replace(/\s/g, '').length < 300 ? 0.45 : 1,
+      buildFromPaste: () => this.ingestPaste(),
+      onDragOver: e => { e.preventDefault(); if (!s.dragOver) this.setState({ dragOver: true }); },
+      onDragLeave: e => { e.preventDefault(); this.setState({ dragOver: false }); },
+      onDrop: e => { e.preventDefault(); this.ingest(e.dataTransfer.files); },
+      dropBorder: s.dragOver ? ACCENT : '#a9b5c0',
+      dropBg: s.dragOver ? '#dbeef1' : '#f5fafb',
+
+      upHasFile: up.status !== 'idle' && up.status !== undefined,
+      upName: up.name, upIcon: up.icon || 'ph ph-file-text',
+      upSectionLabel: up.status === 'done' ? 'This file' : 'Reading',
+      uploadStatus: upStatus,
+      upStatusColor: up.status === 'error' ? '#b3603a' : '#6b7885',
+      uploadBuilding: up.status === 'reading' || up.status === 'writing',
+      uploadPct: s.uploadPct + '%',
+      upFailed: up.status === 'error', upError: up.error,
+      upDone: up.status === 'done' && up.questions.length > 0,
+      upQPreview: up.questions.map((q3, i) => ({ q: q3.q, meta: 'Q' + (i + 1) + ' · ' + q3.options.length + ' options · ' + (q3.course || 'From your lectures') })),
+      studyLabel: 'Study these ' + up.questions.length + ' questions',
+      studyUpload: () => this.setState(x => ({ customQs: x.up.questions, tab: 'quiz', screen: null, qIndex: 0, qPick: null, qScore: 0, quizDone: false })),
+      shareUploadLabel: s.cohort.code ? 'Share these notes with ' + s.cohort.code : 'Share these notes with your cohort',
+      shareUpload: () => {
+        if (!s.cohort.code) { this.setState({ screen: null, tab: 'squad', squadView: 'notes' }); return; }
+        const topics = (up.topics || []).map(t => '• ' + t.name + (t.desc ? ' — ' + t.desc : '')).join('\n');
+        this.setState({ screen: 'post', pdraft: {
+          title: up.name.replace(/\.[a-z0-9]+$/i, ''),
+          course: up.course || 'From your lectures',
+          body: (up.pages ? up.pages + ' ' + (up.unit || 'sections') + ' read from this lecture.\n\n' : '') + (topics ? 'What it covers:\n' + topics + '\n\n' : '') + 'What I would add: ',
+          attach: true,
+        } });
+      },
+      upEngineNote: up.engine === 'offline'
+        ? 'Written offline from the sentences in the file, so read them against your source before you trust them.'
+        : 'Written from the text of this file. Nothing was uploaded to a server for storage.',
+      generated: (up.topics || []).map(t => ({ name: t.name, slides: t.span, desc: t.desc })),
+
+      quizRunning: !s.quizDone, quizDone: s.quizDone,
+      quizDots: QUESTIONS.map((_, i) => ({ color: i < s.qIndex ? ACCENT : (i === s.qIndex ? ACCENT_L : '#e4eaf0') })),
+      qCourse: q.course, qCourseColor: CC[q.course] || ACCENT, qCourseTint: (CC[q.course] || ACCENT) + '18',
+      qText: q.q, qOptions, qAnswered: answered,
+      qRationale: q.why,
+      qMissed: answered && s.qPick !== q.answer,
+      qFbTitle: answered ? (s.qPick === q.answer ? 'Correct' : 'Missed — ' + q.options[q.answer]) : '',
+      qFbBorder: qf[0], qFbBg: qf[1], qFbColor: qf[2],
+      nextLabel: lastQ ? 'See results' : 'Next question',
+      nextQuestion: () => {
+        if (lastQ) {
+          this.setState({ quizDone: true });
+          this.recordScore(s.qScore, QUESTIONS.length, s.customQs.length ? 'From your lectures' : 'Review');
+        } else this.setState(x => ({ qIndex: x.qIndex + 1, qPick: null }));
+      },
+      quizScorePct: Math.round((s.qScore / QUESTIONS.length) * 100),
+      quizScoreLine: s.qScore + ' of ' + QUESTIONS.length + ' correct · class average 74%',
+      resetQuiz: () => this.setState({ qIndex: 0, qPick: null, qScore: 0, quizDone: false }),
+
+      leaders: (hubBoard.length ? hubBoard : LEADERS).map((p, i2) => ({
+        rank: p.rank || String(i2 + 1),
+        initials: p.initials, name: p.name + (p.isMe || p.me ? ' · you' : ''),
+        emoji: p.emoji || '', sub: p.sub || (p.answered ? p.correct + '/' + p.answered + ' correct' : 'No quizzes yet'),
+        pts: String(p.points != null ? p.points : p.pts || 0),
+        me: !!(p.isMe || p.me),
+        bg: (p.isMe || p.me) ? NOC.tint : 'transparent',
+        fg: (p.isMe || p.me) ? NOC.accentText : NOC.text,
+      })),
+
+      isDuel: screen === 'duel',
+      squadNotes: s.squadView === 'notes',
+      squadPeople: s.squadView === 'people',
+      showNotes: () => this.setState({ squadView: 'notes' }),
+      showPeople: () => this.setState({ squadView: 'people' }),
+      notesBorder: s.squadView === 'notes' ? NOC.accent : NOC.line,
+      notesBg: s.squadView === 'notes' ? NOC.tint : 'transparent',
+      notesFg: s.squadView === 'notes' ? NOC.accentText : NOC.muted,
+      peopleBorder: s.squadView === 'people' ? NOC.accent : NOC.line,
+      peopleBg: s.squadView === 'people' ? NOC.tint : 'transparent',
+      peopleFg: s.squadView === 'people' ? NOC.accentText : NOC.muted,
+
+      inCohort: !!s.cohort.code, noCohort: !s.cohort.code,
+      cohortCode: s.cohort.code,
+      hubJoining: s.hubStatus === 'joining',
+      // Device mode is a normal way to run, not a failure — so no red banner for it.
+      hubBroken: s.hubStatus === 'error' && s.hubLive && !!s.hubError,
+      hubErrorText: s.hubError,
+      hubLiveLabel: s.hubLive ? 'Live · everyone with this code' : 'On this device only · Hub not deployed yet',
+      hubLiveColor: s.hubLive ? '#9ec7a6' : NOC.faint,
+      hubLiveDot: s.hubLive ? '#3d7a4d' : '#a9b5c0',
+      hubIsLocal: !s.hubLive,
+      cohortMeta: (() => {
+        const ns = hubNotes.length, ppl = (s.shared.members || []).length;
+        return ns
+          ? ns + (ns === 1 ? ' note · ' : ' notes · ') + ppl + (ppl === 1 ? ' member' : ' members')
+          : ppl + (ppl === 1 ? ' member · nothing shared yet' : ' members · nothing shared yet');
+      })(),
+      isOwner: !!s.shared.isOwner,
+      joinCode: s.joinCode,
+      setJoinCode: e => this.setState({ joinCode: e.target.value.toUpperCase().slice(0, 16) }),
+      doJoin: () => this.joinCohort(),
+      joinOpacity: (s.joinCode || '').trim().length >= 4 ? 1 : 0.45,
+      makeCode: () => this.makeCode(),
+      leaveCohort: () => this.leaveCohort(),
+      copyCode: () => {
+        try { navigator.clipboard.writeText(s.cohort.code); this.setState({ copied: true });
+          setTimeout(() => this.setState({ copied: false }), 1600); } catch (e) { /* denied */ }
+      },
+      copyLabel: s.copied ? 'Copied' : 'Copy',
+
+      unread: unread.length,
+      hasUnread: unread.length > 0,
+      unreadLabel: unread.length > 9 ? '9+' : String(unread.length),
+      notifOpen: !!s.notifOpen,
+      toggleNotifs: () => {
+        const open = !s.notifOpen;
+        this.setState({ notifOpen: open });
+        if (open && unread.length) this.readNotifs();
+      },
+      notifs: (s.shared.notifs || []).slice(0, 20).map(n => ({
+        icon: n.kind === 'like' ? 'ph-fill ph-heart' : n.kind === 'challenge' ? 'ph ph-swords' : 'ph ph-chat-circle',
+        color: n.kind === 'like' ? '#b0564e' : n.kind === 'challenge' ? '#3a6fa8' : ACCENT,
+        text: n.actor + ' ' + n.body,
+        when: ago(n.ts),
+        bg: n.read ? '#ffffff' : '#f5fafb',
+        onOpen: () => { if (n.noteId) this.setState({ screen: 'note', noteId: n.noteId, notifOpen: false, cdraft: '' }); },
+      })),
+      notifsEmpty: (s.shared.notifs || []).length === 0,
+
+      notesEmpty: hubNotes.length === 0,
+      notes: hubNotes.map(n => {
+        const c = CC[n.course] || ACCENT;
+        const cc = n.comments.length;
+        return {
+          author: n.author, initials: n.initials, title: n.title, course: n.course,
+          color: c, tint: c + '16', when: ago(n.ts) + (n.edited ? ' · edited' : ''),
+          excerpt: n.body.length > 150 ? n.body.slice(0, 150).trim() + '…' : n.body,
+          commentLabel: cc === 0 ? 'Comment' : cc === 1 ? '1 comment' : cc + ' comments',
+          likeLabel: n.likes ? String(n.likes) : '',
+          likeIcon: n.likedByMe ? 'ph-fill ph-heart' : 'ph ph-heart',
+          likeColor: n.likedByMe ? '#b0564e' : '#98a4b0',
+          likeBorder: n.likedByMe ? '#e2c6c2' : '#e4eaf0',
+          likeBg: n.likedByMe ? '#fbeceb' : '#ffffff',
+          onLike: () => this.toggleLike(n.id, 'note', n.authorKey, '“' + n.title + '”'),
+          mine: n.authorKey === s.shared.me,
+          hasFile: !!n.file, file: n.file || '',
+          onOpen: () => this.setState({ screen: 'note', noteId: n.id, cdraft: '' }),
+        };
+      }),
+
+      people: (s.shared.board || []).map((m, i2) => ({
+        rank: String(i2 + 1),
+        name: m.name + (m.key === s.shared.me ? ' (you)' : ''),
+        emoji: m.emoji || '🩺', initials: m.initials,
+        points: String(m.points),
+        line: m.answered ? m.correct + '/' + m.answered + ' correct · ' + m.duelsWon + ' duels won' : 'No answers logged yet',
+        seen: ago(new Date(m.lastSeen).getTime()),
+        border: m.key === s.shared.me ? ACCENT : '#dde3ea',
+        bg: m.key === s.shared.me ? '#f5fafb' : '#ffffff',
+        onChallenge: () => this.setState({ screen: 'duel', dStep: 1, dFriend: m.name, dTarget: m.key, dBlock: null, dQi: null }),
+        canChallenge: m.key !== s.shared.me,
+      })),
+      // Three states, never a blank tab: not joined, joined but alone, or a list.
+      peopleNoCohort: !s.cohort.code,
+      peopleEmpty: !!s.cohort.code && (s.shared.board || []).length < 2,
+      peopleHasList: !!s.cohort.code && (s.shared.board || []).length >= 2,
+
+      openPost: () => this.setState({ screen: 'post', noteId: null,
+        pdraft: { title: '', course: (allCourses[0] || {}).name || 'General', body: '', attach: false } }),
+      isPost: screen === 'post',
+      postHeading: s.noteId ? 'Save changes' : 'Post to the cohort',
+      pTitle: s.pdraft.title, pBody: s.pdraft.body,
+      setPTitle: e => this.setState(x => ({ pdraft: { ...x.pdraft, title: e.target.value.slice(0, 80) } })),
+      setPBody: e => this.setState(x => ({ pdraft: { ...x.pdraft, body: e.target.value } })),
+      pCourses: allCourses.map(c => ({
+        name: c.name,
+        border: s.pdraft.course === c.name ? (CC[c.name] || ACCENT) : '#dde3ea',
+        bg: s.pdraft.course === c.name ? (CC[c.name] || ACCENT) + '16' : '#ffffff',
+        fg: s.pdraft.course === c.name ? (CC[c.name] || ACCENT) : '#5b6875',
+        onPick: () => this.setState(x => ({ pdraft: { ...x.pdraft, course: c.name } })),
+      })),
+      canAttach: up.status === 'done' && up.questions.length > 0 && !s.noteId,
+      attachLabel: up.status === 'done' ? 'Attach the ' + up.questions.length + ' questions from ' + up.name : '',
+      attachOn: !!s.pdraft.attach,
+      attachTrack: s.pdraft.attach ? ACCENT : '#d6dee6',
+      attachKnob: s.pdraft.attach ? 'flex-end' : 'flex-start',
+      toggleAttach: () => this.setState(x => ({ pdraft: { ...x.pdraft, attach: !x.pdraft.attach } })),
+      postOpacity: s.pdraft.title.trim() && s.pdraft.body.trim() ? 1 : 0.45,
+      savePost: () => (s.noteId ? this.editNote() : this.postNote()),
+
+      isNote: screen === 'note',
+      noteTitle: note ? note.title : '',
+      noteAuthor: note ? note.author : '',
+      noteInitials: note ? note.initials : '',
+      noteCourse: note ? note.course : '',
+      noteWhen: note ? ago(note.ts) + (note.edited ? ' · edited' : '') : '',
+      noteColor: note ? (CC[note.course] || ACCENT) : ACCENT,
+      noteTint: note ? (CC[note.course] || ACCENT) + '16' : '#e6f3f5',
+      noteBody: note ? note.body : '',
+      noteHasFile: !!(note && note.file), noteFile: note ? (note.file || '') : '',
+      noteHasQs: !!(note && note.questions.length),
+      noteQLabel: note ? 'Study the ' + note.questions.length + ' questions attached' : '',
+      noteLikes: note && note.likes ? String(note.likes) : '',
+      noteLikeIcon: note && note.likedByMe ? 'ph-fill ph-heart' : 'ph ph-heart',
+      noteLikeColor: note && note.likedByMe ? '#b0564e' : '#5b6875',
+      noteLikeBorder: note && note.likedByMe ? '#e2c6c2' : '#dde3ea',
+      noteLikeBg: note && note.likedByMe ? '#fbeceb' : 'transparent',
+      noteLikeText: note && note.likedByMe ? 'Liked' : 'Like',
+      likeNote: () => { if (note) this.toggleLike(note.id, 'note', note.authorKey, '“' + note.title + '”'); },
+      noteMine: !!(note && note.authorKey === s.shared.me),
+      canRemoveNote: !!(note && (note.authorKey === s.shared.me || s.shared.isOwner)),
+      removeNoteLabel: note && note.authorKey === s.shared.me ? 'Delete this post' : 'Remove as cohort owner',
+      editThisNote: () => { if (note) this.setState({ screen: 'post', pdraft: { title: note.title, course: note.course, body: note.body, attach: false } }); },
+      dropThisNote: () => { if (note) this.removeNote(note.id, note.authorKey !== s.shared.me); },
+      reportThisNote: () => { if (note) this.reportPost(note.id, 'note'); },
+      reportedThis: s.reported === (note ? note.id : ''),
+      studyNote: () => { if (note && note.questions.length) this.setState({ customQs: note.questions, tab: 'quiz', screen: null, qIndex: 0, qPick: null, qScore: 0, quizDone: false }); },
+      challengeFromNote: () => this.setState({ screen: 'duel', dStep: 1, dFriend: note ? note.author : null, dTarget: note ? note.authorKey : null, dBlock: note ? note.course : null, dQi: null, dNote: note ? note.id : null }),
+      challengeFromNoteLabel: note ? 'Challenge ' + note.author.split(/\s+/)[0] + ' on this' : 'Send a challenge',
+
+      noteComments: note ? note.comments.map(c => ({
+        author: c.author, initials: c.initials, text: c.text, when: ago(c.ts),
+        likeLabel: c.likes ? String(c.likes) : '',
+        likeIcon: c.likedByMe ? 'ph-fill ph-heart' : 'ph ph-heart',
+        likeColor: c.likedByMe ? '#b0564e' : '#98a4b0',
+        onLike: () => this.toggleLike(c.id, 'comment', c.authorKey, 'your comment'),
+        mine: c.authorKey === s.shared.me,
+        canRemove: c.authorKey === s.shared.me || s.shared.isOwner,
+        onRemove: () => this.removeComment(c.id),
+      })) : [],
+      noCommentsYet: !!(note && note.comments.length === 0),
+      cdraft: s.cdraft,
+      setCdraft: e => this.setState({ cdraft: e.target.value.slice(0, 600) }),
+      postComment: () => this.addComment(),
+      commentOpacity: (s.cdraft || '').trim() ? 1 : 0.45,
+
+      squadStanding: s.squadView === 'standing', squadDuels: s.squadView === 'duels',
+      showStanding: () => this.setState({ squadView: 'standing' }),
+      showDuels: () => this.setState({ squadView: 'duels' }),
+      standBorder: s.squadView === 'standing' ? NOC.accent : NOC.line,
+      standBg: s.squadView === 'standing' ? NOC.tint : 'transparent',
+      standFg: s.squadView === 'standing' ? NOC.accentText : NOC.muted,
+      duelBorder: s.squadView === 'duels' ? NOC.accent : NOC.line,
+      duelBg: s.squadView === 'duels' ? NOC.tint : 'transparent',
+      duelFg: s.squadView === 'duels' ? NOC.accentText : NOC.muted,
+      points: s.points,
+      inboxFrom: inbox.from, inboxInitials: inbox.initials, inboxBlock: inbox.block,
+      inboxStake: inbox.stake, inboxQ: iq.q, inboxOptions, inboxAnswered: iAnswered,
+      inboxResultTitle: iWon ? 'Held — you took 10 off Okafor' : 'Missed — Okafor took ' + inbox.stake + ' pts',
+      inboxResultBody: iq.why,
+      inboxResBorder: iWon ? ACCENT : BAD, inboxResBg: iWon ? OK_BG : BAD_BG,
+      inboxResColor: iWon ? ACCENT_L : BAD,
+      sent: s.sent.map(x => ({ ...x, color: x.tone === 'win' ? '#3d7a4d' : '#6b7885' })),
+      openDuel: () => this.setState({ screen: 'duel', dStep: 1, dFriend: null, dBlock: null, dQi: null, dStake: 25 }),
+
+      dStep1: s.dStep === 1, dStep2: s.dStep === 2, dStep3: s.dStep === 3,
+      dStepLabel: 'Step ' + s.dStep + ' of 3',
+      friends: FRIENDS.map(f => {
+        const sh = f.blocks.filter(b => MYBLOCKS.indexOf(b) >= 0);
+        return { ...f, sharedLine: sh.length + ' shared block' + (sh.length === 1 ? '' : 's'),
+          onPick: () => this.setState({ dFriend: f.id, dStep: 2, dBlock: null, dQi: null }) };
+      }),
+      dFriendName: fr ? fr.name : '',
+      sharedBlocks: shared.map(b => ({ name: b, color: CC[b] || ACCENT, tint: (CC[b] || ACCENT) + '16',
+        count: BLOCK_QS[b].length + ' questions',
+        onPick: () => this.setState({ dBlock: b, dStep: 3, dQi: null }) })),
+      dBlockName: s.dBlock || '',
+      dQuestions: dQs.map((q2, i) => ({ text: q2.q, border: s.dQi === i ? ACCENT : LINE,
+        bg: s.dQi === i ? OK_BG : '#ffffff', onPick: () => this.setState({ dQi: i }) })),
+      stakes: [10, 25, 50].map(v => ({ label: v + ' pts', border: s.dStake === v ? ACCENT : '#dde3ea',
+        bg: s.dStake === v ? '#e6f3f5' : '#ffffff', onPick: () => this.setState({ dStake: v }) })),
+      dSendLabel: 'Send for ' + s.dStake + ' pts',
+      dSendOpacity: s.dQi === null ? 0.4 : 1,
+      dBack: () => this.setState(x => ({ dStep: Math.max(1, x.dStep - 1) })),
+      dSend: () => {
+        if (s.dQi === null) return;
+        this.setState(x => ({
+          screen: null, tab: 'squad', squadView: 'duels',
+          sent: [{ to: fr.name, initials: fr.initials, block: x.dBlock, stake: x.dStake,
+            status: 'Sent just now — awaiting answer', tone: 'wait' }].concat(x.sent),
+        }));
+      },
+    };
+  }
+}
+
+</script>
+</body>
+</html>
