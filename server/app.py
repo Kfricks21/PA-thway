@@ -7,10 +7,17 @@ from flask import Flask, jsonify, request, send_from_directory
 from pptx import Presentation
 from pypdf import PdfReader
 
+from hub import register_hub
+from pathway_app import register_pathway
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 CLIENT_DIR = BASE_DIR / "client" / "dist"
 
 app = Flask(__name__)
+
+# The PA-thway student app at /app, and the shared Student Hub at /api/hub/*.
+register_pathway(app)
+register_hub(app)
 
 
 def extract_text_from_upload(uploaded_file):
