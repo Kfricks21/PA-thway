@@ -380,6 +380,32 @@ export async function makeQuestions(text, meta) {
   return heuristic(body, meta);
 }
 
+export function buildDefinitionFlashcards(text) {
+  const cards = [];
+  const seen = new Set();
+  const sourceText = clean(text || '');
+  const patterns = [
+    /^(?:\[Slide\s+\d+\]\s*)?([^\n:]{2,80})\s+(?:is|are|refers to|means|describes|denotes)\s+([^\n.]{12,220})[.]?/i,
+    /^(?:\[Slide\s+\d+\]\s*)?([^\n–-]{2,80})\s*[–-]\s*([^\n.]{12,220})[.]?/i,
+  ];
+
+  sourceText.split(/\n+/).map(line => clean(line)).filter(Boolean).forEach(line => {
+    patterns.some(pattern => {
+      const match = line.match(pattern);
+      if (!match) return false;
+      const term = match[1].replace(/^[-•\d.\s]+/, '').trim();
+      const definition = match[2].trim();
+      const key = term.toLowerCase();
+      if (term.length < 2 || definition.length < 12 || seen.has(key)) return false;
+      seen.add(key);
+      cards.push({ term, definition });
+      return cards.length >= 24;
+    });
+  });
+
+  return cards;
+}
+
 // Offline fallback: builds items from declarative sentences in the deck.
 function heuristic(text, meta) {
   const stop = /^(page|slide|objectives?|outline|references?|questions?|summary|thank you)\b/i;
