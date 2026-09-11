@@ -21,6 +21,11 @@ body{margin:0;background:#e9edf1;font-family:"Inter",system-ui,sans-serif;color:
 a{color:#0b6675;text-underline-offset:3px}
 a:hover{color:#0b6675}
 *{box-sizing:border-box}
+button,input,textarea{transition:border-color .18s ease,background-color .18s ease,box-shadow .18s ease,transform .18s ease}
+button:hover{transform:translateY(-1px)}
+input:focus,textarea:focus{box-shadow:0 0 0 3px rgba(14,124,140,.12)}
+x-import{filter:drop-shadow(0 24px 34px rgba(33,52,68,.16))}
+@media (max-width:560px){body{background:#f3f7f9}x-import{filter:none}}
 ::selection{background:rgba(14,124,140,.22)}
 :focus-visible{outline:2px solid #0e7c8c;outline-offset:2px}
 @keyframes popIn{from{opacity:0;transform:scale(.82) translateY(6px)}to{opacity:1;transform:none}}
@@ -180,6 +185,16 @@ a:hover{color:#0b6675}
 <div style="flex:1;min-width:0">
 <div style="font-size:13px;font-weight:600">{{ nextExam }} · {{ nextExamAway }}</div>
 <div style="font-size:11px;color:#5b6875;margin-top:2px">{{ nextExamWhen }}</div>
+</div>
+<i class="ph ph-caret-right" style="font-size:15px;color:#98a4b0"></i>
+</button>
+</sc-if>
+<sc-if value="{{ hasLab }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ openSched }}" style="margin-top:10px;width:100%;text-align:left;border:1px solid {{ nextLabColor }};border-radius:12px;padding:13px;cursor:pointer;font-family:inherit;color:#16202e;display:flex;gap:11px;align-items:center;background:{{ nextLabTint }}" style-hover="filter:brightness(.98)">
+<i class="ph ph-t-shirt" style="font-size:20px;color:{{ nextLabColor }}"></i>
+<div style="flex:1;min-width:0">
+<div style="font-size:13px;font-weight:600">PT gear · {{ nextLab }}</div>
+<div style="font-size:11px;color:#5b6875;margin-top:2px">{{ nextLabWhen }} · {{ nextLabAway }}</div>
 </div>
 <i class="ph ph-caret-right" style="font-size:15px;color:#98a4b0"></i>
 </button>
@@ -1030,6 +1045,11 @@ a:hover{color:#0b6675}
 </button>
 </sc-for>
 </div>
+<div style="margin-top:9px;display:flex;gap:9px;flex-wrap:wrap;align-items:center;font-size:9.5px;color:#6b7885">
+<span style="display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:#b3603a"></span>Exam / test</span>
+<span style="display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:#3a6fa8"></span>Lab / PT gear</span>
+<span style="margin-left:auto">Tap an event to edit</span>
+</div>
 
 <sc-if value="{{ gearOn }}" hint-placeholder-val="{{ true }}">
 <div style="margin-top:12px;display:flex;gap:10px;align-items:center;border-radius:11px;padding:11px 12px;border:1px solid {{ gearColor }};background:{{ gearTint }}">
@@ -1651,12 +1671,10 @@ class Component extends DCLogic {
       const mod = await this.lib();
       const out = await mod.extractSchedule(file);
       const stamp = Date.now();
-      const items = out.items.map((it, i) => ({ id: 'c' + stamp + '_' + i, ...it }));
+      const items = out.items.map((it, i) => ({ id: 'c' + stamp + '_' + i, source: 'import', ...it }));
       this.setState(x => {
-        const keys = {};
-        x.cal.items.forEach(i => { keys[i.date + '|' + i.t + '|' + i.name] = 1; });
-        const fresh = items.filter(i => !keys[i.date + '|' + i.t + '|' + i.name]);
-        const all = x.cal.items.concat(fresh).sort((a, b) => (a.date + a.t).localeCompare(b.date + b.t));
+        const manualItems = x.cal.items.filter(i => i.source === 'manual');
+        const all = manualItems.concat(items).sort((a, b) => (a.date + a.t).localeCompare(b.date + b.t));
         const first = all.find(i => i.date >= D_ISO(D_TODAY())) || all[0];
         return {
           cal: { file: file.name, sheet: out.sheet || '', items: all, status: 'done', error: '' },
@@ -1673,13 +1691,13 @@ class Component extends DCLogic {
     this.setState({ screen: 'sedit', sed: { ...item } });
   }
   newItem(date) {
-    this.setState({ screen: 'sedit', sed: { id: '', date, t: '', end: '', name: '', room: '', kind: 'lecture' } });
+    this.setState({ screen: 'sedit', sed: { id: '', source: 'manual', date, t: '', end: '', name: '', room: '', kind: 'lecture' } });
   }
   setSed(k, v) { this.setState(x => ({ sed: { ...x.sed, [k]: v } })); }
   saveItem() {
     const d = this.state.sed;
     if (!d || !d.name.trim() || !/^\d{4}-\d{2}-\d{2}$/.test(d.date)) return;
-    const item = { ...d, name: d.name.trim(), id: d.id || 'c' + Date.now() };
+    const item = { ...d, source: d.source || 'manual', name: d.name.trim(), id: d.id || 'c' + Date.now() };
     this.setState(x => {
       const rest = x.cal.items.filter(i => i.id !== item.id);
       const all = rest.concat([item]).sort((a, b) => (a.date + a.t).localeCompare(b.date + b.t));
@@ -1779,23 +1797,30 @@ class Component extends DCLogic {
     const KINDC = { exam: '#b3603a', lab: '#3a6fa8', lunch: '#98a4b0', admin: '#6b7885', lecture: '#3d7a4d' };
     const cal = s.cal || { file: '', sheet: '', items: [], status: 'idle', error: '' };
     const calItems = cal.items || [];
+    const isExamItem = it => it.kind === 'exam' || /\b(exam|midterm|final|quiz|test|practical|assessment|osce|check[- ]?off)\b/i.test(it.name || '');
+    const isLabItem = it => it.kind === 'lab' || /\b(lab|laboratory)\b|skills|simulation|\bsim\b|dissect|cadaver/i.test(it.name || '');
     const todayIso = D_ISO(D_TODAY());
     const mon = D_PARSE(s.weekMon);
     const weekIsos = [0, 1, 2, 3, 4, 5, 6].map(i => D_ISO(D_ADD(mon, i)));
     const onDay = iso => calItems.filter(i => i.date === iso).sort((a, b) => String(a.t).localeCompare(String(b.t)));
     const dayItemsRaw = onDay(s.day);
     const itemColor = it => {
-      if (it.kind === 'exam' || it.kind === 'lunch' || it.kind === 'admin' || it.kind === 'lab') return KINDC[it.kind];
+      if (isExamItem(it)) return KINDC.exam;
+      if (isLabItem(it)) return KINDC.lab;
+      if (it.kind === 'lunch' || it.kind === 'admin') return KINDC[it.kind];
       const hit = Object.keys(CC).find(k => k.length > 3 && it.name.toLowerCase().indexOf(k.toLowerCase()) >= 0);
       return hit ? CC[hit] : KINDC.lecture;
     };
     const gearFor = items => {
       if (!items.length) return null;
-      if (items.some(i => i.kind === 'exam')) return { text: 'Exam on the schedule today — duty uniform, phones in the bin', icon: 'ph ph-exam', color: '#b3603a' };
-      if (items.some(i => i.kind === 'lab')) return { text: 'PT gear all day — lab block on the schedule', icon: 'ph ph-t-shirt', color: '#3a6fa8' };
+      const hasExam = items.some(isExamItem);
+      const hasLab = items.some(isLabItem);
+      if (hasExam && hasLab) return { text: 'Exam and lab today — check the uniform guidance before class', icon: 'ph ph-warning', color: '#b3603a' };
+      if (hasExam) return { text: 'Exam or assessment today — review the test-day details', icon: 'ph ph-exam', color: '#b3603a' };
+      if (hasLab) return { text: 'PT gear all day — lab block on the schedule', icon: 'ph ph-t-shirt', color: '#3a6fa8' };
       return { text: 'Standard duty uniform', icon: 'ph ph-coat-hanger', color: '#6b7885' };
     };
-    const examItems = calItems.filter(i => i.kind === 'exam' && i.date >= todayIso)
+    const examItems = calItems.filter(i => isExamItem(i) && i.date >= todayIso)
       .sort((a, b) => (a.date + a.t).localeCompare(b.date + b.t));
 
     const up = s.up || { name: '', ext: '', size: 0, status: 'idle', error: '', pages: 0, unit: '', chars: 0, topics: [], questions: [], engine: '' };
@@ -1827,6 +1852,8 @@ class Component extends DCLogic {
       const hit = Object.keys(CC).find(k => k.length > 3 && String(name).toLowerCase().indexOf(k.toLowerCase()) >= 0);
       return hit ? CC[hit] : KINDC.exam;
     };
+    const labItems = calItems.filter(i => isLabItem(i) && i.date >= todayIso)
+      .sort((a, b) => (a.date + a.t).localeCompare(b.date + b.t));
     const yearExams = examItems.slice(0, 8).map(e => ({
       name: e.name,
       when: D_LONG(e.date) + (e.t ? ' · ' + e.t : '') + (e.room ? ' · ' + e.room : ''),
@@ -1834,6 +1861,7 @@ class Component extends DCLogic {
       color: courseColor(e.name),
     }));
     const nx = yearExams[0] || { name: '', when: '', away: '', color: '#0e7c8c' };
+    const nl = labItems[0] || { name: '', date: '', t: '', room: '' };
     const firstName = (prof.name || '').trim().split(/\s+/)[0].replace(/[,.;:]+$/, '');
 
     const titles = {
@@ -2007,6 +2035,11 @@ class Component extends DCLogic {
       hasExam: yearExams.length > 0, noExam: yearExams.length === 0,
       nextExam: nx.name, nextExamWhen: nx.when, nextExamAway: nx.away,
       nextExamColor: nx.color, nextExamTint: nx.color + '16',
+      hasLab: labItems.length > 0,
+      nextLab: nl.name,
+      nextLabWhen: D_LONG(nl.date) + (nl.t ? ' · ' + T_LABEL(nl.t) : '') + (nl.room ? ' · ' + nl.room : ''),
+      nextLabAway: D_AWAY(nl.date),
+      nextLabColor: '#3a6fa8', nextLabTint: '#3a6fa816',
       addToDay: () => this.newItem(s.day),
       isSedit: screen === 'sedit',
       sedName: s.sed ? s.sed.name : '',
@@ -2067,8 +2100,8 @@ class Component extends DCLogic {
           bg: sel ? '#0e7c8c' : (iso === todayIso ? '#e6f3f5' : '#ffffff'),
           fg: sel ? '#ffffff' : '#16202e',
           border: sel ? '#0e7c8c' : (iso === todayIso ? '#8fc6ce' : '#dde3ea'),
-          hasExam: items.some(x => x.kind === 'exam'),
-          hasLab: items.some(x => x.kind === 'lab'),
+          hasExam: items.some(isExamItem),
+          hasLab: items.some(isLabItem),
           examDot: sel ? '#ffffff' : '#b3603a',
           labDot: sel ? '#ffffff' : '#3a6fa8',
           onPick: () => this.setState({ day: iso }),
@@ -2082,8 +2115,8 @@ class Component extends DCLogic {
         return {
           t: T_LABEL(i.t), name: i.name, color: c, tint: c + '14',
           muted: i.kind === 'lunch' ? '#98a4b0' : '#16202e',
-          badge: i.kind === 'exam' ? 'EXAM' : (i.kind === 'lab' ? 'LAB' : ''),
-          showBadge: i.kind === 'exam' || i.kind === 'lab',
+          badge: isExamItem(i) ? 'EXAM' : (isLabItem(i) ? 'PT / LAB' : ''),
+          showBadge: isExamItem(i) || isLabItem(i),
           sub: [i.end ? T_LABEL(i.t) + '–' + i.end : '', i.room].filter(Boolean).join(' · '),
           hasSub: !!(i.end || i.room),
           onEdit: () => this.editItem(i),

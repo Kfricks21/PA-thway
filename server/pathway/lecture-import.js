@@ -131,6 +131,11 @@ const MONS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oc
 function parseDate(v, fallbackYear) {
   if (v == null || v === '') return '';
   if (v instanceof Date && !isNaN(v)) return isoOf(v);
+  if (typeof v === 'number' && v > 20000 && v < 80000) {
+    const excelDate = new Date(1899, 11, 30);
+    excelDate.setDate(excelDate.getDate() + v);
+    return isoOf(excelDate);
+  }
   const s = String(v).trim();
   let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
   if (m) return m[1] + '-' + pad2(+m[2]) + '-' + pad2(+m[3]);
@@ -162,7 +167,7 @@ function parseTime(v) {
     return pad2(Math.floor(mins / 60)) + pad2(mins % 60);
   }
   const s = String(v).trim().toLowerCase();
-  let m = s.match(/^(\d{1,2}):(\d{2})/);
+  let m = s.match(/^(\d{1,2})[:.]([0-5]\d)/);
   if (m) {
     let h = +m[1];
     if (/pm/.test(s) && h < 12) h += 12;
@@ -183,8 +188,8 @@ function parseTime(v) {
 
 export function kindOf(name, hint) {
   const s = ((name || '') + ' ' + (hint || '')).toLowerCase();
-  if (/\bexam|midterm|final|quiz|test|practical\b/.test(s)) return 'exam';
-  if (/\blab\b|laboratory|skills|sim|dissect|cadaver/.test(s)) return 'lab';
+  if (/\b(exam|midterm|final|quiz|test|practical|assessment|osce|check[- ]?off)\b/.test(s)) return 'exam';
+  if (/\b(lab|laboratory)\b|skills|simulation|\bsim\b|dissect|cadaver/.test(s)) return 'lab';
   if (/lunch|break|meal/.test(s)) return 'lunch';
   if (/admin|advis|orientation|meeting|capstone|research|eval|holiday/.test(s)) return 'admin';
   return 'lecture';
@@ -203,18 +208,18 @@ function rowsToItems(rows, fileName) {
   let head = -1, headers = [];
   for (let i = 0; i < Math.min(rows.length, 25); i++) {
     const cells = rows[i].map(c => String(c == null ? '' : c).trim().toLowerCase());
-    if (cells.some(c => /^date|^day$|^start|^time|^begin/.test(c)) && cells.filter(Boolean).length >= 2) {
+    if (cells.some(c => /(date|day|start|time|begin|course|class|title|event)/.test(c)) && cells.filter(Boolean).length >= 2) {
       head = i; headers = cells; break;
     }
   }
   const items = [];
   if (head >= 0) {
     const ci = {
-      date: pick(headers, [/^date/, /^day\b/, /^when/]),
-      start: pick(headers, [/^start/, /^begin/, /^time/, /^from/]),
-      end: pick(headers, [/^end/, /^finish/, /^to$/, /^until/]),
-      name: pick(headers, [/^(course|class|subject|title|event|activity|topic|block|lecture)/, /^name/, /^description/, /^summary/]),
-      room: pick(headers, [/^(room|location|place|bldg|building|where)/]),
+      date: pick(headers, [/^date/, /date$/, /^day\b/, /^when/, /session date/]),
+      start: pick(headers, [/^start/, /start time/, /^begin/, /^time/, /^from/]),
+      end: pick(headers, [/^end/, /end time/, /^finish/, /^to$/, /^until/]),
+      name: pick(headers, [/^(course|subject|title|event|activity|topic|block|lecture)(?:\s+(name|title))?$/, /^class(?:\s+(name|title|activity))?$/, /course name/, /class name/, /^name/, /^description/, /^summary/]),
+      room: pick(headers, [/^(room|location|place|bldg|building|where)/, /room number/]),
       kind: pick(headers, [/^(type|kind|category|format)/]),
     };
     for (let i = head + 1; i < rows.length; i++) {
