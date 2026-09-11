@@ -333,10 +333,10 @@ export async function extractSchedule(file) {
 
 // ---- question + model generation ----
 
-const SYS = `You write assessment items for a physician assistant student studying from their own lecture material.
+const SYS = `You write assessment items for a physician assistant student studying from one course block.
 Return ONLY minified JSON, no prose, shaped exactly:
 {"course":"<block name, e.g. Biochemistry>","topics":[{"name":"<short lab title>","span":"<slide or page range>","desc":"<one sentence describing an interactive model the student would operate — a sequence to order, a value to titrate, a structure to build>"}],"questions":[{"course":"<block>","q":"<stem>","options":["a","b","c","d"],"answer":<index of correct option>,"why":"<one- or two-sentence rationale that explains the mechanism>","source":"<slide or page number where the answer is supported>"}]}
-Rules: 6 questions, 3 topics. Every question must be answerable from the supplied text, at PA-program difficulty — mechanism and application, not vocabulary recall. Distractors must be plausible and drawn from the same material. No question may reference "the slide" or "the lecture".`;
+Rules: 6 questions, 3 topics. Use ONLY the supplied text from this upload and the named course block. Do not add facts from general knowledge or other courses. Prefer explicit scientific terms, definitions, mechanisms, and relationships stated in the deck. If a picture is referenced, use it only when the uploaded text includes a caption, label, or description for it. Distractors must be plausible but must also come from the supplied material. No question may reference "the slide" or "the lecture".`;
 
 function firstJson(s) {
   const i = s.indexOf('{');
@@ -353,7 +353,7 @@ export async function makeQuestions(text, meta) {
         model: 'claude-sonnet-4-5',
         max_tokens: 4000,
         system: SYS,
-        messages: [{ role: 'user', content: 'File: ' + meta.name + '\n\n' + body }],
+            messages: [{ role: 'user', content: 'Course block: ' + (meta.courseName || 'Unassigned') + '\nFile: ' + meta.name + '\n\nUploaded material (the only source of truth):\n' + body }],
       });
       const out = firstJson(raw);
       if (Array.isArray(out.questions) && out.questions.length) {
@@ -361,7 +361,7 @@ export async function makeQuestions(text, meta) {
         out.questions = out.questions
           .filter(q => q && q.q && Array.isArray(q.options) && q.options.length >= 2)
           .map((q, index) => ({
-            course: q.course || out.course || 'From your lectures',
+            course: meta.courseName || q.course || out.course || 'From your lectures',
             q: String(q.q),
             options: q.options.slice(0, 4).map(String),
             answer: Math.max(0, Math.min(3, Number(q.answer) || 0)),
@@ -380,7 +380,7 @@ export async function makeQuestions(text, meta) {
   return heuristic(body, meta);
 }
 
-export function buildDefinitionFlashcards(text) {
+export function buildDefinitionFlashcards(text, courseName = '') {
   const cards = [];
   const seen = new Set();
   const sourceText = clean(text || '');
@@ -398,7 +398,7 @@ export function buildDefinitionFlashcards(text) {
       const key = term.toLowerCase();
       if (term.length < 2 || definition.length < 12 || seen.has(key)) return false;
       seen.add(key);
-      cards.push({ term, definition });
+      cards.push({ term, definition, course: courseName || 'Uploaded course material' });
       return cards.length >= 24;
     });
   });
@@ -431,7 +431,7 @@ function heuristic(text, meta) {
     while (opts.length < 4) opts.push('None of the above');
     const order = opts.map((t, k) => ({ t, k })).sort((a, b) => ((a.k * 7 + i) % 5) - ((b.k * 7 + i) % 5));
     return {
-      course: 'From your lectures',
+      course: meta.courseName || 'From your lectures',
       q: 'According to this lecture, ' + f.term + ' ' + f.verb + ' which of the following?',
       options: order.map(o => o.t.slice(0, 140)),
       answer: order.findIndex(o => o.k === 0),
@@ -443,7 +443,7 @@ function heuristic(text, meta) {
     throw new Error('Could not pull testable statements out of that file. A deck with objective slides or full-sentence notes works best.');
   }
   return {
-    course: 'From your lectures',
+    course: meta.courseName || 'From your lectures',
     engine: 'offline',
     topics: facts.slice(0, 3).map((f, i) => ({
       name: f.term.slice(0, 48),

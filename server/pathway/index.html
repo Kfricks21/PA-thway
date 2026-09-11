@@ -472,6 +472,11 @@ x-import{filter:drop-shadow(0 24px 34px rgba(33,52,68,.16))}
 <sc-if value="{{ isUpload }}" hint-placeholder-val="{{ false }}">
 <div>
 <div style="font-size:11px;line-height:1.55;color:#5b6875">Add a lecture from any block. The app pulls the text out of the file and turns it into review questions and definition flashcards.</div>
+<div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Course block</div>
+<div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap">
+<sc-for list="{{ uploadCourses }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onPick }}" style="height:34px;padding:0 10px;border-radius:9px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};font-family:inherit;font-size:11px;font-weight:600;cursor:pointer">{{ c.name }}</button></sc-for>
+</div>
+<div style="margin-top:5px;font-size:10.5px;color:#6b7885">{{ uploadCourseHint }}</div>
 
 <div onDragOver="{{ onDragOver }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDrop }}" style="margin-top:14px;position:relative;border:1px dashed {{ dropBorder }};border-radius:14px;padding:26px 16px;text-align:center;background:{{ dropBg }};overflow:hidden">
 <i class="ph ph-file-arrow-up" style="font-size:30px;color:#0b6675"></i>
@@ -1206,6 +1211,7 @@ x-import{filter:drop-shadow(0 24px 34px rgba(33,52,68,.16))}
 <div style="margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#6b7885">Accent</div>
 <div style="margin-top:7px;display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ ceditColors }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.onPick }}" style="width:32px;height:32px;border-radius:50%;border:2px solid {{ c.border }};background:{{ c.color }};cursor:pointer"></button></sc-for></div>
 <button onClick="{{ saveCedit }}" style="margin-top:20px;width:100%;height:48px;border-radius:11px;border:1px solid #0e7c8c;background:#0e7c8c;color:#ffffff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;opacity:{{ ceditOpacity }}">{{ ceditSaveLabel }}</button>
+<sc-if value="{{ ceditExisting }}" hint-placeholder-val="{{ false }}"><button onClick="{{ uploadForCourse }}" style="margin-top:9px;width:100%;height:44px;border-radius:11px;border:1px solid #b6dbe0;background:#f4fafb;color:#0b6675;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer">Upload lecture for this block</button></sc-if>
 <button onClick="{{ cancelCedit }}" style="margin-top:9px;width:100%;height:44px;border-radius:11px;border:1px solid #dde3ea;background:transparent;color:#5b6875;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer">Cancel</button>
 <sc-if value="{{ ceditExisting }}" hint-placeholder-val="{{ false }}"><button onClick="{{ deleteCedit }}" style="margin-top:9px;width:100%;height:44px;border-radius:11px;border:1px solid #e2c6c2;background:transparent;color:#b0564e;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer">Delete course block</button></sc-if>
 </div>
@@ -1442,9 +1448,9 @@ class Component extends DCLogic {
     qIndex: 0, qPick: null, qSubmitted: false, qScore: 0, quizDone: false,
     reviewView: 'home', flashcards: [], flashcardIndex: 0, flashcardFlipped: false,
     uploadPct: 0,
-    up: { name: '', ext: '', size: 0, status: 'idle', error: '', pages: 0, unit: '', chars: 0, topics: [], questions: [], engine: '', sourceText: '' },
+    up: { name: '', ext: '', size: 0, status: 'idle', error: '', pages: 0, unit: '', chars: 0, topics: [], questions: [], engine: '', sourceText: '', courseId: '', courseName: '' },
     dragOver: false, customQs: [], pasteOpen: false, pasteText: '',
-    extra: [], customCourses: [], cedit: null,
+    extra: [], customCourses: [], cedit: null, uploadCourseId: '', uploadCourseName: '',
     squadView: 'duels', points: 1240,
     cohort: { code: '', ownerKey: '' }, shared: EMPTY_HUB,
     hubStatus: 'idle', hubError: '', hubLive: false, reported: null,
@@ -1485,6 +1491,9 @@ class Component extends DCLogic {
     const id = this.state.cedit && this.state.cedit.id;
     if (!id) return;
     this.setState(x => ({ customCourses: x.customCourses.filter(course => course.id !== id), screen: null, cedit: null }));
+  }
+  openCourseUpload(course) {
+    this.setState({ screen: 'upload', uploadCourseId: course ? course.id : '', uploadCourseName: course ? course.name : '' });
   }
 
   // ---- persistence: this is the student's own record, not a demo ----
@@ -1797,11 +1806,15 @@ class Component extends DCLogic {
   async ingest(fileList) {
     const file = fileList && fileList[0];
     if (!file) return;
+    if (!this.state.uploadCourseId) {
+      this.setState({ up: { ...this.state.up, status: 'error', error: 'Choose a course block before uploading this lecture.' } });
+      return;
+    }
     const ext = (file.name.split('.').pop() || '').toLowerCase();
     const icons = { pdf: 'ph ph-file-pdf', pptx: 'ph ph-file-ppt', docx: 'ph ph-file-doc' };
     this.setState({
       dragOver: false, uploadPct: 8,
-      up: { name: file.name, ext, icon: icons[ext] || 'ph ph-file-text', size: file.size,
+      up: { name: file.name, ext, icon: icons[ext] || 'ph ph-file-text', size: file.size, courseId: this.state.uploadCourseId || '', courseName: this.state.uploadCourseName || '',
         status: 'reading', error: '', pages: 0, unit: '', chars: 0, topics: [], questions: [], engine: '' },
     });
     try {
@@ -1811,19 +1824,19 @@ class Component extends DCLogic {
         throw new Error('Almost no selectable text in that file — it is probably a scan or an image-only export. Save the deck as a PDF from PowerPoint, or paste the text in below.');
       }
       this.setState(x => ({ uploadPct: 45, up: { ...x.up, status: 'writing', pages: doc.pages, unit: doc.unit, chars: doc.text.length } }));
-      await this.build(doc.text, file.name);
+      await this.build(doc.text, file.name, this.state.uploadCourseName || '');
     } catch (e) {
       this.setState(x => ({ uploadPct: 0, up: { ...x.up, status: 'error', error: String((e && e.message) || e) } }));
     }
   }
 
-  async build(text, name) {
+  async build(text, name, courseName = '') {
     const mod = await this.lib();
-    const out = await mod.makeQuestions(text, { name });
-    const flashcards = mod.buildDefinitionFlashcards(text);
+    const out = await mod.makeQuestions(text, { name, courseName });
+    const flashcards = mod.buildDefinitionFlashcards(text, courseName);
     this.setState(x => ({
       uploadPct: 100,
-      up: { ...x.up, status: 'done', topics: out.topics || [], questions: out.questions, engine: out.engine, course: out.course || 'From your lectures', sourceText: text, flashcards },
+      up: { ...x.up, status: 'done', topics: out.topics || [], questions: out.questions, engine: out.engine, course: courseName || out.course || 'From your lectures', sourceText: text, flashcards },
       flashcards,
       reviewView: 'home',
     }));
@@ -1832,15 +1845,19 @@ class Component extends DCLogic {
   async ingestPaste() {
     const text = (this.state.pasteText || '').trim();
     if (text.replace(/\s/g, '').length < 300) return;
+    if (!this.state.uploadCourseId) {
+      this.setState({ up: { ...this.state.up, status: 'error', error: 'Choose a course block before building review content.' } });
+      return;
+    }
     const name = (text.split(/\n/)[0] || 'Pasted lecture').trim().slice(0, 48);
     this.setState({
       uploadPct: 30,
-      up: { name, ext: 'txt', icon: 'ph ph-clipboard-text', size: text.length,
+      up: { name, ext: 'txt', icon: 'ph ph-clipboard-text', size: text.length, courseId: this.state.uploadCourseId || '', courseName: this.state.uploadCourseName || '',
         status: 'writing', error: '', pages: text.split(/\n\s*\n/).length, unit: 'sections',
         chars: text.length, topics: [], questions: [], engine: '' },
     });
     try {
-      await this.build(text, name);
+      await this.build(text, name, this.state.uploadCourseName || '');
     } catch (e) {
       this.setState(x => ({ uploadPct: 0, up: { ...x.up, status: 'error', error: String((e && e.message) || e) } }));
     }
@@ -2280,7 +2297,9 @@ class Component extends DCLogic {
         subline: c.note || 'Member-created course block',
         onOpen: () => this.openCourseEditor(c) })),
       openPeptide: () => this.setState({ screen: 'peptide' }),
-      openUpload: () => this.setState({ screen: 'upload' }),
+      openUpload: () => this.openCourseUpload(null),
+      uploadCourses: allCourses.map(c => ({ name: c.name, border: s.uploadCourseId === c.id ? c.color : '#dde3ea', bg: s.uploadCourseId === c.id ? c.color + '16' : '#ffffff', fg: s.uploadCourseId === c.id ? c.color : '#5b6875', onPick: () => this.setState({ uploadCourseId: c.id, uploadCourseName: c.name }) })),
+      uploadCourseHint: s.uploadCourseName ? 'This lecture will be saved under ' + s.uploadCourseName + '.' : 'Choose a course block before uploading so review stays focused.',
       openCatalog: () => this.openCourseEditor(),
       isCatalog: screen === 'catalog',
       catalog: [],
@@ -2293,6 +2312,7 @@ class Component extends DCLogic {
       ceditOpacity: s.cedit && s.cedit.name.trim() ? 1 : 0.45,
       setCeditName: e => this.setCourseField('name', e.target.value),
       setCeditNote: e => this.setCourseField('note', e.target.value),
+      uploadForCourse: () => this.openCourseUpload(s.cedit),
       ceditColors: COURSE_COLORS.map(color => ({ color, border: s.cedit && s.cedit.color === color ? '#16202e' : '#ffffff', onPick: () => this.setCourseField('color', color) })),
       saveCedit: () => this.saveCourse(),
       deleteCedit: () => this.deleteCourse(),
@@ -2396,7 +2416,7 @@ class Component extends DCLogic {
       startUploadedQuiz: () => this.startUploadedQuiz(),
       startFlashcards: () => this.startFlashcards(),
       backToReviewHome: () => this.backToReviewHome(),
-      openReviewUpload: () => this.setState({ screen: 'upload' }),
+      openReviewUpload: () => this.openCourseUpload(null),
       flashcardProgress: (s.flashcards || up.flashcards || []).length ? ((s.flashcardIndex + 1) + ' of ' + (s.flashcards || up.flashcards || []).length) : '',
       flashcardFlipped: s.flashcardFlipped,
       flashcardSideLabel: s.flashcardFlipped ? 'Definition' : 'Term',
