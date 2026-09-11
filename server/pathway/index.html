@@ -49,8 +49,15 @@ x-import{filter:drop-shadow(0 24px 34px rgba(33,52,68,.16))}
 
 <div style="flex-shrink:0;padding:60px 18px 10px;display:flex;align-items:center;gap:10px;background:#f6f9fb">
 <div style="flex:1;min-width:0">
-<div style="font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#6b7885">{{ chromeKicker }}</div>
-<div style="font-size:19px;font-weight:600;letter-spacing:-.02em;color:#16202e;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ chromeTitle }}</div>
+<sc-if value="{{ homeHeader }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:7px;margin-bottom:9px">
+<span style="width:27px;height:27px;border-radius:8px;background:#e3f2f4;border:1px solid #b6dbe0;display:flex;align-items:center;justify-content:center;color:#0b6675;font-size:16px">⚕</span>
+<span style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#0b6675">PA-thway</span>
+<span style="width:24px;height:24px;border-radius:50%;background:#3a6fa8;border:2px solid #b6dbe0;display:flex;align-items:center;justify-content:center;color:#ffffff;font-size:8px;font-weight:700">{{ initials }}</span>
+</div>
+</sc-if>
+<sc-if value="{{ notHomeHeader }}" hint-placeholder-val="{{ false }}"><div style="font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#6b7885">{{ chromeKicker }}</div></sc-if>
+<div style="display:inline-block;max-width:100%;font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:700;font-style:italic;letter-spacing:.01em;color:#0b6675;border:1px solid #8fc6ce;border-radius:10px;padding:5px 10px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ chromeTitle }}</div>
 </div>
 <sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}">
 <button onClick="{{ goBack }}" style="height:34px;padding:0 12px;border-radius:8px;border:1px solid #dde3ea;background:transparent;color:#16202e;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;flex-shrink:0" style-hover="background:#eef2f6">Close</button>
@@ -2144,6 +2151,8 @@ class Component extends DCLogic {
       frameName: (this.props.platform ?? 'iOS') === 'Android' ? 'AndroidDevice' : 'IOSDevice',
       chromeKicker: s.signedUp ? chrome[0] : 'PA-thway',
       chromeTitle: s.signedUp ? chrome[1] : 'Set up your app',
+      homeHeader: !screen && s.tab === 'home',
+      notHomeHeader: !!screen || s.tab !== 'home',
       showBack: !!screen && s.signedUp, showAvatar: !screen && s.signedUp,
       showTabs: !screen && s.signedUp,
       goBack: () => this.setState({ screen: null }),
