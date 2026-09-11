@@ -506,6 +506,7 @@ x-import{filter:drop-shadow(0 24px 34px rgba(33,52,68,.16))}
 <div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ upName }}</div>
 <div style="font-size:10.5px;color:{{ upStatusColor }};margin-top:1px">{{ uploadStatus }}</div>
 </div>
+<button onClick="{{ deleteLectureUpload }}" style="height:30px;padding:0 9px;border-radius:8px;border:1px solid #e2c6c2;background:#fff7f5;color:#b0564e;font-family:inherit;font-size:10.5px;font-weight:600;cursor:pointer">Delete</button>
 </div>
 <sc-if value="{{ uploadBuilding }}" hint-placeholder-val="{{ false }}">
 <div style="margin-top:10px;height:3px;border-radius:2px;background:#e4eaf0;overflow:hidden"><div style="height:3px;background:#0e7c8c;width:{{ uploadPct }};transition:width .5s ease"></div></div>
@@ -1044,6 +1045,7 @@ x-import{filter:drop-shadow(0 24px 34px rgba(33,52,68,.16))}
 <span style="font-size:10.5px;font-weight:600;color:#0b6675;flex-shrink:0">Import</span>
 <input type="file" ref="{{ schedRef }}" accept=".xlsx,.xls,.csv,.tsv,.ics,.txt" onChange="{{ onSchedPick }}" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;font-size:0;cursor:pointer">
 </div>
+<sc-if value="{{ schedHasFile }}" hint-placeholder-val="{{ false }}"><button onClick="{{ deleteScheduleUpload }}" style="margin-top:8px;width:100%;height:34px;border-radius:8px;border:1px solid #e2c6c2;background:#fff7f5;color:#b0564e;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer">Delete imported schedule</button></sc-if>
 <sc-if value="{{ schedLoading }}" hint-placeholder-val="{{ false }}">
 <div style="margin-top:7px;font-size:10.5px;color:#0b6675">Reading your schedule…</div>
 </sc-if>
@@ -1842,6 +1844,19 @@ class Component extends DCLogic {
     }));
   }
 
+  deleteLectureUpload() {
+    this.setState({
+      up: { name: '', ext: '', size: 0, status: 'idle', error: '', pages: 0, unit: '', chars: 0, topics: [], questions: [], engine: '', sourceText: '', courseId: '', courseName: '' },
+      customQs: [], flashcards: [], reviewView: 'home', qIndex: 0, qPick: null, qSubmitted: false, qScore: 0, quizDone: false,
+    });
+  }
+
+  deleteScheduleUpload() {
+    this.setState(x => ({
+      cal: { ...x.cal, file: '', sheet: '', items: x.cal.items.filter(item => item.source !== 'import'), status: x.cal.items.some(item => item.source === 'manual') ? 'done' : 'idle', error: '' },
+    }));
+  }
+
   async ingestPaste() {
     const text = (this.state.pasteText || '').trim();
     if (text.replace(/\s/g, '').length < 300) return;
@@ -2139,6 +2154,7 @@ class Component extends DCLogic {
         : 'Import an .xlsx, .csv or .ics — or add classes by hand',
       schedHasFile: !!cal.file, schedLoading: cal.status === 'reading',
       schedFailed: cal.status === 'error', schedError: cal.error || '',
+      deleteScheduleUpload: () => this.deleteScheduleUpload(),
       schedEmpty: calItems.length === 0,
       schedIcon: cal.status === 'error' ? 'ph ph-warning-circle' : (cal.file ? 'ph ph-microsoft-excel-logo' : 'ph ph-calendar-plus'),
       schedIconColor: cal.status === 'error' ? '#b3603a' : (cal.file ? '#3d7a4d' : '#0b6675'),
@@ -2385,6 +2401,7 @@ class Component extends DCLogic {
       uploadBuilding: up.status === 'reading' || up.status === 'writing',
       uploadPct: s.uploadPct + '%',
       upFailed: up.status === 'error', upError: up.error,
+      deleteLectureUpload: () => this.deleteLectureUpload(),
       upDone: up.status === 'done' && up.questions.length > 0,
       hasFlashcards: (up.flashcards || s.flashcards || []).length > 0,
       upQPreview: up.questions.map((q3, i) => ({ q: q3.q, meta: 'Q' + (i + 1) + ' · ' + q3.options.length + ' options · ' + (q3.course || 'From your lectures') })),
