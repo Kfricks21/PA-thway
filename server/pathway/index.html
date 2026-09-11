@@ -1973,6 +1973,7 @@ class Component extends DCLogic {
       log: ['Exam debrief', 'Log your result'],
       duel: ['Head to head', 'Send a challenge'],
       sedit: ['Your schedule', s.sed && s.sed.id ? 'Edit this block' : 'Add a block'],
+      cedit: ['Course blocks', s.cedit && s.cedit.id ? 'Edit course block' : 'Add course block'],
       post: ['Share with ' + (s.cohort.code || 'your cohort'), 'Post a set of notes'],
       note: [note ? note.course + ' · ' + note.author : 'Shared notes', note ? note.title : 'Notes'],
     };
