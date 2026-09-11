@@ -39,6 +39,7 @@ x-import{filter:drop-shadow(0 24px 34px rgba(33,52,68,.16))}
 <div style="min-height:100vh;background:#e9edf1;display:flex;flex-direction:column;align-items:center;gap:18px;padding:36px 20px 56px">
 
 <div style="width:100%;max-width:520px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+<span style="font-size:18px;line-height:1;color:#0b6675" aria-hidden="true">⚕</span>
 <span style="font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#0b6675">PA-thway</span>
 <span style="font-size:12px;color:#5b6875">Built by students, for students</span>
 </div>
@@ -55,6 +56,7 @@ x-import{filter:drop-shadow(0 24px 34px rgba(33,52,68,.16))}
 <button onClick="{{ goBack }}" style="height:34px;padding:0 12px;border-radius:8px;border:1px solid #dde3ea;background:transparent;color:#16202e;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;flex-shrink:0" style-hover="background:#eef2f6">Close</button>
 </sc-if>
 <sc-if value="{{ showAvatar }}" hint-placeholder-val="{{ true }}">
+<span style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;height:30px;display:flex;align-items:center;padding:0 9px;border:1px solid #b6dbe0;border-radius:8px;background:#f0f8f9;color:#0b6675;font-size:10.5px;font-weight:600">{{ memberName }}</span>
 <button onClick="{{ openProfile }}" style="width:34px;height:34px;border-radius:8px;background:#e3f2f4;border:1px solid #b6dbe0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#0b6675;flex-shrink:0;cursor:pointer;font-family:inherit" style-hover="background:#dbeef1">{{ initials }}</button>
 </sc-if>
 </div>
@@ -642,9 +644,9 @@ x-import{filter:drop-shadow(0 24px 34px rgba(33,52,68,.16))}
 <sc-if value="{{ isSquad }}" hint-placeholder-val="{{ false }}">
 <div style="margin:-6px -18px -24px;padding:16px 18px 26px;min-height:100%;background:#161826;color:#e9e9ed;font-family:Inter,system-ui,sans-serif">
 <div style="display:flex;gap:6px;margin-bottom:14px">
-<button onClick="{{ showDuels }}" style="flex:1;height:34px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;color:{{ duelFg }};border:1px solid {{ duelBorder }};background:{{ duelBg }}">Duels</button>
-<button onClick="{{ showNotes }}" style="flex:1;height:34px;border-radius:9px;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;color:{{ notesFg }};border:1px solid {{ notesBorder }};background:{{ notesBg }}">Notes</button>
-<button onClick="{{ showPeople }}" style="flex:1;height:34px;border-radius:9px;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;color:{{ peopleFg }};border:1px solid {{ peopleBorder }};background:{{ peopleBg }}">People</button>
+<button onClick="{{ showDuels }}" style="flex:1;height:34px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;color:{{ duelFg }};border:1px solid {{ duelBorder }};background:{{ duelBg }}">⚔️ Duels</button>
+<button onClick="{{ showNotes }}" style="flex:1;height:34px;border-radius:9px;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;color:{{ notesFg }};border:1px solid {{ notesBorder }};background:{{ notesBg }}">📝 Notes</button>
+<button onClick="{{ showPeople }}" style="flex:1;height:34px;border-radius:9px;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;color:{{ peopleFg }};border:1px solid {{ peopleBorder }};background:{{ peopleBg }}">👥 People</button>
 <button onClick="{{ showStanding }}" style="flex:1;height:34px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;color:{{ standFg }};border:1px solid {{ standBorder }};background:{{ standBg }}">Standing</button>
 </div>
 
@@ -2291,6 +2293,7 @@ class Component extends DCLogic {
       openProfile: () => this.setState({ screen: 'profile' }),
       closeProfile: () => this.setState({ screen: null }),
       initials: (prof.name.trim() ? prof.name.trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2) : 'PA').toUpperCase(),
+      memberName: prof.name.trim() || 'Member',
       greeting: firstName ? 'Good evening, ' + firstName : 'Good evening',
       klassLine: prof.klass.trim() ? 'Class ' + prof.klass.trim() : 'Your class',
       standingLine: prof.klass.trim() ? 'of 42 in Class ' + prof.klass.trim() + '. Accuracy is the ranking metric — volume is not.' : 'in your class. Accuracy is the ranking metric — volume is not.',
