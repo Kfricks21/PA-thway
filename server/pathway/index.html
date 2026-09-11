@@ -1170,7 +1170,7 @@ x-import{filter:drop-shadow(0 24px 34px rgba(33,52,68,.16))}
 <sc-if value="{{ showTabs }}" hint-placeholder-val="{{ true }}">
 <div style="flex-shrink:0;border-top:1px solid #dde3ea;background:#ffffff;display:flex;padding:8px 6px 30px">
 <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
-<button onClick="{{ t.onGo }}" style="flex:1;background:transparent;border:0;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:{{ t.color }};position:relative">
+<button onClick="{{ t.onGo }}" style="flex:1;background:{{ t.bg }};border:0;border-radius:10px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:{{ t.color }};position:relative">
 <sc-if value="{{ t.dot }}" hint-placeholder-val="{{ false }}">
 <span style="position:absolute;top:4px;right:24%;width:7px;height:7px;border-radius:50%;background:#b3603a"></span>
 </sc-if>
@@ -1886,6 +1886,7 @@ class Component extends DCLogic {
     };
     const chrome = screen ? titles[screen] : tabTitles[s.tab];
 
+    const tabColors = { home: '#3a6fa8', sched: '#3d7a4d', labs: '#7d6a25', quiz: '#b05a86', squad: '#6f63b8' };
     const go = t => () => this.setState({ tab: t, screen: null });
     const tabs = [
       { id: 'home', icon: 'ph ph-house', label: 'Home' },
@@ -1893,8 +1894,8 @@ class Component extends DCLogic {
       { id: 'labs', icon: 'ph ph-flask', label: 'Labs' },
       { id: 'quiz', icon: 'ph ph-cards', label: 'Review' },
       { id: 'squad', icon: 'ph ph-users-three', label: 'Squad' },
-    ].map(t => ({ ...t, onGo: go(t.id), color: (!screen && s.tab === t.id) ? ACCENT_L : '#6b7885',
-      dot: t.id === 'squad' && s.inbox.pick === null }));
+    ].map(t => ({ ...t, onGo: go(t.id), color: tabColors[t.id], bg: (!screen && s.tab === t.id) ? tabColors[t.id] + '16' : 'transparent',
+      dot: t.id === 'squad' && !!s.inbox && s.inbox.pick === null }));
 
     // peptide
     const donorSet = !!s.donor, accSet = !!s.acceptor;
