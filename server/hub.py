@@ -36,7 +36,7 @@ import re
 import sqlite3
 import time
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from functools import wraps
 
 from flask import Blueprint, g, jsonify, request
@@ -54,6 +54,7 @@ MAX_COMMENT = 2000
 MAX_NOTES_PER_PAGE = 200
 RATE_WINDOW_S = 60
 RATE_MAX_WRITES = 40
+POST_RETENTION_DAYS = 7
 
 _rate: dict[str, list[float]] = {}
 
@@ -301,12 +302,28 @@ def initials(name: str) -> str:
     return "".join(w[0] for w in parts)[:2].upper()
 
 
+def purge_expired_posts(code: str) -> None:
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=POST_RETENTION_DAYS)).isoformat()
+    old_notes = rows(
+        "select id from notes where cohort = ? and created_at < ?", (code, cutoff)
+    )
+
+    for note in old_notes:
+        note_id = note["id"]
+        run("delete from likes where target_id = ?", (note_id,))
+        run("delete from comments where note_id = ?", (note_id,))
+        run("delete from notifs where note_id = ?", (note_id,))
+        run("delete from notes where id = ?", (note_id,))
+
+
 # --------------------------------------------------------------------- shaping
 
 def snapshot(code: str) -> dict:
     cohort = one("select * from cohorts where code = ?", (code,))
     if not cohort:
         return {}
+
+    purge_expired_posts(code)
 
     members = rows("select * from members where cohort = ? order by name", (code,))
     notes = rows(

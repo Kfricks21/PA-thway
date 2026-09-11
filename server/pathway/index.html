@@ -550,7 +550,10 @@ a:hover{color:#0b6675}
 <button onClick="{{ o.onPick }}" style="width:100%;text-align:left;border-radius:10px;padding:13px 12px;background:#ffffff;cursor:pointer;font-family:inherit;font-size:13px;line-height:1.4;color:#16202e;border:1px solid {{ o.border }}" style-hover="background:#f2f6f8">{{ o.text }}</button>
 </sc-for>
 </div>
-<sc-if value="{{ qAnswered }}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{ qCanSubmit }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ submitAnswer }}" style="margin-top:12px;width:100%;height:44px;border-radius:10px;border:1px solid #0e7c8c;background:#0e7c8c;color:#ffffff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#0b6675">Submit answer</button>
+</sc-if>
+<sc-if value="{{ qSubmitted }}" hint-placeholder-val="{{ false }}">
 <div>
 <div style="margin-top:14px;border-radius:10px;padding:11px 12px;border:1px solid {{ qFbBorder }};background:{{ qFbBg }};animation:slideUp .25s ease both">
 <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:{{ qFbColor }}">{{ qFbTitle }}</div>
@@ -559,6 +562,12 @@ a:hover{color:#0b6675}
 <div style="margin-top:8px;padding-top:8px;border-top:1px solid #e4eaf0;font-size:11px;line-height:1.5;color:#5b6875;font-style:italic">{{ missLine }}</div>
 </sc-if>
 </div>
+<sc-if value="{{ qHasSource }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:10px;border:1px solid #cfe2e5;border-radius:9px;background:#f5fafb;padding:10px 11px;font-size:11px;line-height:1.5;color:#16202e">
+<div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#0b6675">Pulled from {{ qSourceLabel }}</div>
+<div style="margin-top:4px">{{ qSourceText }}</div>
+</div>
+</sc-if>
 <button onClick="{{ nextQuestion }}" style="margin-top:12px;width:100%;height:44px;border-radius:10px;border:1px solid #0e7c8c;background:transparent;color:#0b6675;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#dbeef1">{{ nextLabel }}</button>
 </div>
 </sc-if>
@@ -715,6 +724,7 @@ a:hover{color:#0b6675}
 <span style="font-size:11px;color:#a8a9b4;flex:1;line-height:1.45">points banked. Miss a challenge and the sender takes the stake.</span>
 </div>
 
+<sc-if value="{{ hasInbox }}" hint-placeholder-val="{{ false }}">
 <div style="margin-top:16px;display:flex;align-items:center;gap:7px">
 <span style="width:7px;height:7px;border-radius:50%;background:#b3603a;animation:pulseRing 2s infinite"></span>
 <span style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#a8a9b4">Incoming</span>
@@ -740,6 +750,10 @@ a:hover{color:#0b6675}
 </div>
 </sc-if>
 </div>
+ </sc-if>
+<sc-if value="{{ noInbox }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:16px;font-size:11.5px;line-height:1.5;color:#a8a9b4">No incoming challenges.</div>
+</sc-if>
 
 <div style="margin-top:18px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#a8a9b4">Sent</div>
 <sc-for list="{{ sent }}" as="x" hint-placeholder-count="2">
@@ -789,6 +803,9 @@ a:hover{color:#0b6675}
 <div>
 <div style="margin-top:6px;font-size:13px;font-weight:500">Who are you going after?</div>
 <div style="font-size:11px;color:#a8a9b4;margin-top:3px;line-height:1.45">Only classmates who carry at least one of your blocks can be challenged.</div>
+<sc-if value="{{ friendsEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:12px;border:1px dashed rgba(233,233,237,.22);border-radius:12px;padding:16px;font-size:11.5px;line-height:1.55;color:#a8a9b4">No other cohort members are available yet. Join a cohort and wait for a classmate to join before sending a challenge.</div>
+</sc-if>
 <sc-for list="{{ friends }}" as="f" hint-placeholder-count="5">
 <button onClick="{{ f.onPick }}" style="margin-top:8px;width:100%;text-align:left;border:1px solid rgba(233,233,237,.16);border-radius:12px;background:#232532;padding:12px;cursor:pointer;font-family:inherit;color:#e9e9ed;display:flex;gap:10px;align-items:center" style-hover="background:#1d1f2c;border-color:#b5abfc">
 <div style="width:32px;height:32px;border-radius:9px;background:#423a6a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#b5abfc">{{ f.initials }}</div>
@@ -1201,7 +1218,7 @@ const QUESTIONS = [
     why: 'The fibrous skeleton insulates the chambers; the AV node is the sole normal pathway, and its delay allows atrial filling.' },
 ];
 
-// Head-to-head question duels between classmates who share a block.
+// Question bank used when a real cohort member sends a challenge.
 const BLOCK_QS = {
   'Biochemistry': [
     { q: 'Which linkage joins the two sugars in lactose?', options: ['α(1→4)', 'β(1→4)', 'α(1→6)', 'β(1→2)'], answer: 1,
@@ -1230,14 +1247,6 @@ const BLOCK_QS = {
       why: 'Without SOD and catalase they cannot clear superoxide or peroxide, and the radicals shred them.' },
   ],
 };
-
-const FRIENDS = [
-  { id: 'jt', initials: 'JT', name: 'Torres, J.', branch: 'Army', blocks: ['Biochemistry', 'A&P II', 'Microbiology'] },
-  { id: 'ao', initials: 'AO', name: 'Okafor, A.', branch: 'Air Force', blocks: ['Biochemistry', 'A&P I'] },
-  { id: 'dl', initials: 'DL', name: 'Lam, D.', branch: 'Navy', blocks: ['A&P II', 'Microbiology'] },
-  { id: 'sb', initials: 'SB', name: 'Brandt, S.', branch: 'Coast Guard', blocks: ['Biochemistry', 'A&P I', 'A&P II'] },
-  { id: 'kh', initials: 'KH', name: 'Hollis, K.', branch: 'Air Force', blocks: ['Microbiology', 'A&P I'] },
-];
 
 const K = { exam: '#b3603a', lab: '#3a6fa8', lunch: '#98a4b0', admin: '#6b7885' };
 
@@ -1308,16 +1317,6 @@ const MISS_LINES = [
   'Everyone in your class misses this one. Keep going.',
 ];
 
-const LEADERS = [
-  { rank: 1, initials: 'JT', name: 'Torres, J.', branch: 'Army · 26-3', acc: 94 },
-  { rank: 2, initials: 'AO', name: 'Okafor, A.', branch: 'Air Force · 26-3', acc: 92 },
-  { rank: 3, initials: 'DL', name: 'Lam, D.', branch: 'Navy · 26-3', acc: 91 },
-  { rank: 4, initials: 'RM', name: 'You', branch: 'Army · 26-3', acc: 88, me: true },
-  { rank: 5, initials: 'SB', name: 'Brandt, S.', branch: 'Coast Guard · 26-3', acc: 86 },
-  { rank: 6, initials: 'KH', name: 'Hollis, K.', branch: 'Air Force · 26-3', acc: 84 },
-  { rank: 7, initials: 'MV', name: 'Vega, M.', branch: 'Navy · 26-3', acc: 81 },
-];
-
 const CC = {
   'A&P I': '#3d7a4d', 'A&P II': '#3a6fa8', 'Biochem': '#6f63b8', 'Biochemistry': '#6f63b8',
   'Micro': '#7d6a25', 'Microbiology': '#7d6a25', 'Pharmacology': '#b3603a', 'Any': '#0e7c8c',
@@ -1373,7 +1372,7 @@ class Component extends DCLogic {
     pepStage: 1, donor: null, acceptor: null, selected: null,
     pepRight: 0, pepWrong: 0, pepFb: null, leavingPick: null,
     hPhase: -1, stim: -90, hFb: null, hWrong: 0, hRight: 0,
-    qIndex: 0, qPick: null, qScore: 0, quizDone: false,
+    qIndex: 0, qPick: null, qSubmitted: false, qScore: 0, quizDone: false,
     uploadPct: 0,
     up: { name: '', ext: '', size: 0, status: 'idle', error: '', pages: 0, unit: '', chars: 0, topics: [], questions: [], engine: '' },
     dragOver: false, customQs: [], pasteOpen: false, pasteText: '',
@@ -1384,11 +1383,8 @@ class Component extends DCLogic {
     notifOpen: false, copied: false, dTarget: null, dNote: null,
     joinCode: '', noteId: null, cdraft: '',
     pdraft: { title: '', course: '', body: '', attach: false },
-    inbox: { from: 'Okafor, A.', initials: 'AO', block: 'Biochemistry', stake: 25, qi: 0, pick: null },
-    sent: [
-      { to: 'Torres, J.', initials: 'JT', block: 'A&P II', stake: 25, status: 'Opened — no answer yet', tone: 'wait' },
-      { to: 'Lam, D.', initials: 'DL', block: 'Microbiology', stake: 40, status: 'Missed it — you took 40 pts', tone: 'win' },
-    ],
+    inbox: null,
+    sent: [],
     dStep: 1, dFriend: null, dBlock: null, dQi: null, dStake: 25,
     day: D_ISO(D_TODAY()), weekMon: D_ISO(D_MONDAY(D_TODAY())),
     cal: { file: '', sheet: '', items: [], status: 'idle', error: '' },
@@ -1413,7 +1409,7 @@ class Component extends DCLogic {
       if (raw) {
         const d = JSON.parse(raw);
         const keep = {};
-        ['profile', 'signedUp', 'why', 'points', 'logs', 'extra', 'up', 'customQs', 'sent', 'cal', 'rules', 'cohort'].forEach(k => {
+        ['profile', 'signedUp', 'why', 'points', 'logs', 'extra', 'up', 'customQs', 'cal', 'rules', 'cohort'].forEach(k => {
           if (d[k] !== undefined) keep[k] = d[k];
         });
         if (Object.keys(keep).length) this.setState(keep);
@@ -1433,7 +1429,7 @@ class Component extends DCLogic {
         window.localStorage.setItem(Component.KEY, JSON.stringify({
           profile: s.profile, signedUp: s.signedUp, why: s.why, points: s.points,
           logs: s.logs, extra: s.extra, up: s.up, customQs: s.customQs,
-          sent: s.sent, cal: s.cal, rules: s.rules, cohort: s.cohort,
+          cal: s.cal, rules: s.rules, cohort: s.cohort,
         }));
       } catch (e) { /* quota or private mode */ }
     }, 400);
@@ -1605,6 +1601,38 @@ class Component extends DCLogic {
       await hub.recordScore(code, { name: this.author().name, label: label || 'Quiz', score, total });
       this.bump();
     } catch (e) { /* the score still counts locally */ }
+  }
+
+  async sendDuel() {
+    const s = this.state;
+    const target = (s.shared.members || []).find(member => member.key === s.dTarget);
+    const questions = s.dBlock ? BLOCK_QS[s.dBlock] || [] : [];
+    const question = questions[s.dQi];
+    if (!s.cohort.code || !target || !question) return;
+
+    try {
+      const hub = await this.hub();
+      await hub.sendChallenge(s.cohort.code, {
+        toKey: target.key,
+        to: target.name,
+        from: this.author().name,
+        fromEmoji: this.author().emoji,
+        block: s.dBlock,
+        question,
+        stake: s.dStake,
+        noteId: s.dNote,
+      });
+      this.setState(x => ({
+        screen: null,
+        tab: 'squad',
+        squadView: 'duels',
+        sent: [{ to: target.name, initials: target.initials, block: s.dBlock, stake: s.dStake,
+          status: 'Sent just now — awaiting answer', tone: 'wait' }].concat(x.sent),
+      }));
+      this.bump();
+    } catch (e) {
+      this.setState({ hubError: String((e && e.message) || e) });
+    }
   }
 
   async readNotifs() {
@@ -1916,23 +1944,25 @@ class Component extends DCLogic {
     }));
 
     // quiz
-    const q = QUESTIONS[s.qIndex] || QUESTIONS[0];
-    const answered = s.qPick !== null;
+        const quizQuestions = s.customQs.length ? s.customQs : QUESTIONS;
+        const q = quizQuestions[s.qIndex] || quizQuestions[0];
+        const answered = s.qPick !== null;
+        const submitted = s.qSubmitted;
     const qOptions = q.options.map((text, i) => ({
       text,
-      border: !answered ? LINE : (i === q.answer ? ACCENT : (i === s.qPick ? BAD : LINE)),
-      onPick: () => { if (s.qPick === null) this.setState(x => ({ qPick: i, qScore: x.qScore + (i === q.answer ? 1 : 0), missI: x.missI + (i === q.answer ? 0 : 1) })); },
+          border: !submitted ? (i === s.qPick ? ACCENT : LINE) : (i === q.answer ? ACCENT : (i === s.qPick ? BAD : LINE)),
+          onPick: () => { if (!submitted) this.setState({ qPick: i }); },
     }));
-    const lastQ = s.qIndex === QUESTIONS.length - 1;
-    const qf = answered ? (s.qPick === q.answer ? fbMap.ok : fbMap.bad) : fbMap.ok;
+        const lastQ = s.qIndex === quizQuestions.length - 1;
+        const qf = submitted ? (s.qPick === q.answer ? fbMap.ok : fbMap.bad) : fbMap.ok;
 
     // ---- duels ----
     const MYBLOCKS = ['A&P I', 'A&P II', 'Biochemistry', 'Microbiology'];
     const inbox = s.inbox;
-    const iq = BLOCK_QS[inbox.block][inbox.qi];
-    const iAnswered = inbox.pick !== null;
-    const iWon = inbox.pick === iq.answer;
-    const inboxOptions = iq.options.map((text, i) => ({
+    const iq = inbox && BLOCK_QS[inbox.block] ? BLOCK_QS[inbox.block][inbox.qi] : null;
+    const iAnswered = !!inbox && inbox.pick !== null;
+    const iWon = !!iq && inbox.pick === iq.answer;
+    const inboxOptions = iq ? iq.options.map((text, i) => ({
       text,
       border: !iAnswered ? LINE : (i === iq.answer ? ACCENT : (i === inbox.pick ? BAD : LINE)),
       onPick: () => {
@@ -1940,10 +1970,10 @@ class Component extends DCLogic {
         const right = i === iq.answer;
         this.setState(x => ({ inbox: { ...x.inbox, pick: i }, points: x.points + (right ? 10 : -x.inbox.stake) }));
       },
-    }));
+    })) : [];
 
-    const fr = FRIENDS.find(f => f.id === s.dFriend);
-    const shared = fr ? fr.blocks.filter(b => MYBLOCKS.indexOf(b) >= 0) : [];
+    const fr = (s.shared.members || []).find(member => member.key === s.dFriend);
+    const shared = fr ? MYBLOCKS : [];
     const dQs = s.dBlock ? BLOCK_QS[s.dBlock] : [];
     const setD = patch => () => this.setState(patch);
 
@@ -2204,7 +2234,7 @@ class Component extends DCLogic {
       upDone: up.status === 'done' && up.questions.length > 0,
       upQPreview: up.questions.map((q3, i) => ({ q: q3.q, meta: 'Q' + (i + 1) + ' · ' + q3.options.length + ' options · ' + (q3.course || 'From your lectures') })),
       studyLabel: 'Study these ' + up.questions.length + ' questions',
-      studyUpload: () => this.setState(x => ({ customQs: x.up.questions, tab: 'quiz', screen: null, qIndex: 0, qPick: null, qScore: 0, quizDone: false })),
+      studyUpload: () => this.setState(x => ({ customQs: x.up.questions, tab: 'quiz', screen: null, qIndex: 0, qPick: null, qSubmitted: false, qScore: 0, quizDone: false })),
       shareUploadLabel: s.cohort.code ? 'Share these notes with ' + s.cohort.code : 'Share these notes with your cohort',
       shareUpload: () => {
         if (!s.cohort.code) { this.setState({ screen: null, tab: 'squad', squadView: 'notes' }); return; }
@@ -2222,25 +2252,32 @@ class Component extends DCLogic {
       generated: (up.topics || []).map(t => ({ name: t.name, slides: t.span, desc: t.desc })),
 
       quizRunning: !s.quizDone, quizDone: s.quizDone,
-      quizDots: QUESTIONS.map((_, i) => ({ color: i < s.qIndex ? ACCENT : (i === s.qIndex ? ACCENT_L : '#e4eaf0') })),
+      quizDots: quizQuestions.map((_, i) => ({ color: i < s.qIndex ? ACCENT : (i === s.qIndex ? ACCENT_L : '#e4eaf0') })),
       qCourse: q.course, qCourseColor: CC[q.course] || ACCENT, qCourseTint: (CC[q.course] || ACCENT) + '18',
-      qText: q.q, qOptions, qAnswered: answered,
+      qText: q.q, qOptions, qAnswered: answered, qCanSubmit: answered && !submitted, qSubmitted: submitted,
       qRationale: q.why,
-      qMissed: answered && s.qPick !== q.answer,
-      qFbTitle: answered ? (s.qPick === q.answer ? 'Correct' : 'Missed — ' + q.options[q.answer]) : '',
+      qMissed: submitted && s.qPick !== q.answer,
+      qFbTitle: submitted ? (s.qPick === q.answer ? 'Correct' : 'Missed — ' + q.options[q.answer]) : '',
       qFbBorder: qf[0], qFbBg: qf[1], qFbColor: qf[2],
+      qHasSource: submitted && !!q.source,
+      qSourceLabel: q.source ? ((q.source.type || 'slide').replace(/^./, c => c.toUpperCase()) + ' ' + q.source.number) : '',
+      qSourceText: q.source ? q.source.text : '',
+      submitAnswer: () => {
+        if (!answered || submitted) return;
+        this.setState(x => ({ qSubmitted: true, qScore: x.qScore + (x.qPick === q.answer ? 1 : 0), missI: x.missI + (x.qPick === q.answer ? 0 : 1) }));
+      },
       nextLabel: lastQ ? 'See results' : 'Next question',
       nextQuestion: () => {
         if (lastQ) {
           this.setState({ quizDone: true });
-          this.recordScore(s.qScore, QUESTIONS.length, s.customQs.length ? 'From your lectures' : 'Review');
-        } else this.setState(x => ({ qIndex: x.qIndex + 1, qPick: null }));
+          this.recordScore(s.qScore, quizQuestions.length, s.customQs.length ? 'From your lectures' : 'Review');
+        } else this.setState(x => ({ qIndex: x.qIndex + 1, qPick: null, qSubmitted: false }));
       },
-      quizScorePct: Math.round((s.qScore / QUESTIONS.length) * 100),
-      quizScoreLine: s.qScore + ' of ' + QUESTIONS.length + ' correct · class average 74%',
-      resetQuiz: () => this.setState({ qIndex: 0, qPick: null, qScore: 0, quizDone: false }),
+      quizScorePct: Math.round((s.qScore / quizQuestions.length) * 100),
+      quizScoreLine: s.qScore + ' of ' + quizQuestions.length + ' correct',
+      resetQuiz: () => this.setState({ qIndex: 0, qPick: null, qSubmitted: false, qScore: 0, quizDone: false }),
 
-      leaders: (hubBoard.length ? hubBoard : LEADERS).map((p, i2) => ({
+      leaders: hubBoard.map((p, i2) => ({
         rank: p.rank || String(i2 + 1),
         initials: p.initials, name: p.name + (p.isMe || p.me ? ' · you' : ''),
         emoji: p.emoji || '', sub: p.sub || (p.answered ? p.correct + '/' + p.answered + ' correct' : 'No quizzes yet'),
@@ -2340,7 +2377,7 @@ class Component extends DCLogic {
         seen: ago(new Date(m.lastSeen).getTime()),
         border: m.key === s.shared.me ? ACCENT : '#dde3ea',
         bg: m.key === s.shared.me ? '#f5fafb' : '#ffffff',
-        onChallenge: () => this.setState({ screen: 'duel', dStep: 1, dFriend: m.name, dTarget: m.key, dBlock: null, dQi: null }),
+        onChallenge: () => this.setState({ screen: 'duel', dStep: 1, dFriend: m.key, dTarget: m.key, dBlock: null, dQi: null }),
         canChallenge: m.key !== s.shared.me,
       })),
       // Three states, never a blank tab: not joined, joined but alone, or a list.
@@ -2397,8 +2434,8 @@ class Component extends DCLogic {
       dropThisNote: () => { if (note) this.removeNote(note.id, note.authorKey !== s.shared.me); },
       reportThisNote: () => { if (note) this.reportPost(note.id, 'note'); },
       reportedThis: s.reported === (note ? note.id : ''),
-      studyNote: () => { if (note && note.questions.length) this.setState({ customQs: note.questions, tab: 'quiz', screen: null, qIndex: 0, qPick: null, qScore: 0, quizDone: false }); },
-      challengeFromNote: () => this.setState({ screen: 'duel', dStep: 1, dFriend: note ? note.author : null, dTarget: note ? note.authorKey : null, dBlock: note ? note.course : null, dQi: null, dNote: note ? note.id : null }),
+      studyNote: () => { if (note && note.questions.length) this.setState({ customQs: note.questions, tab: 'quiz', screen: null, qIndex: 0, qPick: null, qSubmitted: false, qScore: 0, quizDone: false }); },
+      challengeFromNote: () => this.setState({ screen: 'duel', dStep: 1, dFriend: note ? note.authorKey : null, dTarget: note ? note.authorKey : null, dBlock: note ? note.course : null, dQi: null, dNote: note ? note.id : null }),
       challengeFromNoteLabel: note ? 'Challenge ' + note.author.split(/\s+/)[0] + ' on this' : 'Send a challenge',
 
       noteComments: note ? note.comments.map(c => ({
@@ -2427,10 +2464,12 @@ class Component extends DCLogic {
       duelBg: s.squadView === 'duels' ? NOC.tint : 'transparent',
       duelFg: s.squadView === 'duels' ? NOC.accentText : NOC.muted,
       points: s.points,
-      inboxFrom: inbox.from, inboxInitials: inbox.initials, inboxBlock: inbox.block,
-      inboxStake: inbox.stake, inboxQ: iq.q, inboxOptions, inboxAnswered: iAnswered,
-      inboxResultTitle: iWon ? 'Held — you took 10 off Okafor' : 'Missed — Okafor took ' + inbox.stake + ' pts',
-      inboxResultBody: iq.why,
+      hasInbox: !!iq,
+      noInbox: !iq,
+      inboxFrom: inbox ? inbox.from : '', inboxInitials: inbox ? inbox.initials : '', inboxBlock: inbox ? inbox.block : '',
+      inboxStake: inbox ? inbox.stake : '', inboxQ: iq ? iq.q : '', inboxOptions, inboxAnswered: iAnswered,
+      inboxResultTitle: iWon ? 'Correct' : 'Missed',
+      inboxResultBody: iq ? iq.why : '',
       inboxResBorder: iWon ? ACCENT : BAD, inboxResBg: iWon ? OK_BG : BAD_BG,
       inboxResColor: iWon ? ACCENT_L : BAD,
       sent: s.sent.map(x => ({ ...x, color: x.tone === 'win' ? '#3d7a4d' : '#6b7885' })),
@@ -2438,11 +2477,12 @@ class Component extends DCLogic {
 
       dStep1: s.dStep === 1, dStep2: s.dStep === 2, dStep3: s.dStep === 3,
       dStepLabel: 'Step ' + s.dStep + ' of 3',
-      friends: FRIENDS.map(f => {
-        const sh = f.blocks.filter(b => MYBLOCKS.indexOf(b) >= 0);
-        return { ...f, sharedLine: sh.length + ' shared block' + (sh.length === 1 ? '' : 's'),
-          onPick: () => this.setState({ dFriend: f.id, dStep: 2, dBlock: null, dQi: null }) };
-      }),
+      friends: (s.shared.members || []).filter(member => member.key !== s.shared.me).map(f => ({
+        id: f.key, initials: f.initials, name: f.name, branch: f.year || 'Cohort member', blocks: MYBLOCKS,
+        sharedLine: MYBLOCKS.length + ' available blocks',
+        onPick: () => this.setState({ dFriend: f.key, dStep: 2, dBlock: null, dQi: null }),
+      })),
+      friendsEmpty: (s.shared.members || []).filter(member => member.key !== s.shared.me).length === 0,
       dFriendName: fr ? fr.name : '',
       sharedBlocks: shared.map(b => ({ name: b, color: CC[b] || ACCENT, tint: (CC[b] || ACCENT) + '16',
         count: BLOCK_QS[b].length + ' questions',
@@ -2455,14 +2495,7 @@ class Component extends DCLogic {
       dSendLabel: 'Send for ' + s.dStake + ' pts',
       dSendOpacity: s.dQi === null ? 0.4 : 1,
       dBack: () => this.setState(x => ({ dStep: Math.max(1, x.dStep - 1) })),
-      dSend: () => {
-        if (s.dQi === null) return;
-        this.setState(x => ({
-          screen: null, tab: 'squad', squadView: 'duels',
-          sent: [{ to: fr.name, initials: fr.initials, block: x.dBlock, stake: x.dStake,
-            status: 'Sent just now — awaiting answer', tone: 'wait' }].concat(x.sent),
-        }));
-      },
+      dSend: () => { if (s.dQi !== null && fr) this.sendDuel(); },
     };
   }
 }

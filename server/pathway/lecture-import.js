@@ -330,7 +330,7 @@ export async function extractSchedule(file) {
 
 const SYS = `You write assessment items for a physician assistant student studying from their own lecture material.
 Return ONLY minified JSON, no prose, shaped exactly:
-{"course":"<block name, e.g. Biochemistry>","topics":[{"name":"<short lab title>","span":"<slide or page range>","desc":"<one sentence describing an interactive model the student would operate — a sequence to order, a value to titrate, a structure to build>"}],"questions":[{"course":"<block>","q":"<stem>","options":["a","b","c","d"],"answer":<index of correct option>,"why":"<one- or two-sentence rationale that explains the mechanism>"}]}
+{"course":"<block name, e.g. Biochemistry>","topics":[{"name":"<short lab title>","span":"<slide or page range>","desc":"<one sentence describing an interactive model the student would operate — a sequence to order, a value to titrate, a structure to build>"}],"questions":[{"course":"<block>","q":"<stem>","options":["a","b","c","d"],"answer":<index of correct option>,"why":"<one- or two-sentence rationale that explains the mechanism>","source":"<slide or page number where the answer is supported>"}]}
 Rules: 6 questions, 3 topics. Every question must be answerable from the supplied text, at PA-program difficulty — mechanism and application, not vocabulary recall. Distractors must be plausible and drawn from the same material. No question may reference "the slide" or "the lecture".`;
 
 function firstJson(s) {
@@ -352,14 +352,16 @@ export async function makeQuestions(text, meta) {
       });
       const out = firstJson(raw);
       if (Array.isArray(out.questions) && out.questions.length) {
+        const sources = sourceSegments(text);
         out.questions = out.questions
           .filter(q => q && q.q && Array.isArray(q.options) && q.options.length >= 2)
-          .map(q => ({
+          .map((q, index) => ({
             course: q.course || out.course || 'From your lectures',
             q: String(q.q),
             options: q.options.slice(0, 4).map(String),
             answer: Math.max(0, Math.min(3, Number(q.answer) || 0)),
             why: String(q.why || ''),
+            source: sourceForQuestion(q, sources, index),
           }));
         out.topics = (out.topics || []).slice(0, 3).map(t => ({
           name: String(t.name || 'Generated lab'),
@@ -388,7 +390,8 @@ function heuristic(text, meta) {
     const key = m[1].toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
-    facts.push({ term: m[1].replace(/^[-•\d.\s]+/, ''), verb: m[2].toLowerCase(), tail: m[3].replace(/[.;]$/, '') });
+    const marker = text.slice(0, text.indexOf(s)).match(/\[(Slide|Page)\s+(\d+)\]/gi);
+    facts.push({ term: m[1].replace(/^[-•\d.\s]+/, ''), verb: m[2].toLowerCase(), tail: m[3].replace(/[.;]$/, ''), source: marker ? sourceFromMarker(marker[marker.length - 1], s) : null });
     if (facts.length >= 8) break;
   }
   const questions = facts.slice(0, 6).map((f, i) => {
@@ -402,6 +405,7 @@ function heuristic(text, meta) {
       options: order.map(o => o.t.slice(0, 140)),
       answer: order.findIndex(o => o.k === 0),
       why: 'Stated directly in ' + meta.name + '. Generated offline, so check it against the source.',
+      source: f.source,
     };
   });
   if (!questions.length) {
@@ -417,4 +421,27 @@ function heuristic(text, meta) {
     })),
     questions,
   };
+}
+
+function sourceSegments(text) {
+  const matches = [...text.matchAll(/\[(Slide|Page)\s+(\d+)\]\s*([\s\S]*?)(?=\[(?:Slide|Page)\s+\d+\]|$)/gi)];
+  return matches.map(match => ({
+    type: match[1].toLowerCase(),
+    number: Number(match[2]),
+    text: clean(match[3]),
+  }));
+}
+
+function sourceFromMarker(marker, text) {
+  const match = String(marker || '').match(/\[(Slide|Page)\s+(\d+)\]/i);
+  return match ? { type: match[1].toLowerCase(), number: Number(match[2]), text: clean(text).slice(0, 220) } : null;
+}
+
+function sourceForQuestion(question, sources, index) {
+  if (!sources.length) return null;
+  const requested = String(question.source || '').match(/(?:slide|page)\s*(\d+)/i);
+  const source = requested
+    ? sources.find(item => item.number === Number(requested[1])) || sources[0]
+    : sources[index % sources.length];
+  return { ...source, text: source.text.slice(0, 220) };
 }

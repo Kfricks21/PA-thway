@@ -11,6 +11,7 @@
 
 const CFG = (typeof window !== 'undefined' && window.PATHWAY_CONFIG) || {};
 const POLL_MS = CFG.POLL_MS || 5000;
+const POST_RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
 
 const DEVICE_STORE = 'pathway.device.key';
 export function deviceKey() {
@@ -33,6 +34,26 @@ const initials = name => {
   if (!n) return 'PA';
   return n.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
 };
+
+function pruneExpiredPosts(data) {
+  const cutoff = Date.now() - POST_RETENTION_MS;
+  const notes = data.notes || [];
+  const comments = data.comments || [];
+  const likes = data.likes || [];
+  const notifs = data.notifs || [];
+  const freshNotes = notes.filter(note => {
+    const created = Date.parse(note.created_at);
+    return !Number.isFinite(created) || created >= cutoff;
+  });
+  const noteIds = new Set(freshNotes.map(note => note.id));
+  const commentIds = new Set(comments.filter(comment => noteIds.has(comment.note_id)).map(comment => comment.id));
+
+  data.notes = freshNotes;
+  data.comments = comments.filter(comment => noteIds.has(comment.note_id));
+  data.likes = likes.filter(like => noteIds.has(like.target_id) || commentIds.has(like.target_id));
+  data.notifs = notifs.filter(notif => !notif.note_id || noteIds.has(notif.note_id));
+  return data;
+}
 
 // Points are derived, never stored: 10 a correct answer, 25 a duel won.
 function tally(members, scores, challenges) {
@@ -166,7 +187,11 @@ function localDriver() {
   const load = code => {
     try {
       const d = JSON.parse(window.localStorage.getItem(key(code)) || 'null');
-      if (d && d.cohorts) return d;
+      if (d && d.cohorts) {
+        pruneExpiredPosts(d);
+        try { window.localStorage.setItem(key(code), JSON.stringify(d)); } catch (e) { /* storage may be read-only */ }
+        return d;
+      }
     } catch (e) { /* corrupt or absent */ }
     return { cohorts: [], members: [], notes: [], comments: [], likes: [], challenges: [], scores: [], notifs: [] };
   };
